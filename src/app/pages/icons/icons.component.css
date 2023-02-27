@@ -1,0 +1,18 @@
+.small{
+    height:10%;
+    width:10%;
+}
+
+details {
+    border: 1px solid #ddd;
+
+    padding: 10px;
+    border-bottom: none;
+  }
+  
+  summary {
+    
+    cursor: pointer;
+    outline: none;
+  }
+  
