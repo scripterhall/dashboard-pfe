@@ -14,7 +14,9 @@
           <div class=" row ">
             <!--sprint-->
             <div
-              class="m-small font-icon-list col-lg-2 col-md-2 col-sm-2 col-xs-6 col-xs-6"
+              [@slideInSprint]
+               class="m-small font-icon-list col-lg-2 col-md-2 col-sm-2 col-xs-6 col-xs-6"
+              *ngFor="let sp of sprints"
             >
               <div class=" font-icon-detail">
                 
@@ -26,7 +28,10 @@
             <!--end-->
             <!--button pour ajouter sprint-->
             <div
-              class="btn  m-small  font-icon-list col-lg-2 col-md-2 col-sm-2 col-xs-6 col-xs-6"
+              [@slideIn]="clickCount"
+              (click)="move()"
+              style="margin-left:2%;"
+              class="btn-sm btn font-icon-list col-lg-1 col-md-2 col-sm-2 col-xs-6 col-xs-6"
             >
               <div class="font-icon-detail-no-cadre">
                 
@@ -38,30 +43,52 @@
           </div>
         </div>
       </div>
-      <details name="backlog">
-        <summary>Backlog</summary>
+      <div>
+      <div class="row">
+      <details name="backlog" #detailElement  class="col-lg-12 border-top border-danger">
+        <summary  class="d-flex bd-highlight mb-3">
+          Backlog <i class="fa fa-angle-down m-1" aria-hidden="true"></i>
+          <!--btn list des ticket histoire-->
+          <button class="btn-lg btn-outline-danger ms-auto  bd-highlight" (click)="basculerElement()">
+            <i class="fa fa-list" aria="hiden"></i>
+          </button>
+          <!--end btn-->
+        </summary>
       <!--le product backlog table-->  
-      <table class="table table-dark table-hover">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          </tbody>
-          
-      </table>
+      <div class="example-container">
+        <h2>To do</h2>
+        <div
+          cdkDropList
+          #todoList="cdkDropList"
+          [cdkDropListData]="todo"
+          [cdkDropListConnectedTo]="[doneList]"
+          class="example-list"
+          (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+        </div>
+      </div>
       <!--end-->
     </details>
+    <!--nouveau element generer-->
+    <div class="col-lg-5" [@fadeIn] *ngIf="elementCreated"  #newElement>
+      <div class="example-container">
+        <h2>Done</h2>
+      
+        <div
+          cdkDropList
+          #doneList="cdkDropList"
+          
+          [cdkDropListData]="done"
+          [cdkDropListConnectedTo]="[todoList]"
+          class="example-list"
+          (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
+        </div>
+      </div>
+    </div>
+    <!-- end -->
+    </div>
+    </div>
     </div>
   </div>
 </div>

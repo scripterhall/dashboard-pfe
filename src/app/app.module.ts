@@ -16,6 +16,8 @@ import { ComponentsModule } from "./components/components.module";
 import {MatTableModule} from '@angular/material/table';
 import {MatButtonModule} from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 
 
 @NgModule({
@@ -30,10 +32,12 @@ import { MatIconModule } from '@angular/material/icon';
     AppRoutingModule,
     MatIconModule,
     MatButtonModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    DragDropModule
   ],
   declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent],
   providers: [],
   bootstrap: [AppComponent]
+  
 })
 export class AppModule {}

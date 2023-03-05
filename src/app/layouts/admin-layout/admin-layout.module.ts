@@ -13,7 +13,8 @@ import { UserComponent } from "../../pages/user/user.component";
 import { TablesComponent } from "../../pages/tables/tables.component";
 import { TypographyComponent } from "../../pages/typography/typography.component";
 // import { RtlComponent } from "../../pages/rtl/rtl.component";
-
+import { CdkDrag, CdkDropList ,DragDropModule} from '@angular/cdk/drag-drop';
+import { animation } from "@angular/animations";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
@@ -23,6 +24,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     FormsModule,
     HttpClientModule,
     NgbModule,
+    DragDropModule,
   ],
   declarations: [
     DashboardComponent,
@@ -35,4 +37,6 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     // RtlComponent
   ]
 })
+
+
 export class AdminLayoutModule {}
