@@ -24,7 +24,7 @@ interface Animal {
 
 export class SelectProjetComponent implements OnInit {
 
-  valid:boolean=true;
+  valid:boolean=false;
   /*   formulaire d'ajout de projet   */ 
   projetForm:FormGroup;
 
@@ -68,8 +68,10 @@ export class SelectProjetComponent implements OnInit {
   }
 
 /*   un seul projet peut etre gerer en temps real    */ 
-  cocherProjet(){
-    this.valid= !this.valid;
+  cocherProjet(index:number){
+    
+    this.valid = !this.valid;
+    this.projets[index].checked  = !this.projets[index].checked;
   }
 
 /*   boutton gerer de content 1  */ 
@@ -81,8 +83,15 @@ onCancel() {
 }
 
 /*   envoyer le formulaire de creation   */ 
+projet:Projet;
 onSubmit(){
   console.log(this.projetForm.value);
+  this.projetService.ajouterProjetByChef(this.projetForm.value).subscribe(
+    data=>{
+      this.projet = data;
+      localStorage.setItem('projet',JSON.stringify(this.projet));
+    }
+  )
 }
  
 

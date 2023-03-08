@@ -14,24 +14,26 @@
 
               <div mat-subheader style="color:rgb(238, 238, 238)">projets</div>
 
-              <mat-list-item class="projet" (click)="cocherProjet()" *ngFor="let projet of projets">
+              <mat-list-item class="projet" (click)="cocherProjet(i)" *ngFor="let projet of projets;index as i">
                 <mat-icon matListItemIcon style="color:rgb(238, 238, 238)">folder</mat-icon>
-                <div matListItemTitle style="color:rgb(238, 238, 238)">{{projet.nom}}</div>
+                <div matListItemTitle style="color:rgb(238, 238, 238)">
+                  {{projet.nom}}
+                  <button mat-mini-fab color="warn"  class="pull-right" aria-label="Example icon button with a filter list icon">
+                    <mat-icon>settings</mat-icon>
+                  </button>
+                </div>
 
                 <div matListItemLine class="d-flex" style="color:rgb(238, 238, 238)">
                   {{projet.dateDebut | date}}
+              
                 </div>
-                <mat-radio-group aria-label="Select an option">
-                  <mat-radio-button [value]="1" class="pull-right" style="margin-top:-6%;"
-                    [checked]="valid"></mat-radio-button>
-                </mat-radio-group>
 
+                
               </mat-list-item>
+
             </mat-list>
-            <hr>
-            <button class="btn btn-outline-primary m-3" *ngIf="tab.content=='Content 1'"
-              [disabled]="!valid">gérer</button>
-            <button class="btn btn-outline-dark m-3" *ngIf="tab.content=='Content 1'">annuler</button>
+
+
             <!-- fin block projets a gerer -->
 
             <!-- block creation de nouveau projet -->
@@ -85,7 +87,7 @@
                     <mat-icon>account_circle</mat-icon>
                   </mat-panel-description>
                 </mat-expansion-panel-header>
-                
+
                 <mat-form-field appearance="fill">
                   <mat-label>Membres</mat-label>
                   <mat-select [formControl]="membres" multiple>
@@ -96,7 +98,7 @@
                   <button mat-button color="primary" (click)="nextStep()">Suivant</button>
                 </mat-action-row>
               </mat-expansion-panel>
-            
+
               <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 1" (opened)="setStep(1)" hideToggle>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
@@ -107,27 +109,21 @@
                     <mat-icon>alternate_email</mat-icon>
                   </mat-panel-description>
                 </mat-expansion-panel-header>
-            
+
                 <mat-form-field appearance="fill">
                   <mat-label>e-mail</mat-label>
                   <input matInput>
                 </mat-form-field>
-            
+
                 <mat-action-row>
                   <button mat-button color="warn" (click)="prevStep()">Précedent</button>
                   <button mat-button color="primary" (click)="nextStep()">Suivant</button>
                 </mat-action-row>
               </mat-expansion-panel>
-            
-              <mat-expansion-panel
-               style="margin-top:2%;"
-                [expanded]="step === 2" 
-                (opened)="setStep(2)"
-                matTooltipPosition="left"
-                matTooltipPositionAtOrigin="true" 
-                matTooltipHideDelay="100"
-                matTooltip="vous devez choisir des membres"
-                hideToggle>
+
+              <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 2" (opened)="setStep(2)"
+                matTooltipPosition="left" matTooltipPositionAtOrigin="true" matTooltipHideDelay="100"
+                matTooltip="vous devez choisir des membres" hideToggle>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     Role
@@ -139,78 +135,78 @@
                 </mat-expansion-panel-header>
                 <!-- table des invi -->
                 <div style="overflow-x:auto;overflow-y:auto;max-height:300px;max-width:100%">
-                <table class="table table-bordered table-striped  ">
-                  <thead class="thead-light">
-                    <tr>
-                      <th scope="col"  >#</th>
-                      <th scope="col" >@email</th>
-                      <th scope="col" >Telephone</th>
-                      <th scope="col" >type_role</th>
-                      <th scope="col" >permission_role</th>
-                      <th scope="col" >description_role</th>
-                      <th scope="col"> _SUPP_</th>
-                    </tr>
-                  </thead>
-                  <tbody class=""style="color:black;">
-                    <tr>
-                      <th scope="row">1</th>
-                      <td class="scrollable-cell" >
-                        <mat-form-field class="example-full-width">
-                          <mat-label>Email (inactive)</mat-label>
-                          <span matPrefix>+1 &nbsp;</span>
-                          <input disabled type="email" matInput placeholder="example@gmail.com">
-                          <mat-icon matSuffix class="mat-primary" >mail</mat-icon>
-                        </mat-form-field>
-                      </td>
-                      <td >
-                        <mat-form-field class="example-full-width">
-                          <mat-label>Telephone (inactive)</mat-label>
-                          <span matPrefix>+1 &nbsp;</span>
-                          <input disabled type="tel" matInput placeholder="71-xxx-xxx">
-                          <mat-icon matSuffix  class="mat-primary" >phone</mat-icon>
-                        </mat-form-field>
-                      </td>
-                      <td >
-                        <mat-form-field appearance="fill">
-                          <mat-label>liste des roles</mat-label>
-                          <mat-select [formControl]="animalControl" required>
-                            <mat-option>--</mat-option>
-                            <mat-option *ngFor="let animal of animals" [value]="animal">
-                              {{animal.name}}
-                            </mat-option>
-                          </mat-select>
-                          <mat-error *ngIf="animalControl.hasError('required')">Please choose an animal</mat-error>
-                        </mat-form-field>                    
-                      </td>
-                      <td >
-                        <mat-form-field style="max-height: 100px;" class="example-full-width">
-                          <mat-label>Permission</mat-label>
-                          <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+                  <table class="table table-bordered table-striped  ">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">@email</th>
+                        <th scope="col">Telephone</th>
+                        <th scope="col">type_role</th>
+                        <th scope="col">permission_role</th>
+                        <th scope="col">description_role</th>
+                        <th scope="col"> _SUPP_</th>
+                      </tr>
+                    </thead>
+                    <tbody class="" style="color:black;">
+                      <tr>
+                        <th scope="row">1</th>
+                        <td class="scrollable-cell">
+                          <mat-form-field class="example-full-width">
+                            <mat-label>Email (inactive)</mat-label>
+                            <span matPrefix>+1 &nbsp;</span>
+                            <input disabled type="email" matInput placeholder="example@gmail.com">
+                            <mat-icon matSuffix class="mat-primary">mail</mat-icon>
                           </mat-form-field>
-                      </td>
-                      <td > 
-                        <mat-form-field style="max-height: 100px;" class="example-full-width">
-                        <mat-label>Description</mat-label>
-                        <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
-                        </mat-form-field>
-                    </td>
-                    <td>
-                      <button mat-fab color="primary" aria-label="Example icon button with a delete icon">
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    </td>
-                    </tr>
-                    
-                  </tbody>
-                </table>
-              </div>
-               <!-- end -->
+                        </td>
+                        <td>
+                          <mat-form-field class="example-full-width">
+                            <mat-label>Telephone (inactive)</mat-label>
+                            <span matPrefix>+1 &nbsp;</span>
+                            <input disabled type="tel" matInput placeholder="71-xxx-xxx">
+                            <mat-icon matSuffix class="mat-primary">phone</mat-icon>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field appearance="fill">
+                            <mat-label>liste des roles</mat-label>
+                            <mat-select [formControl]="animalControl" required>
+                              <mat-option>--</mat-option>
+                              <mat-option *ngFor="let animal of animals" [value]="animal">
+                                {{animal.name}}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="animalControl.hasError('required')">Please choose an animal</mat-error>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field style="max-height: 100px;" class="example-full-width">
+                            <mat-label>Permission</mat-label>
+                            <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field style="max-height: 100px;" class="example-full-width">
+                            <mat-label>Description</mat-label>
+                            <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <button mat-fab color="primary" aria-label="Example icon button with a delete icon">
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+                <!-- end -->
                 <mat-action-row>
                   <button mat-button color="warn" (click)="prevStep()">Précedent</button>
                   <button mat-button color="primary" (click)="nextStep()">Inviter</button>
                 </mat-action-row>
               </mat-expansion-panel>
-            
+
             </mat-accordion>
             <!--  end block  -->
           </div>

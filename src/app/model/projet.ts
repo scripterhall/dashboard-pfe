@@ -9,4 +9,5 @@ export class Projet {
     public cles ?:String //cles unique de projet
     public chefProjetId?:number;
     public chefProjet?:ChefProjet //le realisateur de projet
+    public checked?:boolean=false;//juste pour le front case a cocher
 }

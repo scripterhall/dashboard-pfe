@@ -16,4 +16,8 @@ export class ProjetServiceService {
   public getListProjetChefProjet(idChef:number){
     return this.http.get<Projet[]>(`${url1}/chefProjets/`+idChef);
   }
+
+  public ajouterProjetByChef(projet:Projet){
+    return this.http.post<Projet>(url1,projet);
+  }
 }
