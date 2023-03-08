@@ -5,11 +5,12 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
+import { SelectProjetComponent } from "./pages/select-projet/select-projet.component";
 
 const routes: Routes = [
   {
     path: "",
-    redirectTo: "dashboard",
+    redirectTo: "liste-projet",
     pathMatch: "full"
   },
   {
@@ -30,6 +31,10 @@ const routes: Routes = [
         loadChildren: () => import ("./layouts/auth-layout/auth-layout.module").then(m => m.AuthLayoutModule)
       }
     ]
+  },
+  {
+    path:"liste-projet",
+    component:SelectProjetComponent
   },
   {
     path: "**",

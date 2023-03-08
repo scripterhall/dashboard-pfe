@@ -17,36 +17,36 @@ export const ROUTES: RouteInfo[] = [
   },
   {
     path: "/icons",
-    title: "Icons",
-    rtlTitle: "الرموز",
-    icon: "icon-atom",
+    title: "product backlog",
+    rtlTitle: "مهام المنتج",
+    icon: "icon-tablet-2",
     class: ""
   },
   {
     path: "/maps",
-    title: "Maps",
-    rtlTitle: "خرائط",
-    icon: "icon-pin",
+    title: "sprint backlog",
+    rtlTitle: "مهام سبرنت",
+    icon: "icon-tie-bow",
     class: "" },
   {
     path: "/notifications",
-    title: "Notifications",
-    rtlTitle: "إخطارات",
-    icon: "icon-bell-55",
+    title: "scrum board",
+    rtlTitle: "لوحة السكروم",
+    icon: "icon-pin",
     class: ""
   },
 
   {
     path: "/user",
-    title: "User Profile",
-    rtlTitle: "ملف تعريفي للمستخدم",
-    icon: "icon-single-02",
+    title: "visio conférence",
+    rtlTitle: "مؤتمر عبر الفيديو",
+    icon: "icon-video-66",
     class: ""
   },
   {
     path: "/tables",
-    title: "Table List",
-    rtlTitle: "قائمة الجدول",
+    title: "liste des ressources",
+    rtlTitle: "الموارد المشترك ",
     icon: "icon-puzzle-10",
     class: ""
   },
