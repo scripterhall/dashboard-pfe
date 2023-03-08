@@ -18,7 +18,7 @@
                 <mat-icon matListItemIcon style="color:rgb(238, 238, 238)">folder</mat-icon>
                 <div matListItemTitle style="color:rgb(238, 238, 238)">
                   {{projet.nom}}
-                  <button mat-mini-fab color="warn"  class="pull-right" aria-label="Example icon button with a filter list icon">
+                  <button mat-mini-fab color="warn"  class="pull-right" (click)="gerer(i)" aria-label="Example icon button with a filter list icon">
                     <mat-icon>settings</mat-icon>
                   </button>
                 </div>

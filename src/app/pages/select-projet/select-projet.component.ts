@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable, Observer } from 'rxjs';
 import { Membre } from 'src/app/model/membre';
 import { Projet } from 'src/app/model/projet';
@@ -54,7 +55,9 @@ export class SelectProjetComponent implements OnInit {
   panelOpenState = false;
   panelOpenState2 = false;
  /*  end */ 
-  constructor(private projetService: ProjetServiceService,private formBuilder: FormBuilder) {
+  constructor(private projetService: ProjetServiceService,
+              private formBuilder: FormBuilder,
+              private router: Router) {
     this.asyncTabs = new Observable((observer: Observer<ExampleTab[]>) => {
       /*   les type des action gerer par se composant :: les sliders   */ 
       setTimeout(() => {
@@ -75,7 +78,14 @@ export class SelectProjetComponent implements OnInit {
   }
 
 /*   boutton gerer de content 1  */ 
-  gerer(){}
+  gerer(index:number){
+    if(confirm("Vous etes sûr de gerer le projet "+this.projets[index].nom+" !!")){
+    localStorage.setItem('projets', JSON.stringify(this.projets[index]));
+      this.router.navigateByUrl('/dashboard')
+    }
+
+
+  }
 
   /*   annuler* ou gerer  */ 
 onCancel() {
