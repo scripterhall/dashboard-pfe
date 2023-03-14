@@ -1,0 +1,1 @@
+{"ast":null,"code":"var Sprint = /** @class */function () {\n  function Sprint() {}\n  return Sprint;\n}();\nexport { Sprint };","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

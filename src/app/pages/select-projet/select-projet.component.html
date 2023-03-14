@@ -1,0 +1,223 @@
+<div class="container">
+  <div class="col-lg-7 mx-auto" style="margin-top:10%;">
+    <div class="card ">
+      <ng-container *ngIf="(asyncTabs | async) === null">
+        Loading tabs...
+      </ng-container>
+
+      <mat-tab-group>
+        <mat-tab class="card-header" *ngFor="let tab of asyncTabs | async">
+          <ng-template mat-tab-label>{{tab.label}}</ng-template>
+          <div class="card-body">
+            <!-- block proger a gerer -->
+            <mat-list class="my-list" *ngIf="tab.content=='Content 1'">
+
+              <div mat-subheader style="color:rgb(238, 238, 238)">projets</div>
+
+              <mat-list-item class="projet" (click)="cocherProjet(i)" *ngFor="let projet of projets;index as i">
+                <mat-icon matListItemIcon style="color:rgb(238, 238, 238)">folder</mat-icon>
+                <div matListItemTitle style="color:rgb(238, 238, 238)">
+                  {{projet.nom}}
+                  <button mat-mini-fab color="warn"  class="pull-right" (click)="gerer(i)" aria-label="Example icon button with a filter list icon">
+                    <mat-icon>settings</mat-icon>
+                  </button>
+                </div>
+
+                <div matListItemLine class="d-flex" style="color:rgb(238, 238, 238)">
+                  {{projet.dateDebut | date}}
+              
+                </div>
+
+                
+              </mat-list-item>
+
+            </mat-list>
+
+
+            <!-- fin block projets a gerer -->
+
+            <!-- block creation de nouveau projet -->
+
+            <form [formGroup]="projetForm" class="" (ngSubmit)="onSubmit()" *ngIf="tab.content=='Content 2'">
+              <mat-form-field>
+                <mat-label>Nom</mat-label>
+                <input matInput formControlName="nom">
+                <mat-error *ngIf="projetForm.get('nom').invalid">Le nom est obligatoire</mat-error>
+              </mat-form-field>
+              <div class="date-container">
+                <mat-form-field>
+                  <mat-label>Date de début</mat-label>
+                  <input matInput [matDatepicker]="debutDatepicker" formControlName="dateDebut">
+                  <mat-datepicker-toggle matSuffix [for]="debutDatepicker"></mat-datepicker-toggle>
+                  <mat-datepicker #debutDatepicker></mat-datepicker>
+                  <mat-error *ngIf="projetForm.get('dateDebut').invalid">La date de début est obligatoire</mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Date de fin</mat-label>
+                  <input matInput [matDatepicker]="finDatepicker" formControlName="dateFin">
+                  <mat-datepicker-toggle matSuffix [for]="finDatepicker"></mat-datepicker-toggle>
+                  <mat-datepicker #finDatepicker></mat-datepicker>
+                  <mat-error *ngIf="projetForm.get('dateFin').invalid">La date de fin est obligatoire</mat-error>
+                </mat-form-field>
+
+              </div>
+              <mat-form-field>
+                <mat-label>Clés</mat-label>
+                <input matInput formControlName="cles">
+              </mat-form-field>
+
+              <button type="submit" mat-raised-button color="primary" [disabled]="projetForm.invalid"
+                mat-raised-button>Enregistrer</button>
+              <button type="button" mat-raised-button (click)="onCancel()">Annuler</button>
+
+            </form>
+            <!-- end block-->
+
+
+            <!--block d'invitation-->
+            <mat-accordion class="example-headers-align" *ngIf="tab.content=='Content 3'">
+              <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 0" (opened)="setStep(0)" hideToggle>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Les membres
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Selectionner un membre a inviter
+                    <mat-icon>account_circle</mat-icon>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-form-field appearance="fill">
+                  <mat-label>Membres</mat-label>
+                  <mat-select [formControl]="membres" multiple>
+                    <mat-option *ngFor="let m of membreList" [value]="m">{{m|json}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-action-row>
+                  <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+                </mat-action-row>
+              </mat-expansion-panel>
+
+              <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 1" (opened)="setStep(1)" hideToggle>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Email
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    saisie l'email du membre non trouvé dans la liste
+                    <mat-icon>alternate_email</mat-icon>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-form-field appearance="fill">
+                  <mat-label>e-mail</mat-label>
+                  <input matInput>
+                </mat-form-field>
+
+                <mat-action-row>
+                  <button mat-button color="warn" (click)="prevStep()">Précedent</button>
+                  <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+                </mat-action-row>
+              </mat-expansion-panel>
+
+              <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 2" (opened)="setStep(2)"
+                matTooltipPosition="left" matTooltipPositionAtOrigin="true" matTooltipHideDelay="100"
+                matTooltip="vous devez choisir des membres" hideToggle>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Role
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Role du membre(s) dans le projet
+                    <mat-icon>report</mat-icon>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <!-- table des invi -->
+                <div style="overflow-x:auto;overflow-y:auto;max-height:300px;max-width:100%">
+                  <table class="table table-bordered table-striped  ">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">@email</th>
+                        <th scope="col">Telephone</th>
+                        <th scope="col">type_role</th>
+                        <th scope="col">permission_role</th>
+                        <th scope="col">description_role</th>
+                        <th scope="col"> _SUPP_</th>
+                      </tr>
+                    </thead>
+                    <tbody class="" style="color:black;">
+                      <tr>
+                        <th scope="row">1</th>
+                        <td class="scrollable-cell">
+                          <mat-form-field class="example-full-width">
+                            <mat-label>Email (inactive)</mat-label>
+                            <span matPrefix>+1 &nbsp;</span>
+                            <input disabled type="email" matInput placeholder="example@gmail.com">
+                            <mat-icon matSuffix class="mat-primary">mail</mat-icon>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field class="example-full-width">
+                            <mat-label>Telephone (inactive)</mat-label>
+                            <span matPrefix>+1 &nbsp;</span>
+                            <input disabled type="tel" matInput placeholder="71-xxx-xxx">
+                            <mat-icon matSuffix class="mat-primary">phone</mat-icon>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field appearance="fill">
+                            <mat-label>liste des roles</mat-label>
+                            <mat-select [formControl]="animalControl" required>
+                              <mat-option>--</mat-option>
+                              <mat-option *ngFor="let animal of animals" [value]="animal">
+                                {{animal.name}}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="animalControl.hasError('required')">Please choose an animal</mat-error>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field style="max-height: 100px;" class="example-full-width">
+                            <mat-label>Permission</mat-label>
+                            <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field style="max-height: 100px;" class="example-full-width">
+                            <mat-label>Description</mat-label>
+                            <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <button mat-fab color="primary" aria-label="Example icon button with a delete icon">
+                            <mat-icon>delete</mat-icon>
+                          </button>
+                        </td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+                <!-- end -->
+                <mat-action-row>
+                  <button mat-button color="warn" (click)="prevStep()">Précedent</button>
+                  <button mat-button color="primary" (click)="nextStep()">Inviter</button>
+                </mat-action-row>
+              </mat-expansion-panel>
+
+            </mat-accordion>
+            <!--  end block  -->
+          </div>
+        </mat-tab>
+
+
+
+
+      </mat-tab-group>
+
+
+    </div>
+  </div>
+</div>

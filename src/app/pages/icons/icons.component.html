@@ -1,0 +1,101 @@
+<div class=" content">
+  <div class=" row">
+    <div class=" col-md-12">
+      <div class=" card">
+        <div class=" card-body all-icons">
+          <div class=" row ">
+            <!--sprint-->
+            <div
+              [@slideInSprint]
+               class="m-small font-icon-list col-lg-2 col-md-2 col-sm-2 col-xs-6 col-xs-6"
+              *ngFor="let sp of sprints"
+            >
+              <div class=" font-icon-detail">
+
+                <i class="fas fa-tasks"></i>
+                <p>{{sp.id}}</p>
+                <p style="margin-top:2px;">C'est votre sprint <strong>1</strong></p>
+              </div>
+            </div>
+            <!--end-->
+            <!--button pour ajouter sprint-->
+            <div
+              [@slideIn]="clickCount"
+              (click)="move()"
+              (click)="openDialogCreateSprint()"
+              style="margin-left:2%;"
+              class="btn-sm btn font-icon-list col-lg-1 col-md-2 col-sm-2 col-xs-6 col-xs-6"
+            >
+              <div class="font-icon-detail-no-cadre">
+
+                <i class="fa fa-plus align-middle" style="margin-top:10%;font-size:50px;"></i>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div>
+      <div class="row">
+      <details name="backlog" #detailElement  class="col-lg-12 border-top border-danger">
+        <summary  class="d-flex bd-highlight mb-3">
+          Product Backlog <i class="fa fa-angle-down m-1" aria-hidden="true"></i>
+          <!--btn list des ticket histoire-->
+          <button class="btn-lg btn-outline-danger ms-auto  bd-highlight" (click)="basculerElement()">
+            <i class="fa fa-list" aria="hiden"></i>
+          </button>
+        </summary>
+
+<!--le product backlog table-->
+<div class="example-container">
+  <div
+    cdkDropList
+    #histoireTicketList="cdkDropList"
+    [cdkDropListData]="histoireTickets"
+    [cdkDropListConnectedTo]="[doneList]"
+    class="example-list"
+    (cdkDropListDropped)="drop($event)">
+    <div class="example-box" *ngFor="let ht of histoireTickets" cdkDrag> {{ht.id}} {{ht.title}} {{ht.position}}
+    </div>
+  </div>
+</div>
+
+
+      <!--end-->
+    </details>
+    <!--nouveau element generer-->
+    <div class="col-lg-5" [@fadeIn] *ngIf="elementCreated"  #newElement>
+      <div class="example-container">
+        <h2><i class="fa-solid fa-list"></i> Tickets histoire</h2>
+
+        <div
+          cdkDropList
+          #doneList="cdkDropList"
+
+          [cdkDropListData]="histoireTicketsByProjetId"
+          [cdkDropListConnectedTo]="[todoList]"
+          class="example-list"
+          (cdkDropListDropped)="drop($event)">
+          <div (click)="openDialog()" class="text-center d-flex justify-content-center" style="background-color:rgb(180, 175, 175)" cdkDrag>
+            <span><i class="fa-solid fa-plus"></i></span>
+          </div>
+          <div class="example-box" style="background-color:rgb(223, 223, 223)" *ngFor="let ht of histoireTicketsByProjetId" cdkDrag>
+            <span>{{ht.title}}</span>
+            <span>{{ht.effort}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end -->
+    </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- <form>
+  <mat-form-field>
+    <input matInput placeholder="Nom du ticket">
+  </mat-form-field>
+</form> -->

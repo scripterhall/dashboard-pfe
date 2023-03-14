@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Ajouter un ticket</h2>
+<div mat-dialog-content>
+  <form [formGroup]="form" class="form-container">
+    <mat-form-field class="form-field">
+      <mat-label>Titre</mat-label>
+      <input type="text" matInput formControlName="title" required>
+      <mat-error *ngIf="form.controls['title'].invalid && (form.controls['title'].dirty || form.controls['title'].touched)">
+        Titre est obligatoire
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Description</mat-label>
+      <textarea type="text" matInput formControlName="description"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Effort</mat-label>
+      <input type="number" matInput formControlName="effort">
+      <mat-error *ngIf="form.get('effort').hasError('min') || form.get('effort').hasError('max')">L'effort doit être entre 1 et 13</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Priorité</mat-label>
+      <input type="text" matInput formControlName="priorite">
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Date début</mat-label>
+      <input type="text" matInput [matDatepicker]="startDatepicker" formControlName="dateDeb">
+      <mat-datepicker-toggle matSuffix [for]="startDatepicker"></mat-datepicker-toggle>
+      <mat-datepicker #startDatepicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field class="form-field">
+      <mat-label>Date fin</mat-label>
+      <input type="text" matInput [matDatepicker]="endDatepicker" formControlName="dateFin">
+      <mat-datepicker-toggle matSuffix [for]="endDatepicker"></mat-datepicker-toggle>
+      <mat-datepicker #endDatepicker></mat-datepicker>
+      <mat-error *ngIf="form.get('dateFin').hasError('dateFinInvalide')">La date de fin doit être ultérieure à la date de lancement.</mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions class="button-container">
+  <button mat-button class="cancel-button" (click)="onNoClick()">Annuler</button>
+  <button mat-button color="primary" class="save-button" [disabled]="form.invalid" (click)="onSave()">Enregistrer</button>
+</div>
