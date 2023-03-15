@@ -16,6 +16,15 @@ import { TypographyComponent } from "../../pages/typography/typography.component
 import { CdkDrag, CdkDropList ,DragDropModule} from '@angular/cdk/drag-drop';
 import { animation } from "@angular/animations";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   imports: [
@@ -24,11 +33,21 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     FormsModule,
     HttpClientModule,
     NgbModule,
+    MatToolbarModule,
     DragDropModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatDialogModule,
+    MatCardModule,
+    MatListModule
   ],
   declarations: [
     DashboardComponent,
     UserComponent,
+
     TablesComponent,
     IconsComponent,
     TypographyComponent,

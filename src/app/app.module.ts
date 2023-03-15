@@ -30,13 +30,17 @@ import { MatCardModule } from '@angular/material/card';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTooltipModule} from '@angular/material/tooltip';
-
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { SprintDialogPanelComponent } from './pages/dialogs/sprint-dialog-panel/sprint-dialog-panel.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   imports: [
     BrowserAnimationsModule,
     FormsModule,
     MatTooltipModule,
+    MatDialogModule,
+    MatToolbarModule,
     MatExpansionModule,
     HttpClientModule,
     MatCardModule,
@@ -59,7 +63,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     ToastrModule.forRoot(),
     DragDropModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent, SprintDialogPanelComponent],
   providers: [],
   bootstrap: [AppComponent]
   

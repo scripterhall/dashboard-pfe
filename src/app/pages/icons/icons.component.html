@@ -2,21 +2,23 @@
 <div class=" content">
   <div class=" row">
     <div class=" col-md-12">
-      <div class=" card">
+      <div class=" card" >
         <div class=" card-header">
           <h5 class=" title">ici vous pouvez integrer vos histoire utlisateur</h5>
-          <p class=" category">
+          <p class="category">
             ici vous verrez tout les sprint
-            <a href="">  </a>
+            <a href=""> </a>
           </p>
         </div>
-        <div class=" card-body all-icons">
+        <div class=" card-body all-icons" >
           <div class=" row ">
             <!--sprint-->
             <div
+            (click)="openDialog(i)"
               [@slideInSprint]
-               class="m-small font-icon-list col-lg-2 col-md-2 col-sm-2 col-xs-6 col-xs-6"
-              *ngFor="let sp of sprints"
+               class="m-small sprint font-icon-list col-lg-2 col-md-2 col-sm-2 col-xs-6 col-xs-6"
+              *ngFor="let sp of sprints;index as i"
+              style="cursor: pointer"
             >
               <div class=" font-icon-detail">
                 
@@ -36,7 +38,7 @@
               <div class="font-icon-detail-no-cadre">
                 
                 <i class="fa fa-plus align-middle" style="margin-top:10%;font-size:50px;"></i>
-      
+                
               </div>
             </div>
 

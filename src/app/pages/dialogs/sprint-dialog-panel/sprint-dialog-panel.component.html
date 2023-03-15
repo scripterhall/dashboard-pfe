@@ -1,0 +1,95 @@
+<h1 mat-dialog-title>Objectif de Sprint :  </h1>
+<div mat-dialog-content>
+  <mat-list>
+    <div mat-subheader>Notes</div>
+    <mat-list-item *ngFor="let tt of ticketTacheList">
+      <mat-icon matListItemIcon>note</mat-icon>
+      <div matListItemTitle>
+
+        <div class="container d-flex">
+          <div class="row">
+              <div class="col-lg-4">
+                {{tt.titre}}
+              </div>
+              <div class="col-lg-4">
+                {{tt.description}}
+              </div>
+              <div class="col-lg-4">
+                
+              </div>
+          </div>
+       </div>
+
+       
+      </div>
+      <div matListItemLine>
+         <!-- contenu de ticket tache -->
+
+         
+  <div class="container">
+    <div class="row" *ngFor="let ht of data.TicketHistoires">
+      <div class="col-md-12">
+
+        <mat-icon class="text-success">featured_play_list</mat-icon>
+       &nbsp;
+        {{ht.projet.cles}}-{{ht.position}}
+       &nbsp;
+       <mat-icon [ngClass]="histoireTicket.priorite === 'haute' 
+       ? 'text-danger' : (histoireTicket.priorite === 'moyenne' 
+       ? 'text-warning' : 'text-success')">
+       flag
+      </mat-icon>
+      &nbsp;
+      {{ht.titre}}
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      &nbsp;
+      {{ht.description}}
+      <br>
+      <!-- liste des tache pour chaque ticket de histoire  -->
+
+      <mat-list>
+        <div mat-subheader>Notes</div>
+        <mat-list-item *ngFor="let tt of ticketTacheList">
+          <mat-icon matListItemIcon>note</mat-icon>
+          <div matListItemTitle></div>
+          <div matListItemLine>
+             <!-- contenu de ticket tache -->
+
+             <div style="display:inline">
+                <div class="row">
+                    <div class="col-lg-4">
+                      {{tt.titre}}
+                    </div>
+                    <div class="col-lg-4">
+                      {{tt.description}}
+                    </div>
+                    <div class="col-lg-4">
+                      <form >
+
+
+                      </form>>
+                    </div>
+                </div>
+             </div>
+
+             <!-- end -->
+
+          </div>
+        </mat-list-item>
+        <mat-icon class="text-success" >add_box</mat-icon>
+      </mat-list>
+
+      <!-- end --> 
+      
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+

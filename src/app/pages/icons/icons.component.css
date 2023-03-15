@@ -68,4 +68,9 @@ details {
     border: none;
   }
   
+
+  .sprint:hover{
+    opacity: 0.8;
+    transition: opacity 250ms all;
+  }
   

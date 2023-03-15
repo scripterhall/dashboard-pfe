@@ -9,6 +9,7 @@ export class TicketHistoire extends Ticket{
     public date_debut?:Date;//date lancement de tache
     public date_fin?:Date;//date fin de tache
     public effort?:number;//planing pocker
+    public position?:number;//our ordonner le product backlog
     public projet?:Projet;//a quelle projet appartient le ticket
 
 

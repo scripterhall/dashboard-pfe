@@ -2,7 +2,17 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { SelectionModel } from "@angular/cdk/collections";
 import { CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { Sprint } from "src/app/model/sprint";
+import { TicketHistoire } from "src/app/model/ticket-histoire";
+import { SprintDialogPanelComponent } from "../dialogs/sprint-dialog-panel/sprint-dialog-panel.component";
+
+
+
+export interface DialogData {
+  sprint: Sprint;
+  TicketHistoires:TicketHistoire[]
+}
 
 @Component({
   selector: "app-icons",
@@ -49,8 +59,9 @@ import { Sprint } from "src/app/model/sprint";
 
 
 export class IconsComponent implements OnInit {
+  histoireTicketsSprint: TicketHistoire[];
   
-  constructor() {}
+  constructor(public dialog: MatDialog) {}
   todo = [
     'Get to work',
     'Pick up groceries',
@@ -65,6 +76,25 @@ export class IconsComponent implements OnInit {
     'Check e-mail',
     'Walk dog'
   ];
+
+
+  //sprint details
+  openDialog(i:number) {
+    
+    const dialogRef = this.dialog.open(SprintDialogPanelComponent,{
+      width: '600px',
+      height:'690px',
+      data: {sprint:this.sprints[i],
+        TicketHistoires:this.histoireTicketsSprint
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
+
 
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
