@@ -6,6 +6,6 @@ export class SprintBacklog extends Backlog {
 
     public id?:number; //identifiant de sprint backlog
     public nbrHeursTotal?:number; // nombre d'heurs total de travail dans le sprint
-    public ticketTache?:TacheTicket[]; //liste des ticket tache de sprint backlog
     public sprint?:Sprint
+    public sprintId?:number;
 }

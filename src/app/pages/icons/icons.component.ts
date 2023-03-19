@@ -1,8 +1,7 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
-import { SelectionModel } from "@angular/cdk/collections";
 import { CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { HttpClient } from "@angular/common/http";
+import { Component, ElementRef, HostBinding, OnInit, ViewChild } from "@angular/core";
 import { Sprint } from "src/app/model/sprint";
 import { TicketHistoire } from "src/app/model/ticket-histoire";
 import { SprintDialogPanelComponent } from "../dialogs/sprint-dialog-panel/sprint-dialog-panel.component";
@@ -13,6 +12,13 @@ export interface DialogData {
   sprint: Sprint;
   TicketHistoires:TicketHistoire[]
 }
+import { HistoireTicketService } from "src/app/service/histoire-ticket.service";
+import { SprintService } from "src/app/service/sprint.service";
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { AjouterTicketHistoireFormComponent } from "../ajouter-ticket-histoire-form/ajouter-ticket-histoire-form.component";
+import { AjouterSprintFormComponent } from "../ajouter-sprint-form/ajouter-sprint-form.component";
+
+const  updateTicketPositionUrl = "http://localhost:9999/gestion-histoire-ticket/histoireTickets/position";
 
 @Component({
   selector: "app-icons",
@@ -54,14 +60,22 @@ export interface DialogData {
       ])
     ])
   ]
-  
-})
 
+})
 
 export class IconsComponent implements OnInit {
   histoireTicketsSprint: TicketHistoire[];
   
-  constructor(public dialog: MatDialog) {}
+  constructor(private histoireTicketService:HistoireTicketService,
+    private httpClient:HttpClient,
+   
+    private sprintService:SprintService, private dialog: MatDialog,
+    public dialogDetailSprint: MatDialog) {}
+
+  histoireTickets:TicketHistoire[];
+  sprints:Sprint[];
+  histoireTicketsByProjetId:TicketHistoire[];
+
   todo = [
     'Get to work',
     'Pick up groceries',
@@ -69,76 +83,135 @@ export class IconsComponent implements OnInit {
     'Fall asleep'
   ];
 
-  done = [
-    'Get up',
-    'Brush teeth',
-    'Take a shower',
-    'Check e-mail',
-    'Walk dog'
-  ];
-
 
   //sprint details
-  openDialog(i:number) {
+  openDialogDetailsSprint(i:number,sp:Sprint) {
+
+    console.log(sp);
+    this.histoireTicketService.getHistoireTicketBySprintId(sp.id).subscribe(
+      data =>{
+        this.histoireTicketsSprint = data
+        const dialogRef = this.dialog.open(SprintDialogPanelComponent,{
+          width: '600px',
+          height:'690px',
+          data: {sprint:this.sprints[i],
+            TicketHistoires:this.histoireTicketsSprint
+          }
+        });
     
-    const dialogRef = this.dialog.open(SprintDialogPanelComponent,{
-      width: '600px',
-      height:'690px',
-      data: {sprint:this.sprints[i],
-        TicketHistoires:this.histoireTicketsSprint
+        dialogRef.afterClosed().subscribe(result => {
+          
+        }); 
       }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+    )
+    
+    
   }
 
 
 
-  drop(event: CdkDragDrop<string[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
-    }
-  }
+//   drop(event: CdkDragDrop<string[]>) {
+//     if (event.previousContainer === event.container) {
+//       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+//     } else {
+//       const ticketId = event.previousContainer.data[event.previousIndex].id; // récupère l'ID du ticket
+//       const newPosition = event.currentIndex; // récupère la nouvelle position
+//       console.log("id = "+ticketId+", new Position = "+newPosition);
+//       this.httpClient.put(updateTicketPositionUrl, { id: ticketId, position: newPosition })
+//         .subscribe(
+//           response => console.log('Position updated successfully!'),
+//           error => console.error('Error updating position: ', error)
+//         );
+//       transferArrayItem(event.previousContainer.data,
+//                         event.container.data,
+//                         event.previousIndex,
+//                         event.currentIndex);
+//   }
+// }
   
-  ngOnInit() {}
 
- 
-  sprints:Sprint[]=[
-    new Sprint(),
-    new Sprint(),
-  ]
+drop(event: CdkDragDrop<TicketHistoire[]>) {
+
+  const ticketId = event.previousContainer.data[event.previousIndex].id; // récupère l'ID du ticket
+  const newPosition = event.currentIndex; // récupère la nouvelle position
+  console.log("id = "+ticketId+", new Position = "+newPosition);
+  this.httpClient.put(updateTicketPositionUrl, { id: ticketId, position: newPosition })
+    .subscribe(
+      response => console.log('Position updated successfully!'),
+      error => console.error('Error updating position: ', error)
+    );
+  transferArrayItem(event.previousContainer.data,
+                    event.container.data,
+                    event.previousIndex,
+                    event.currentIndex);
+}
+
 
   elementCreated:boolean = false;
   @ViewChild('detailElement') detailElementRef!: ElementRef;
   @ViewChild('newElement') newElementRef!: ElementRef;
   @ViewChild('doneList') doneList!: CdkDropList;
-
+  @HostBinding('@fadeOut') fadeOut = false;
   basculerElement(){
-
-
     this.elementCreated = !this.elementCreated;
     if(this.elementCreated){
       this.detailElementRef.nativeElement.classList.remove('col-lg-12');
       this.detailElementRef.nativeElement.classList.add('col-lg-7');
-     
-      
+
+
     }else{
+      this.fadeOut = true;
       this.detailElementRef.nativeElement.classList.remove('col-lg-7');
       this.detailElementRef.nativeElement.classList.add('col-lg-12');
-      this.detailElementRef.nativeElement.setAttribute('[@fadeOut]');
       
+      //this.detailElementRef.nativeElement?.setAttribute('[@fadeOut]');
     }
   }
-  clickCount = 0;;
+
+  clickCount = 0;
   move(){
-    this.sprints.push(new Sprint())
+    // this.onCreateNewSprint();
     this.clickCount++;
   }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(AjouterTicketHistoireFormComponent, {
+      width: '600px',
+      height:'500px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
+  openDialogCreateSprint() {
+    const dialogRef = this.dialog.open(AjouterSprintFormComponent, {
+      width: '500',
+      height:'400px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
+  ngOnInit() {
+    this.histoireTicketService.getListHistoireTicketByProductBacklog(1).subscribe(
+      data => {
+        this.histoireTickets = data ;
+      }
+    );
+
+    this.sprintService.getListSprintsByProductBacklog(1).subscribe(
+      data => {
+        this.sprints = data ;
+      }
+    );
+
+   
+  }
+
 }

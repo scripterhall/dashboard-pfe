@@ -1,0 +1,1 @@
+{"ast":null,"code":"import { RtlComponent } from '../../pages/rtl/rtl.component';\nexport var AuthLayoutRoutes = [{\n  path: 'rtl',\n  component: RtlComponent\n}];","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

@@ -19,7 +19,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SelectProjetComponent } from './pages/select-projet/select-projet.component';
 import {MatTabsModule} from '@angular/material/tabs';
-import {MatListModule} from '@angular/material/list';
 import {MatRadioModule} from '@angular/material/radio';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,12 +31,19 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { SprintDialogPanelComponent } from './pages/dialogs/sprint-dialog-panel/sprint-dialog-panel.component';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AjouterTicketHistoireFormComponent } from './pages/ajouter-ticket-histoire-form/ajouter-ticket-histoire-form.component';
+import { AjouterSprintFormComponent } from './pages/ajouter-sprint-form/ajouter-sprint-form.component';
+import { MatListModule } from '@angular/material/list';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatMenuModule} from '@angular/material/menu';
+
 
 @NgModule({
   imports: [
     BrowserAnimationsModule,
     FormsModule,
+    MatMenuModule,
     MatTooltipModule,
     MatDialogModule,
     MatToolbarModule,
@@ -46,6 +52,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatCardModule,
     ReactiveFormsModule,
     MatInputModule,
+    MatProgressBarModule,
     MatFormFieldModule,
     MatDatepickerModule,
     MatSelectModule,
@@ -61,11 +68,13 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatListModule,
     MatButtonModule,
     ToastrModule.forRoot(),
-    DragDropModule
+    DragDropModule,
+    MatButtonModule,
+    MatDialogModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent, SprintDialogPanelComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent,SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent,],
   providers: [],
   bootstrap: [AppComponent]
-  
+
 })
 export class AppModule {}
