@@ -1,7 +1,7 @@
 <div class="d-flex">
   <h1 mat-dialog-title class="mr-auto p-2">Objectif de Sprint : {{data.sprint.objectif}} </h1>
   <div class="d-flex">
-    <button mat-stroked-button (click)="lancerSprintForcer()" class="p-2 m-1" [disabled]="data.sprint.etat=='en cours'" color="primary">Lancer
+    <button mat-stroked-button (click)="lancerSprintForcer()" class="p-2 m-1" [disabled]="data.sprint.etat=='en cours' || this.data.canStart" color="primary">Lancer
       Sprint</button>
     <button mat-stroked-button class="p-2 m-1" *ngIf="data.sprint.etat!='en attente' or data.sprint.etat!='terminer' "
       #tooltip="matTooltip" matTooltip="mettre le sprint en pause" color="accent">
@@ -111,6 +111,11 @@
   </ng-container>
   <!-- contenu de ticket tache -->
   <div class="container">
+    <div style="height:100%" *ngIf="data.TicketHistoires.length==0">
+      <strong class="text-danger d-flex">&nbsp;&nbsp;<mat-icon>warning</mat-icon> ATTENTION </strong>
+      <p class="title text-dark">aucun ticket histoire attacher au Sprint</p>
+      <p class="title text-dark">le sprint ne sera pas lancé ...</p>
+    </div>
     <div class="row" *ngFor="let ht of data.TicketHistoires;index as i">
       <div class="col-md-12">
         <mat-card class="example-card d-flex">
@@ -125,7 +130,13 @@
               <h1 class="text-dark">{{ht.titre}}</h1>
             </mat-card-subtitle>
             <mat-card-title>
-              de {{ht.dateDeb|date}} à {{ht.dateFin|date}}
+              
+              Etat de Ticket :<mat-icon>farward_arrow</mat-icon>
+              <span style="margin-left:-2%;" class="badge rounded-pill" [ngClass]="{
+                'bg-success': ht.status === 'TERMINER',
+                'bg-warning': ht.status === 'EN_ATTENTE',
+                'bg-primary': ht.status !== 'TERMINER' && ht.etat !== 'EN_ATTENTE'
+              }">{{ht.status}}</span>
 
             </mat-card-title>
           </mat-card-header>
@@ -158,14 +169,7 @@
                     </div>
                     <div class="col-lg-3 col-md-3">
                       <span class="badge badge-danger">nombre heurs : {{tt.nbHeurs}}H</span>
-                      <form>
-                        <select>
-                          <option *ngFor="let etat of listEtat" [value]="listEtat">{{etat}}</option>
-                        </select>
-                        <select>
-
-                        </select>
-                      </form>
+                      
                     </div>
                     <div class="col-lg-1 col-md-1">
                       <button mat-mini-fab (click)="supprimerTicketTache(i)"  color="warn" aria-label="icon pour supprimer une tache">

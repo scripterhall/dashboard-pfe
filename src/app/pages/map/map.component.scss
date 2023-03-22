@@ -1,6 +1,4 @@
-.container {
-  margin-top: 50px;
-}
+
 
 h2 {
   color: #555;
@@ -8,44 +6,11 @@ h2 {
   font-weight: 700;
 }
 
-.table {
-  font-size: 16px;
+.hashed-border{
+  border : 1px dotted grey;
+  
 }
 
-thead {
-  background-color: #007bff;
-  color: #fff;
-  text-align: center;
-}
-
-th {
-  font-weight: 700;
-}
-
-tbody tr {
-  border-bottom: 1px solid #ddd;
-}
-
-td {
-  vertical-align: middle;
-  font-weight: 500;
-}
-
-ul {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-}
-
-li:before {
-  content: "\2022";
-  color: #007bff;
-  font-weight: bold;
-  display: inline-block;
-  width: 1em;
-  margin-left: -1em;
-}
-
-li {
-  margin-bottom: 5px;
+.light{
+  box-shadow: 5px 5px 10px 2px rgba(255,255,255,0.8);
 }

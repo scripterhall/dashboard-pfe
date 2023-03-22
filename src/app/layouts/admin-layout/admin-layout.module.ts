@@ -17,6 +17,7 @@ import { CdkDrag, CdkDropList ,DragDropModule} from '@angular/cdk/drag-drop';
 import { animation } from "@angular/animations";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { MatToolbarModule } from '@angular/material/toolbar';
+import {MatSelectModule} from '@angular/material/select';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -28,6 +29,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
   imports: [
@@ -35,6 +37,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
     HttpClientModule,
+    MatSelectModule,
+    MatMenuModule,
     NgbModule,
     MatToolbarModule,
     DragDropModule,

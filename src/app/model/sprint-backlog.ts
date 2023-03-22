@@ -8,4 +8,7 @@ export class SprintBacklog extends Backlog {
     public nbrHeursTotal?:number; // nombre d'heurs total de travail dans le sprint
     public sprint?:Sprint
     public sprintId?:number;
+
+    public isOpen?:boolean //juste cote front pour la permutation l'affichage 
+
 }

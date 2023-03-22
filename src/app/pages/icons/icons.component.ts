@@ -11,12 +11,14 @@ import { SprintDialogPanelComponent } from "../dialogs/sprint-dialog-panel/sprin
 export interface DialogData {
   sprint: Sprint;
   TicketHistoires:TicketHistoire[]
+  canStart:boolean
 }
 import { HistoireTicketService } from "src/app/service/histoire-ticket.service";
 import { SprintService } from "src/app/service/sprint.service";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AjouterTicketHistoireFormComponent } from "../ajouter-ticket-histoire-form/ajouter-ticket-histoire-form.component";
 import { AjouterSprintFormComponent } from "../ajouter-sprint-form/ajouter-sprint-form.component";
+import { ProductBacklogService } from "src/app/service/product-backlog.service";
 
 const  updateTicketPositionUrl = "http://localhost:9999/gestion-histoire-ticket/histoireTickets/position";
 
@@ -68,7 +70,7 @@ export class IconsComponent implements OnInit {
   
   constructor(private histoireTicketService:HistoireTicketService,
     private httpClient:HttpClient,
-   
+    private productBacklogService:ProductBacklogService,
     private sprintService:SprintService, private dialog: MatDialog,
     public dialogDetailSprint: MatDialog) {}
 
@@ -86,7 +88,11 @@ export class IconsComponent implements OnInit {
 
   //sprint details
   openDialogDetailsSprint(i:number,sp:Sprint) {
-
+    let startedOne:Sprint
+    if(this.sprints.length>2)
+      startedOne= this.sprints[i-1]
+    else
+      startedOne = this.sprints[i]
     console.log(sp);
     this.histoireTicketService.getHistoireTicketBySprintId(sp.id).subscribe(
       data =>{
@@ -95,7 +101,8 @@ export class IconsComponent implements OnInit {
           width: '600px',
           height:'690px',
           data: {sprint:this.sprints[i],
-            TicketHistoires:this.histoireTicketsSprint
+                TicketHistoires:this.histoireTicketsSprint,
+                canStart :startedOne.etat !='terminer' && startedOne.etat !='en pause'
           }
         });
     
@@ -199,6 +206,13 @@ drop(event: CdkDragDrop<TicketHistoire[]>) {
   }
 
   ngOnInit() {
+
+    this.productBacklogService.getProductBacklogById(1).subscribe(
+      data =>{
+        localStorage.setItem('productBacklog',JSON.stringify(data))
+      }
+    )
+
     this.histoireTicketService.getListHistoireTicketByProductBacklog(1).subscribe(
       data => {
         this.histoireTickets = data ;

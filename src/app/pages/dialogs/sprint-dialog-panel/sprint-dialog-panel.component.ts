@@ -41,6 +41,7 @@ export class SprintDialogPanelComponent implements OnInit{
     TicketTacheModif:FormGroup;
 
   ngOnInit(): void {
+    console.log(this.data.TicketHistoires);
     
     this.projet = JSON.parse(localStorage.getItem("projet"))
     this.TicketTacheModif = this.fb.group({
@@ -58,8 +59,10 @@ export class SprintDialogPanelComponent implements OnInit{
       description: [null, Validators.required],
     });
     const conv_data = new Date(this.data.sprint.dateLancement);
+    
     if(conv_data.getDay() == new Date().getDay()
       && this.data.sprint.etat != "en cours"
+      && !this.data.canStart
       && confirm("Aujourd'hui c'est la date de Lancement de ce sprint voulez vous accepter !!")){
       this.lancerSprint()
     }
@@ -188,6 +191,7 @@ export class SprintDialogPanelComponent implements OnInit{
 
 
   //lancerNormalment le sprint dans la date de lancement
+ 
   lancerSprint(){
     this.data.sprint.etat = "en cours"
     this.data.sprint.productBacklogId = this.data.sprint.productBacklog.id
@@ -196,7 +200,7 @@ export class SprintDialogPanelComponent implements OnInit{
       let  sprintBacklog = new SprintBacklog();
       sprintBacklog.velocite = dataSprint.velocite 
       sprintBacklog.sprint = dataSprint
-      sprintBacklog.sprintId = dataSprint.id
+      sprintBacklog.sprintId = this.data.sprint.id
       console.log("spb  : ",sprintBacklog);
       this.sprintBacklogService.genererSprintBacklog(sprintBacklog).subscribe(
          dataSpBacklog =>{
@@ -221,7 +225,7 @@ export class SprintDialogPanelComponent implements OnInit{
             }
             dataSpBacklog.nbrHeursTotal = nbrHeurTotal
             //modifier sprint backlog pour nbr heurs
-            console.log(dataSpBacklog.id);
+            console.log(dataSpBacklog);
             this.sprintBacklogService.modifierSprintBackog(dataSpBacklog)
             .subscribe(dataSPB => console.log(dataSPB))
         }
