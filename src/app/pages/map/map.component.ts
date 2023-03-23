@@ -1,4 +1,5 @@
 import { Component, Directive, OnInit } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { interval, map, Observable, of, takeWhile } from "rxjs";
 import { Membre } from "src/app/model/membre";
 import { Sprint } from "src/app/model/sprint";
@@ -10,8 +11,12 @@ import { MembreService } from "src/app/service/membre.service";
 import { SprintBacklogService } from "src/app/service/sprint-backlog.service";
 import { SprintService } from "src/app/service/sprint.service";
 import { TicketTacheService } from "src/app/service/ticket-tache.service";
+import { AjoutTacheSpbComponent } from "../dialogs/ajout-tache-spb/ajout-tache-spb.component";
 
-
+export interface DialogDataTicketTache {
+  sprintBacklog: SprintBacklog;
+  ticketHistoire:TicketHistoire
+}
 
 interface Marker {
 lat: number;
@@ -34,7 +39,8 @@ export class MapComponent implements OnInit {
     private ticketHistoireService:HistoireTicketService,
     private ticketTacheService:TicketTacheService,
     private sprintBacklogService:SprintBacklogService,
-    private membreService:MembreService
+    private membreService:MembreService,
+    private dialogAjout: MatDialog,
   ) {}
   
   sprintsList:Sprint[]
@@ -99,9 +105,9 @@ export class MapComponent implements OnInit {
   //choix couleur tache 
   getBackgroundColor(index: number): any {
     if (index % 2 === 0) {
-      return { 'background-color': '#EEBF32' };
-    } else if (index % 3 === 0 && index % 2 === 0) {
       return { 'background-color': '#B3BD51' };
+    } else if (index % 3 === 0 && index % 2 === 0) {
+      return { 'background-color': '#EEBF32' };
     } else if (index % 3 === 0) {
       return { 'background-color': '#D7CD52' };
     } else if (index % 7 === 0) {
@@ -147,6 +153,32 @@ export class MapComponent implements OnInit {
       this.activeIndex = index;
     }
   }
+
+
+  openAjoutDialog(ht:TicketHistoire,sprintBacklog:SprintBacklog){
+    const dialogRef = this.dialogAjout.open(AjoutTacheSpbComponent,{
+      width: '350px',
+      height:'450px',
+      data: {sprintBacklog:sprintBacklog,
+             ticketHistoire:ht
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+      const ticketHistoire = result.ht
+      for(const key of this.taskMap.keys()) {
+        if (key.id === ticketHistoire.id) {
+          const listeTache = this.taskMap.get(key)
+          listeTache.push(result)
+        }
+       }
+     } 
+    }); 
+  }
+
+  
+
 }
   
    

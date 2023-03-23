@@ -25,7 +25,7 @@
               </div>
               <div class="col-lg-2 col-md-2 col-sm-2 hashed-border">
                 <br>
-                <p class="title text-light text-center">Horaire</p>
+                <p class="title text-light text-center">Heurs de travail</p>
               </div>
             </div>
             <!-- end header -->
@@ -106,7 +106,7 @@
 
                   <!-- add card -->
 
-                  <mat-card  mat-button class="btn col-lg-5 bg-light col-md-5 light col-sm-5"  style="margin-top:6%;border-top-right-radius:30%;cursor:pointer">
+                  <mat-card  mat-button (click)="openAjoutDialog(task.key,sprintBacklog)" class="btn col-lg-5 bg-light col-md-5 light col-sm-5"  style="margin-top:6%;border-top-right-radius:30%;cursor:pointer">
                     <mat-card-header >
                       <mat-card-title class="title"><br></mat-card-title>
                       <mat-card-subtitle class="title"></mat-card-subtitle>
@@ -136,9 +136,11 @@
                 <br>
                 <!-- hORAIRE -->
                 <div class="container justify-content-center">
-                <div class="row ">
-                <mat-icon class="col-lg-12 d-flex m-4 col-md-8 col-sm-6 " style="font-size:600%;width:auto;height:auto">alarme</mat-icon>
-                <span style="margin-left:5%;font-size:100%;" class="badge col-lg-12 col-md-12 col-sm-12 w-75 p-3 bg-warning rounded-pill"><p class="title">Activer Alarme</p></span>
+                <div class="row " style="margin-bottom: 4%;" *ngFor="let tt of task.value;index as i">
+                  
+                <span style="margin-left:1%;font-size:100%;" class="badge col-lg-12 col-md-12 col-sm-12 w-75 p-3 bg-secondary rounded-pill"><p class="title text-dark">
+                  #T{{i+1}}&nbsp;&nbsp;&nbsp;{{tt.nbHeurs}}H de travails
+                </p></span>
               </div>
                 </div>
               </div>

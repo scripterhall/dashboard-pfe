@@ -3,7 +3,7 @@
   <div class="d-flex">
     <button mat-stroked-button (click)="lancerSprintForcer()" class="p-2 m-1" [disabled]="data.sprint.etat=='en cours' || this.data.canStart" color="primary">Lancer
       Sprint</button>
-    <button mat-stroked-button class="p-2 m-1" *ngIf="data.sprint.etat!='en attente' or data.sprint.etat!='terminer' "
+    <button mat-stroked-button class="p-2 m-1" *ngIf="data.sprint.etat=='en cours' "
       #tooltip="matTooltip" matTooltip="mettre le sprint en pause" color="accent">
       <mat-icon class="text-danger m-1">play_arrow</mat-icon>
     </button>
@@ -148,7 +148,7 @@
             ? 'text-warning' : 'text-success')">
                 flag
               </mat-icon>
-              {{projet.cles}}-{{ht.id}}
+              {{projet?.cles}}-{{ht.id}}
               &nbsp;&nbsp;&nbsp;&nbsp;
               {{ht.description}}
             </div>
@@ -172,7 +172,7 @@
                       
                     </div>
                     <div class="col-lg-1 col-md-1">
-                      <button mat-mini-fab (click)="supprimerTicketTache(i)"  color="warn" aria-label="icon pour supprimer une tache">
+                      <button mat-mini-fab (click)="supprimerTicketTache(i)" *ngIf="this.data.sprint.etat=='en attente'"  color="warn" aria-label="icon pour supprimer une tache">
                         <mat-icon>delete</mat-icon>
                       </button>
                     </div>

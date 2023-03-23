@@ -26,7 +26,7 @@ export class SprintDialogPanelComponent implements OnInit{
 
   ticketTacheList:TacheTicket[]
   projet:Projet;
-  public ticketTacheForm: FormGroup;
+  ticketTacheForm: FormGroup;
   constructor( public dialogRef: MatDialogRef<SprintDialogPanelComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private fb:FormBuilder,
@@ -41,9 +41,9 @@ export class SprintDialogPanelComponent implements OnInit{
     TicketTacheModif:FormGroup;
 
   ngOnInit(): void {
-    console.log(this.data.TicketHistoires);
+    console.log(this.data.sprint);
     
-    this.projet = JSON.parse(localStorage.getItem("projet"))
+    this.projet = JSON.parse(localStorage.getItem("projets"))
     this.TicketTacheModif = this.fb.group({
       id: ['', Validators.required],
       nbrHeurs: ['', Validators.required],
@@ -134,7 +134,7 @@ export class SprintDialogPanelComponent implements OnInit{
   terminerChangement(){
     console.log(this.data.sprint.productBacklogId)
       this.data.sprint.productBacklogId = this.data.sprint.productBacklog.id
-      this.data.sprint.etat = 'a faire'
+      this.data.sprint.etat = 'en attente'
       this.data.sprint.dateLancement = this.changeDates.get('dateLancement').value
       this.data.sprint.dateFin = this.changeDates.get('dateFin').value
       this.sprintService.modifierSprint(this.data.sprint).subscribe(
@@ -201,6 +201,9 @@ export class SprintDialogPanelComponent implements OnInit{
       sprintBacklog.velocite = dataSprint.velocite 
       sprintBacklog.sprint = dataSprint
       sprintBacklog.sprintId = this.data.sprint.id
+      this.data.TicketHistoires.forEach(ht =>{
+        sprintBacklog.velocite +=ht.effort
+      })
       console.log("spb  : ",sprintBacklog);
       this.sprintBacklogService.genererSprintBacklog(sprintBacklog).subscribe(
          dataSpBacklog =>{

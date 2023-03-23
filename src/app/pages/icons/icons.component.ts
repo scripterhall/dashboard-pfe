@@ -89,25 +89,31 @@ export class IconsComponent implements OnInit {
   //sprint details
   openDialogDetailsSprint(i:number,sp:Sprint) {
     let startedOne:Sprint
-    if(this.sprints.length>2)
+    let testStart :boolean
+    if(this.sprints.length>2){
       startedOne= this.sprints[i-1]
-    else
+      testStart = startedOne.etat !='terminer' && startedOne.etat !='en pause'
+    }
+    else{
       startedOne = this.sprints[i]
+      testStart = false
+    }
     console.log(sp);
     this.histoireTicketService.getHistoireTicketBySprintId(sp.id).subscribe(
       data =>{
         this.histoireTicketsSprint = data
+        
         const dialogRef = this.dialog.open(SprintDialogPanelComponent,{
           width: '600px',
           height:'690px',
           data: {sprint:this.sprints[i],
                 TicketHistoires:this.histoireTicketsSprint,
-                canStart :startedOne.etat !='terminer' && startedOne.etat !='en pause'
+                canStart :testStart
           }
         });
-    
+      
         dialogRef.afterClosed().subscribe(result => {
-          
+          this.ngOnInit()
         }); 
       }
     )
@@ -206,7 +212,7 @@ drop(event: CdkDragDrop<TicketHistoire[]>) {
   }
 
   ngOnInit() {
-
+    
     this.productBacklogService.getProductBacklogById(1).subscribe(
       data =>{
         localStorage.setItem('productBacklog',JSON.stringify(data))

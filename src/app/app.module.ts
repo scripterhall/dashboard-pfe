@@ -37,6 +37,7 @@ import { AjouterSprintFormComponent } from './pages/ajouter-sprint-form/ajouter-
 import { MatListModule } from '@angular/material/list';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatMenuModule} from '@angular/material/menu';
+import { AjoutTacheSpbComponent } from './pages/dialogs/ajout-tache-spb/ajout-tache-spb.component';
 
 
 @NgModule({
@@ -72,7 +73,7 @@ import {MatMenuModule} from '@angular/material/menu';
     MatButtonModule,
     MatDialogModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent,SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent,],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent,SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent, AjoutTacheSpbComponent,],
   providers: [],
   bootstrap: [AppComponent]
 

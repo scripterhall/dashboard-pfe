@@ -6,6 +6,7 @@
     "sourceMap": true,
     "declaration": true,
     "module": "es2020",
+    "downlevelIteration": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
