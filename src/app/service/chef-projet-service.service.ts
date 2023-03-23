@@ -14,6 +14,4 @@ export class ChefProjetServiceService {
   public getChefProjetById(idChef:number){
     return this.http.get<ChefProjet[]>(`${url1}/`+idChef);
   }
-
-
 }

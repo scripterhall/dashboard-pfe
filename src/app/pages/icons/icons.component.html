@@ -3,21 +3,24 @@
     <div class=" col-md-12">
       <div class=" card">
         <div class=" card-body all-icons">
-          <div class=" row ">
+          <div id="sprints" class=" row ">
             <!--sprint-->
-            <div
-              [@slideInSprint]
-               class="m-small font-icon-list col-lg-2 col-md-2 col-sm-2 col-xs-6 col-xs-6"
-              *ngFor="let sp of sprints"
-            >
-              <div class=" font-icon-detail">
 
+            <div
+            [@slideInSprint] class="m-small font-icon-list col-lg-2 col-md-2 col-sm-2 col-xs-6 col-xs-6"
+            *ngFor="let sp of sprints">
+              <div class="font-icon-detail">
                 <i class="fas fa-tasks"></i>
-                <p>{{sp.id}}</p>
-                <p style="margin-top:2px;">C'est votre sprint <strong>1</strong></p>
+                <p><i class="fas fa-duotone fa-spinner"></i>  {{sp.etat}}</p>
+                <p> {{sp.dateLancement |date}} <br>
+                  <i class="fas fa-duotone fa-arrow-down"></i>
+                  <br> {{sp.dateFin |date}} </p>
               </div>
             </div>
+
+
             <!--end-->
+
             <!--button pour ajouter sprint-->
             <div
               [@slideIn]="clickCount"
@@ -36,60 +39,65 @@
           </div>
         </div>
       </div>
-      <div>
-      <div class="row">
-      <details name="backlog" #detailElement  class="col-lg-12 border-top border-danger">
-        <summary  class="d-flex bd-highlight mb-3">
-          Product Backlog <i class="fa fa-angle-down m-1" aria-hidden="true"></i>
+<div>
+
+<div class="row">
           <!--btn list des ticket histoire-->
           <button class="btn-lg btn-outline-danger ms-auto  bd-highlight" (click)="basculerElement()">
-            <i class="fa fa-list" aria="hiden"></i>
+            <i class="fa fa-list" aria="hiden"></i>Toute la liste
           </button>
+<details name="backlog" #detailElement  >
+        <summary>
+          Product Backlog ({{histoireTicketsByProductBacklogId?.length}} tickets)<i class="fa fa-angle-down m-1" aria-hidden="true"></i>
         </summary>
 
-<!--le product backlog table-->
-<div class="example-container">
-  <div
-    cdkDropList
-    #histoireTicketList="cdkDropList"
-    [cdkDropListData]="histoireTickets"
-    [cdkDropListConnectedTo]="[doneList]"
-    class="example-list"
-    (cdkDropListDropped)="drop($event)">
-    <div class="example-box" *ngFor="let ht of histoireTickets" cdkDrag> {{ht.id}} {{ht.title}} {{ht.position}}
-    </div>
-  </div>
-</div>
-
-
-      <!--end-->
-    </details>
-    <!--nouveau element generer-->
-    <div class="col-lg-5" [@fadeIn] *ngIf="elementCreated"  #newElement>
-      <div class="example-container">
-        <h2><i class="fa-solid fa-list"></i> Tickets histoire</h2>
-
-        <div
-          cdkDropList
-          #doneList="cdkDropList"
-
-          [cdkDropListData]="histoireTicketsByProjetId"
-          [cdkDropListConnectedTo]="[todoList]"
-          class="example-list"
-          (cdkDropListDropped)="drop($event)">
-          <div (click)="openDialog()" class="text-center d-flex justify-content-center" style="background-color:rgb(180, 175, 175)" cdkDrag>
-            <span><i class="fa-solid fa-plus"></i></span>
-          </div>
-          <div class="example-box" style="background-color:rgb(223, 223, 223)" *ngFor="let ht of histoireTicketsByProjetId" cdkDrag>
-            <span>{{ht.title}}</span>
-            <span>{{ht.effort}}</span>
-          </div>
+    <!-- product backlog -->
+    <div class="example-container">
+      <div class="example-list" cdkDropList #list1="cdkDropList"
+        [cdkDropListData]="histoireTicketsByProductBacklogId"
+        (cdkDropListDropped)="drop($event)">
+        <div id="element" cdkDrag class="example-box" *ngFor="let listHTByPB of histoireTicketsByProductBacklogId;index as i">
+            <i class="fa-sharp fa-solid fa-clipboard-check"></i>
+            <span class="numTicket" >Ticket-{{i+1}}</span>
+            <span>{{listHTByPB.titre}}</span> &nbsp;
+  <span id="priorite">({{listHTByPB.priorite}})</span>
+  <i id="btnDelete" (click)="removeUserStoryFromProductBacklog(listHTByPB.id)" class="fa-solid fa-trash"></i>
         </div>
       </div>
     </div>
-    <!-- end -->
+</details>
+
+<!--liste histoire tickets-->
+<div class="col-lg-5" [@fadeIn] *ngIf="elementCreated" #newElement>
+  <div class="example-container">
+    <div class="add-ticket-container">
+      <button mat-fab (click)="openDialog()" class="add-ticket-button">
+        <mat-icon class="plus">+</mat-icon>
+      </button>
     </div>
-    </div>
+    <h3>Liste des tickets</h3>
+    <div id="list" class="example-list" cdkDropList #list2="cdkDropList"
+      [cdkDropListData]="histoireTicketsByMembreId" [cdkDropListConnectedTo]="[list1]" (cdkDropListDropped)="drop($event)">
+
+      <div class="example-box" style="background-color:rgb(223, 223, 223)" *ngFor="let listHTByMembre of histoireTicketsByMembreId; index as i" cdkDrag>
+        <span matTooltip="Titre : {{listHTByMembre.titre}}
+        Description : {{listHTByMembre.description}}
+        Priorité: {{listHTByMembre.priorite}}
+        Effort: {{listHTByMembre.effort}}"
+      [matTooltipPosition]="'above'">
+      {{i}} {{listHTByMembre.titre}}
+        </span>
+        <i (click)="deleteUserStoryById(listHTByMembre.id)" id="deleteUSIcon" class="fa-solid fa-trash ml-auto"></i>
+      </div>
     </div>
   </div>
 </div>
+
+<!-- end -->
+
+</div>
+</div>
+</div>
+</div>
+</div>
+

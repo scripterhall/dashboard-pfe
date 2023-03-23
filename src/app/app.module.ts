@@ -33,6 +33,10 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AjouterTicketHistoireFormComponent } from './pages/ajouter-ticket-histoire-form/ajouter-ticket-histoire-form.component';
 import { AjouterSprintFormComponent } from './pages/ajouter-sprint-form/ajouter-sprint-form.component';
+import { ConfirmDialogComponent } from './pages/confirm-dialog/confirm-dialog.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { ConfirmDialogDeleteUserStoryComponent } from './pages/confirm-dialog-delete-user-story/confirm-dialog-delete-user-story.component';
+import { ConfirmAddUserStoryDialogueComponent } from './pages/confirm-add-user-story-dialogue/confirm-add-user-story-dialogue.component';
 
 
 @NgModule({
@@ -62,9 +66,10 @@ import { AjouterSprintFormComponent } from './pages/ajouter-sprint-form/ajouter-
     ToastrModule.forRoot(),
     DragDropModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    MatStepperModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent, ConfirmDialogComponent, ConfirmDialogDeleteUserStoryComponent, ConfirmAddUserStoryDialogueComponent],
   providers: [],
   bootstrap: [AppComponent]
 

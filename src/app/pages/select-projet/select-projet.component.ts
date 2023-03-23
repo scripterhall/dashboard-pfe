@@ -26,11 +26,11 @@ interface Animal {
 export class SelectProjetComponent implements OnInit {
 
   valid:boolean=false;
-  /*   formulaire d'ajout de projet   */ 
+  /*   formulaire d'ajout de projet   */
   projetForm:FormGroup;
 
   ngOnInit(): void {
-    /*   initialisation de formulaire d'ajout de projet   */ 
+    /*   initialisation de formulaire d'ajout de projet   */
     this.projetForm = this.formBuilder.group({
       nom: ['', Validators.required],
       dateDebut: ['', Validators.required],
@@ -38,28 +38,28 @@ export class SelectProjetComponent implements OnInit {
       cles: ['', Validators.required],
       chefProjetId:1
     });
-    /*   liste des projet d'un chef de projet   */ 
+    /*   liste des projet d'un chef de projet   */
     this.projetService.getListProjetChefProjet(1).subscribe(
       data => {
-        this.projets = data ; 
+        this.projets = data ;
       }
     )
-   
 
-    
+
+
   }
-  
+
   projets:Projet[];
   asyncTabs: Observable<ExampleTab[]>;
   /* detail balise */
   panelOpenState = false;
   panelOpenState2 = false;
- /*  end */ 
+ /*  end */
   constructor(private projetService: ProjetServiceService,
               private formBuilder: FormBuilder,
               private router: Router) {
     this.asyncTabs = new Observable((observer: Observer<ExampleTab[]>) => {
-      /*   les type des action gerer par se composant :: les sliders   */ 
+      /*   les type des action gerer par se composant :: les sliders   */
       setTimeout(() => {
         observer.next([
           {label: 'Gerer', content: 'Content 1'},
@@ -70,29 +70,29 @@ export class SelectProjetComponent implements OnInit {
     });
   }
 
-/*   un seul projet peut etre gerer en temps real    */ 
+/*   un seul projet peut etre gerer en temps real    */
   cocherProjet(index:number){
-    
+
     this.valid = !this.valid;
     this.projets[index].checked  = !this.projets[index].checked;
   }
 
-/*   boutton gerer de content 1  */ 
+/*   boutton gerer de content 1  */
   gerer(index:number){
     if(confirm("Vous etes sûr de gerer le projet "+this.projets[index].nom+" !!")){
-    localStorage.setItem('projets', JSON.stringify(this.projets[index]));
+    localStorage.setItem('projetCourant', JSON.stringify(this.projets[index]));
       this.router.navigateByUrl('/dashboard')
     }
 
 
   }
 
-  /*   annuler* ou gerer  */ 
+  /*   annuler* ou gerer  */
 onCancel() {
   this.projetForm.reset();
 }
 
-/*   envoyer le formulaire de creation   */ 
+/*   envoyer le formulaire de creation   */
 projet:Projet;
 onSubmit(){
   console.log(this.projetForm.value);
@@ -103,7 +103,7 @@ onSubmit(){
     }
   )
 }
- 
+
 
 /** passer d un expansion a un autre */
 step = 0;
@@ -122,14 +122,14 @@ step = 0;
 /** end */
 
   membres = new FormControl('');
-  
+
   membreList: Membre[] = [
-      new Membre(), 
-      new Membre(), 
-      new Membre(), 
-      new Membre(), 
-      new Membre(), 
-      new Membre(), 
+      new Membre(),
+      new Membre(),
+      new Membre(),
+      new Membre(),
+      new Membre(),
+      new Membre(),
   ];
 
   /** liste des membre cocher pour les invité */

@@ -1,10 +1,10 @@
-<h2 mat-dialog-title>Ajouter un ticket</h2>
+<!-- <h2 mat-dialog-title>Ajouter un ticket</h2>
 <div mat-dialog-content>
   <form [formGroup]="form" class="form-container">
     <mat-form-field class="form-field">
       <mat-label>Titre</mat-label>
-      <input type="text" matInput formControlName="title" required>
-      <mat-error *ngIf="form.controls['title'].invalid && (form.controls['title'].dirty || form.controls['title'].touched)">
+      <input type="text" matInput formControlName="titre" required>
+      <mat-error *ngIf="form.controls['titre'].invalid && (form.controls['titre'].dirty || form.controls['titre'].touched)">
         Titre est obligatoire
       </mat-error>
     </mat-form-field>
@@ -24,24 +24,75 @@
       <mat-label>Priorité</mat-label>
       <input type="text" matInput formControlName="priorite">
     </mat-form-field>
-
-    <mat-form-field class="form-field">
-      <mat-label>Date début</mat-label>
-      <input type="text" matInput [matDatepicker]="startDatepicker" formControlName="dateDeb">
-      <mat-datepicker-toggle matSuffix [for]="startDatepicker"></mat-datepicker-toggle>
-      <mat-datepicker #startDatepicker></mat-datepicker>
-    </mat-form-field>
-
-    <mat-form-field class="form-field">
-      <mat-label>Date fin</mat-label>
-      <input type="text" matInput [matDatepicker]="endDatepicker" formControlName="dateFin">
-      <mat-datepicker-toggle matSuffix [for]="endDatepicker"></mat-datepicker-toggle>
-      <mat-datepicker #endDatepicker></mat-datepicker>
-      <mat-error *ngIf="form.get('dateFin').hasError('dateFinInvalide')">La date de fin doit être ultérieure à la date de lancement.</mat-error>
-    </mat-form-field>
   </form>
 </div>
 <div mat-dialog-actions class="button-container">
   <button mat-button class="cancel-button" (click)="onNoClick()">Annuler</button>
   <button mat-button color="primary" class="save-button" [disabled]="form.invalid" (click)="onSave()">Enregistrer</button>
-</div>
+</div> -->
+
+
+<h2>Créer un ticket histoire</h2>
+<mat-horizontal-stepper #stepper linear>
+  <mat-step [stepControl]="form.get('titre')">
+    <form [formGroup]="form">
+      <ng-template matStepLabel>
+        <span class="step-title">Etape 1: Titre et description</span>
+      </ng-template>
+
+      <mat-label>Titre</mat-label>
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <input type="text" matInput placeholder="Nom du ticket histoire" formControlName="titre" required>
+      </mat-form-field>
+
+      <mat-label>Description</mat-label>
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <textarea matInput placeholder="Description du ticket histoire" formControlName="description"></textarea>
+      </mat-form-field>
+
+      <div class="button-container">
+        <button mat-button color="primary" (click)="onNoClick()" matStepperPrevious>Annuler</button>
+        <button mat-button color="primary" matStepperNext [disabled]="!form.get('titre').valid && !form.get('description').valid">Suivant</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="form.get('priorite')">
+    <form [formGroup]="form">
+      <ng-template matStepLabel>
+        <span class="step-title">Etape 2: Priorité et effort</span>
+      </ng-template>
+
+      <mat-label>Priorité</mat-label>
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-select formControlName="priorite">
+          <mat-option value="haute">Haute</mat-option>
+          <mat-option value="moyenne">Moyenne</mat-option>
+          <mat-option value="faible">Faible</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-label>Effort</mat-label>
+      <mat-form-field appearance="fill" style="width: 100%;">
+        <mat-select formControlName="effort" required>
+          <mat-option value="1">1</mat-option>
+          <mat-option value="3">3</mat-option>
+          <mat-option value="5">5</mat-option>
+          <mat-option value="9">9</mat-option>
+          <mat-option value="13">13</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="button-container">
+        <button mat-button color="primary" matStepperPrevious>Retour</button>
+        <button mat-button color="primary" [disabled]="!form.valid" (click)="onSave()">Créer</button>
+      </div>
+    </form>
+  </mat-step>
+</mat-horizontal-stepper>
+
+
+
+
+
+

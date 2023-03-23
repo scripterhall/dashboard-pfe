@@ -1,6 +1,11 @@
-.small{
-    height:10%;
-    width:10%;
+.fa-sharp{
+  color: green;
+  font-size: 20px;
+}
+
+
+#element{
+  height: 30px;
 }
 
 details {
@@ -15,53 +20,174 @@ details {
     cursor: pointer;
     outline: none;
   }
+
   .example-container {
     width: 100%;
     max-width: 100%;
-    margin: 0 25px 25px 0;
-    display: inline-block;
-    vertical-align: top;
-
+    margin-bottom: 25px;
   }
+
   .example-list {
     border: solid 1px #ccc;
     min-height: 60px;
     background: white;
     border-radius: 4px;
     overflow: hidden;
-    display: block;
-    width: 100%;
-  }
-  .example-box {
-    padding: 20px 10px;
-    border-bottom: solid 1px #ccc;
-    color: rgba(0, 0, 0, 0.87);
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+#id{
+  min-height: 60px;
+  overflow: hidden;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.add-ticket-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.plus{
+font-size: 30px;
+}
+
+.add-ticket-button {
+  background-color: white;
+  color: #1976d2;
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+}
+
+  .example-box {
+    display: flex;
     align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-    cursor: move;
-    background: white;
-    font-size: 14px;
-  }
-  .cdk-drag-preview {
-    box-sizing: border-box;
+    justify-content: space-between; /* Ajout de cette ligne */
+    padding: 10px;
     border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-                0 8px 10px 1px rgba(0, 0, 0, 0.14),
-                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    cursor: move;
+    background: rgb(255, 255, 255);
+    font-size: 14px;
+    transition: background-color 0.2s ease;
   }
 
-  .cdk-drag-placeholder {
-    opacity: 0;
-  }
 
-  .cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  .example-box:hover {
+    background-color: rgb(236, 234, 234);
   }
 
   .example-box:last-child {
     border: none;
   }
 
+  .example-box i.fa-clipboard-check {
+    margin-right: 10px;
+    color: #4CAF50;
+  }
+
+  .example-box span:nth-child(1) {
+    flex-grow: 1;
+    margin-right: 10px;
+  }
+
+  .example-box span.numTicket {
+    margin-right: 10px;
+  }
+
+  .example-box i#btnDelete {
+    margin-left: auto;
+    color: rgb(161, 39, 39);
+    cursor: pointer;
+  }
+
+  .example-box i#priorite {
+    margin-left: auto;
+    float: right;
+color: blue;
+  }
+
+  #priorite {
+color: blue;
+  }
+
+  .example-box i#btnDelete:hover {
+    color: red;
+  }
+
+  .mat-tooltip {
+    max-width: 300px;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.4em;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+  }
+
+.btn-lg{
+float: right;
+}
+
+  .add-ticket-button {
+    margin-left: auto;
+  }
+
+  .mat-tooltip-arrow {
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid #333;
+    position: absolute;
+  }
+
+  .mat-tooltip-above .mat-tooltip-arrow {
+    bottom: -8px;
+  }
+
+  .mat-tooltip-showing.mat-tooltip-above .mat-tooltip-arrow {
+    animation: tooltip-arrow-hover 0.2s linear;
+  }
+
+  @keyframes tooltip-arrow-hover {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  #deleteUSIcon {
+    color: red;
+    float: right;
+  }
+
+
+#sprints, .card-body{
+background-color: rgb(231, 231, 231);
+}
+
+.font-icon-detail{
+border-color: green;
+}
+
+.font-icon-detail p {
+  color: #e44cc4 !important;
+  margin-top: 30px;
+  padding: 0 10px;
+  font-size: .7142em;
+}

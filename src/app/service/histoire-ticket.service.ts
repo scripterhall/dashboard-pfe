@@ -8,7 +8,6 @@ const url1 = "http://localhost:9999/gestion-histoire-ticket/histoireTickets"
   providedIn: 'root'
 })
 export class HistoireTicketService {
-private url1 = "http://localhost:9999/gestion-histoire-ticket/histoireTickets"
 
   constructor(private http: HttpClient) { }
 
@@ -20,8 +19,33 @@ private url1 = "http://localhost:9999/gestion-histoire-ticket/histoireTickets"
     return this.http.post<TicketHistoire>(`${url1}`,ticket);
   }
 
-  public getListHistoireTicketByProjet(projetId:number){
-    return this.http.get<TicketHistoire[]>(`${url1}/projet/`+projetId);
+  removeUserStoryFromProductBacklog(id: number): Observable<any> {
+    const url = `${url1}/${id}`;
+    return this.http.put(url, null);
+  }
+
+  assignUserStoryToSprint(histoireTicketId: number, sprintId: number): Observable<TicketHistoire> {
+    const url = `${url1}/${histoireTicketId}/sprint/${sprintId}`;
+    return this.http.put<TicketHistoire>(url, null);
+  }
+
+  assignUserStoryToProductBacklog(histoireTicketId: number, productBacklogId: number): Observable<TicketHistoire> {
+    const url = `${url1}/${histoireTicketId}/productBacklog/${productBacklogId}`;
+    return this.http.put<TicketHistoire>(url, null);
+  }
+
+  getUserStoryById(id: number): Observable<TicketHistoire> {
+    const url = `${url1}/${id}`;
+    return this.http.get<TicketHistoire>(url);
+  }
+
+  deleteUserStoryById(id: number): Observable<any> {
+    return this.http.delete(`${url1}/${id}`);
+  }
+
+  addNewUserStory(userStory: TicketHistoire): Observable<any> {
+    const url = `${url1}/new`;
+    return this.http.post(url, userStory);
   }
 
 }

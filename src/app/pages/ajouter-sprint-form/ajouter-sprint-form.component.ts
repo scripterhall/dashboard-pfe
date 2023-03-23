@@ -22,22 +22,6 @@ export class AjouterSprintFormComponent {
     this.dialogRef.close();
   }
 
-  // onSave() {
-  //   const formData = this.form.value;
-  //   this.sprintService.createSprint(formData).subscribe(
-  //     response => {
-  //       console.log('Sprint ajouté avec succès.');
-  //       console.log(formData);
-  //       this.move();
-  //       location.reload();
-  //       this.dialogRef.close();
-  //     },
-  //     error => {
-  //       console.error("Erreur d'enregistrement du sprint ! : ", error);
-  //     }
-  //   );
-  // }
-
   onSave(): void {
     const productBacklogId = 1;
     const sprint = new Sprint();
@@ -79,7 +63,7 @@ export class AjouterSprintFormComponent {
   ngOnInit(): void {
     this.form = this.fb.group({
       objectif: ['', Validators.required],
-      dateLancement: [new Date()],
+      dateLancement: [''],
       dateFin: ['', this.validateDateFin.bind(this)]
     });
   }
