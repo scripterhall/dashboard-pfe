@@ -1,0 +1,245 @@
+<div class="container">
+  <div class="col-lg-7 mx-auto" style="margin-top:10%;">
+    <div class="card ">
+      <ng-container *ngIf="(asyncTabs | async) === null">
+        Loading tabs...
+      </ng-container>
+
+      <mat-tab-group>
+        <mat-tab class="card-header" *ngFor="let tab of asyncTabs | async">
+          <ng-template mat-tab-label>{{tab.label}}</ng-template>
+          <div class="card-body">
+            <!-- block proger a gerer -->
+            <mat-list class="my-list" *ngIf="tab.content=='Content 1'">
+              <div mat-subheader style="color:rgb(238, 238, 238)">projets</div>
+              <mat-list-item class="projet" (click)="cocherProjet(i)" *ngFor="let projet of projets;index as i">
+                <mat-icon matListItemIcon style="color:rgb(238, 238, 238)">folder</mat-icon>
+                <div matListItemTitle style="color:rgb(238, 238, 238)">
+                  {{projet.nom}}
+                  <button mat-mini-fab color="warn" class="pull-right" (click)="gerer(i)"
+                    aria-label="Example icon button with a filter list icon">
+                    <mat-icon>settings</mat-icon>
+                  </button>
+                </div>
+
+                <div matListItemLine class="d-flex" style="color:rgb(238, 238, 238)">
+                  {{projet.dateDebut | date}}
+
+                </div>
+
+
+              </mat-list-item>
+
+            </mat-list>
+
+
+            <!-- fin block projets a gerer -->
+
+            <!-- block creation de nouveau projet -->
+            
+            <form [formGroup]="projetForm" class="" (ngSubmit)="onSubmit()" *ngIf="tab.content=='Content 2'">
+              <mat-form-field>
+                <mat-label>Nom</mat-label>
+                <input matInput formControlName="nom">
+                <mat-error *ngIf="projetForm.get('nom').invalid">Le nom est obligatoire</mat-error>
+              </mat-form-field>
+              <div class="date-container">
+                <mat-form-field>
+                  <mat-label>Date de début</mat-label>
+                  <input matInput [matDatepicker]="debutDatepicker" formControlName="dateDebut">
+                  <mat-datepicker-toggle matSuffix [for]="debutDatepicker"></mat-datepicker-toggle>
+                  <mat-datepicker #debutDatepicker></mat-datepicker>
+                  <mat-error *ngIf="projetForm.get('dateDebut').invalid">La date de début est obligatoire</mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Date de fin</mat-label>
+                  <input matInput [matDatepicker]="finDatepicker" formControlName="dateFin">
+                  <mat-datepicker-toggle matSuffix [for]="finDatepicker"></mat-datepicker-toggle>
+                  <mat-datepicker #finDatepicker></mat-datepicker>
+                  <mat-error *ngIf="projetForm.get('dateFin').invalid">La date de fin est obligatoire</mat-error>
+                </mat-form-field>
+
+              </div>
+              <mat-form-field>
+                <mat-label>Clés</mat-label>
+                <input matInput formControlName="cles">
+              </mat-form-field>
+
+              <button type="submit" mat-raised-button color="primary" [disabled]="projetForm.invalid"
+                mat-raised-button>Enregistrer</button>
+              <button type="button" mat-raised-button (click)="onCancel()">Annuler</button>
+
+            </form>
+           
+            <!-- end block-->
+        
+
+            <!--block d'invitation-->
+            
+            <mat-accordion class="example-headers-align"  *ngIf="tab.content=='Content 3'">
+              <ng-container [formGroup]="combinedForm">
+              <ng-container [formGroup]="rolePkForm">
+              <!-- block choix de projet -->
+              <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 0" (opened)="setStep(0)" hideToggle>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Les projets
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Selectionner un projet a traiter
+                    <mat-icon>payment</mat-icon>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-form-field appearance="fill">
+                  <mat-label>Projets</mat-label>
+                  <mat-select formControlName="projetId" >
+                    <mat-option *ngFor="let p of projets" [value]="p.id">{{p.nom}} -- cles#{{p.cles}} </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="rolePkForm.get('projetId').hasError('required')">il faut choisir un projet</mat-error>
+                </mat-form-field>
+                <mat-action-row>
+                  <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+                </mat-action-row>
+              
+              </mat-expansion-panel>
+              <!-- end block choix projet -->
+
+              <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 1" (opened)="setStep(1)" hideToggle>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Les membres
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Selectionner un membre a inviter
+                    <mat-icon>account_circle</mat-icon>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <mat-form-field appearance="fill">
+                  <mat-label>Membres</mat-label>
+                  <mat-select formControlName="membreId"  >
+                    <mat-option *ngFor="let m of membreList" [value]="m.id">{{m.email}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-action-row>
+                  <button mat-button color="warn" (click)="prevStep()">Précedent</button>
+                  <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+                </mat-action-row>
+              </mat-expansion-panel>
+            </ng-container>
+
+            <ng-container [formGroup]="invitationForm">
+              <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 2" (opened)="setStep(2)" hideToggle>
+                
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Email
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    saisie l'email du membre non trouvé dans la liste
+                    <mat-icon>alternate_email</mat-icon>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                 
+                <mat-form-field appearance="fill">
+                  <mat-label>e-mail</mat-label>
+                  <input formControlName="emailInvitee"  matInput>
+                  <mat-error *ngIf="invitationForm.get('emailInvitee').hasError('required')">le champ email est obligatoire</mat-error>
+                </mat-form-field>
+
+                <mat-action-row>
+                  <button mat-button color="warn" (click)="prevStep()">Précedent</button>
+                  <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+                </mat-action-row>
+              </mat-expansion-panel>
+            </ng-container>
+            <ng-container [formGroup]="roleForm">
+              <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 3" (opened)="setStep(3)"
+               hideToggle>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Role
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    Role du membre(s) dans le projet
+                    <mat-icon>report</mat-icon>
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+                <!-- table des invi -->
+                <div style="overflow-x:auto;overflow-y:auto;max-height:300px;max-width:100%">
+                  <table class="table table-bordered table-striped  ">
+                    <thead class="thead-light">
+                      <tr>
+                       
+                        
+                        <th scope="col">type_role</th>
+                        <th scope="col">permission_role</th>
+                        <th scope="col">description_role</th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody class="" style="color:black;">
+                      <tr>
+                        
+                    
+                        <td>
+                          <mat-form-field appearance="fill">
+                            <mat-label>liste des roles</mat-label>
+                            <mat-select formControlName="type" required>
+                              <mat-option>--</mat-option>
+                              <mat-option  [value]="'dev team'">
+                               development team
+                              </mat-option>
+                              <mat-option  [value]="'po'">
+                                Product owner
+                               </mat-option>
+                               <mat-option  [value]="'scrum master'">
+                                Scrum master
+                               </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="roleForm.get('type').hasError('required')">tu dois choisir le role dans l'equipe</mat-error>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field  style="max-height: 130px;" class="example-full-width">
+                            <mat-label>Permission</mat-label>
+                            <textarea matInput cols="80" readonly  rows="9"  formControlName="permission" placeholder="Ex. It makes me feel..."></textarea>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field  style="max-height: 130px;" class="example-full-width">
+                            <mat-label>Description</mat-label>
+                            <textarea  matInput readonly  formControlName="description" placeholder="Ex. It makes me feel..."></textarea>
+                          </mat-form-field>
+                        </td>
+                        
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+                <!-- end -->
+                <mat-action-row>
+                  <button mat-button color="warn" (click)="prevStep()">Précedent</button>
+                  <button mat-button color="primary" (click)="inviter()" [disabled]="!allValid()">Inviter</button>
+                </mat-action-row>
+              
+              </mat-expansion-panel>
+            </ng-container>
+            </ng-container>
+            </mat-accordion>
+          
+            <!--  end block  -->
+          </div>
+        </mat-tab>
+
+
+
+
+      </mat-tab-group>
+
+
+    </div>
+  </div>
+</div>

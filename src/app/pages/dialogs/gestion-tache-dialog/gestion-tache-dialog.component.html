@@ -1,0 +1,67 @@
+
+<h1 mat-dialog-title><mat-icon>task</mat-icon> Gerer votre Tâche
+    <button mat-mini-fab style="margin-left:35%;margin-top:2%;" class="pull-right d-flex" color="warn" mat-dialog-close><mat-icon>close</mat-icon></button>    
+<hr></h1>
+
+
+<div class="button-container">
+            <button mat-raised-button (click)="terminerTache()">
+            <button class="finish-btn text-success" (click)="terminerTache()"><div>Terminer Tâche</div></button>
+            </button>
+            <div matTooltip="si cette tâche est prise vous ne pouvez la supprimer">
+            <button
+             mat-raised-button
+             (click)="supprimerTache()"
+              [disabled]="data.ticketTache.membreId!=null">
+            <button [disabled]="data.ticketTache.membreId!=null"
+             (click)="supprimerTache()"
+              class="delete-btn text-danger">Supprimer Tâche</button>
+            </button>
+            </div>
+            <button mat-raised-button>
+            <button   class="edit-btn text-warning" (click)="openFormFunction()"><div>Modifier Tâche</div></button>
+            </button>
+</div>
+
+<div mat-dialog-content style="overflow-y:auto">   
+    <form [formGroup]="modifTicketForm" (ngSubmit)="modifierTache()" *ngIf="openForm" style="margin-top:3%;">
+        
+        <div class="container">
+            <div class="row">
+            <mat-form-field class="d-flex col-lg-6 col-md-6 col-sm-6">
+                <mat-label>Titre</mat-label>
+                <textarea matInput formControlName="titre"  placeholder="Ex. It makes me feel..."></textarea>
+                <mat-error *ngIf="modifTicketForm.get('titre').hasError('required')">Ce champ est obligatoire</mat-error>
+            </mat-form-field>
+            
+            <mat-form-field class="d-flex col-lg-6 col-md-6 col-sm-6">
+                <mat-label>description</mat-label>
+                <textarea matInput formControlName="description"  placeholder="Ex. It makes me feel..."></textarea>
+                <mat-error *ngIf="modifTicketForm.get('description').hasError('required')">Ce champ est obligatoire</mat-error>
+            </mat-form-field>
+            </div>
+
+            <div class="row">
+            <mat-form-field *ngIf="this.data.ticketTache.etat!='terminer'" class="d-flex col-lg-6 col-md-6 col-sm-6">
+                <mat-label>Nombre d'heures</mat-label>
+                <input type="number" matInput formControlName="nbHeurs">
+                <mat-error *ngIf="modifTicketForm.get('nbHeurs').hasError('required')" >Ce champ est obligatoire</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" *ngIf="this.data.ticketTache?.membreId!=null" class="d-flex col-lg-6 col-md-6 col-sm-6">
+                <mat-label></mat-label>
+                <mat-select formControlName="etat" >
+                  <mat-option value="terminer" [selected]="this.data.ticketTache.etat=='terminer'">terminer</mat-option>
+                  <mat-option value="a verifier"[selected]="this.data.ticketTache.etat=='a verifier'"> a verifier</mat-option>
+                  <mat-option value="en cours" [selected]="this.data.ticketTache.etat=='en cours'">en cours</mat-option>
+                  <mat-option value="a faire" [selected]="this.data.ticketTache.etat=='a faire'">a faire</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div class="d-flex justify-content-center">
+                <button mat-raised-button class="col-2" [disabled]="modifTicketForm.invalid"  color="accent">valider</button>
+            </div>
+            </div>
+            </div>
+    </form>
+</div>
+

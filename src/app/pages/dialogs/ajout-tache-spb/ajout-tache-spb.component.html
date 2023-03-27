@@ -1,0 +1,32 @@
+<form [formGroup]="this.ticketTacheForm" (ngSubmit)="ajouterTicketTacheAuSpb()" >
+<h1 mat-dialog-title><mat-icon>task</mat-icon> Ajouter Une Ticket Ici </h1>
+<div mat-dialog-content>
+    
+               
+        <mat-form-field class="d-flex">
+          <mat-label>Titre</mat-label>
+          <textarea matInput formControlName="titre"  placeholder="Ex. It makes me feel..."></textarea>
+          <mat-error *ngIf="ticketTacheForm.get('titre').hasError('required')">Ce champ est obligatoire</mat-error>
+        </mat-form-field>
+      
+        <mat-form-field class="d-flex">
+          <mat-label>description</mat-label>
+          <textarea matInput formControlName="description"  placeholder="Ex. It makes me feel..."></textarea>
+          <mat-error *ngIf="ticketTacheForm.get('description').hasError('required')">Ce champ est obligatoire</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Nombre d'heures</mat-label>
+          <input type="number" matInput formControlName="nbHeurs">
+          <mat-error *ngIf="ticketTacheForm.get('nbHeurs').hasError('required')">Ce champ est obligatoire</mat-error>
+        </mat-form-field>
+       
+        
+      
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>No</button>
+  <button style="margin-left:3%;" mat-raised-button color="accent"  type="submit" [disabled]="this.ticketTacheForm.invalid">Créer</button>
+</div>
+</form>
