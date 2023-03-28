@@ -1,4 +1,5 @@
 <div class="content" style="margin-top:5%;" >
+
 <ng-container  *ngFor="let sprintBacklog of sprintBacklogs;index as i;">
   <div style="margin-bottom:4%;" class="accordion"  [attr.id]="'accordionExample'+i"  >
     <div class="accordion-item">
@@ -10,9 +11,9 @@
       <div [attr.id]="'collapse'+i" class="accordion-collapse bg-dark collapse "  aria-labelledby="heading{{i}}" [data-bs-parent]="'#accordionExample'+i">
         <div class="accordion-body " [ngClass]="{'active': activeIndex === i}" [hidden]="activeIndex !== i" style="margin-top:0px;margin-left:0px;">
 
-          
+
           <!-- table -->
-                        
+
             <!-- header -->
             <div class="row">
               <div class="col-lg-4 col-md-4 col-sm-4 hashed-border">
@@ -29,8 +30,8 @@
               </div>
             </div>
             <!-- end header -->
-            <!-- contenu body -->         
-            
+            <!-- contenu body -->
+
             <div class="row" *ngFor="let task of taskMap | keyvalue">
               <div class="col-lg-4 col-md-4 col-sm-4 hashed-border">
                 <br>
@@ -71,15 +72,18 @@
                 <div class="container">
                   <div class="row">
                   <div class="col-lg-6 col-md-6 col-sm-6"  *ngFor="let ticketTache of task.value;index as i">
-                    <mat-card class="example-card" [ngStyle]="getBackgroundColor(i)"  style="margin-top:6%;">
+                    <mat-card class="example-card" [ngStyle]="getBackgroundColor(i+1)"  style="margin-top:6%;">
                       <mat-card-header>
-                        <mat-card-title class="title">#{{ticketTache.id}}&nbsp; - {{ticketTache.titre}}</mat-card-title>
+                        <mat-card-title class="title">
+                          #{{i+1}}&nbsp; - {{ticketTache.titre}}
+                          <span class="pull-right"><mat-icon class="text-success" *ngIf="ticketTache.etat=='terminer'">done_all</mat-icon></span>
+                        </mat-card-title>
                         <mat-card-subtitle class="title">{{ticketTache.description}}</mat-card-subtitle>
                       </mat-card-header>
                       <mat-card-content>
                         <br>
                         <br>
-                        
+
                       </mat-card-content>
                       <hr>
                       <mat-card-footer>
@@ -113,16 +117,16 @@
                     </mat-card-header>
                     <mat-card-content>
                       <mat-icon  style="font-size:600%;width:auto;height:auto;margin-left:30%;border-top-right-radius:100px;">note_add</mat-icon>
-                      
+
                     </mat-card-content>
-                    
+
                     <mat-card-footer>
                       <div class="d-flex bd-highlight mb-1">
-                        
+
                         <div class="p-2 bd-highlight"></div>
                         <div class="ms-auto p-2 bd-highlight">
-                          
-                         
+
+
                         </div>
                       </div>
                     </mat-card-footer>
@@ -136,8 +140,12 @@
                 <br>
                 <!-- hORAIRE -->
                 <div class="container justify-content-center">
-                <div class="row " style="margin-bottom: 4%;" *ngFor="let tt of task.value;index as i">
-                  
+                <div class="row my-btn"
+                 matTooltip="clicker ici"
+                 (click)="openGestionTache(tt)"
+                 style="margin-bottom: 4%;"
+                 *ngFor="let tt of task.value;index as i">
+
                 <span style="margin-left:1%;font-size:100%;" class="badge col-lg-12 col-md-12 col-sm-12 w-75 p-3 bg-secondary rounded-pill"><p class="title text-dark">
                   #T{{i+1}}&nbsp;&nbsp;&nbsp;{{tt.nbHeurs}}H de travails
                 </p></span>
@@ -145,7 +153,6 @@
                 </div>
               </div>
             </div>
-
             <!-- end body -->
           <!-- end -->
         </div>

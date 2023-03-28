@@ -12,24 +12,25 @@ import { SprintBacklogService } from "src/app/service/sprint-backlog.service";
 import { SprintService } from "src/app/service/sprint.service";
 import { TicketTacheService } from "src/app/service/ticket-tache.service";
 import { AjoutTacheSpbComponent } from "../dialogs/ajout-tache-spb/ajout-tache-spb.component";
+import { GestionTacheDialogComponent } from "../dialogs/gestion-tache-dialog/gestion-tache-dialog.component";
+
 
 export interface DialogDataTicketTache {
   sprintBacklog: SprintBacklog;
   ticketHistoire:TicketHistoire
 }
 
-interface Marker {
-lat: number;
-lng: number;
-label?: string;
-draggable?: boolean;
+export interface DialogGererDataTicketTache {
+  ticketTache:TacheTicket
 }
+
+
 
 @Component({
   selector: "app-map",
   templateUrl: "map.component.html",
   styleUrls: ['./map.component.scss'],
-  
+
 })
 
 
@@ -41,8 +42,9 @@ export class MapComponent implements OnInit {
     private sprintBacklogService:SprintBacklogService,
     private membreService:MembreService,
     private dialogAjout: MatDialog,
+    private dialogGestion:MatDialog
   ) {}
-  
+
   sprintsList:Sprint[]
   sprintBacklogs:SprintBacklog[]=[]
   ticketsHistoireList:TicketHistoire[]
@@ -50,8 +52,7 @@ export class MapComponent implements OnInit {
   taskMap:Map<TicketHistoire,TacheTicket[]>=new Map<TicketHistoire,TacheTicket[]>()
   listMembre:Membre[]
   ticketTachePrise:TacheTicket[]
-  endDate: Date = new Date('2023-03-31T23:59:59'); 
-
+  endDate: Date = new Date('2023-03-31T23:59:59');
   ngOnInit() {
     this.membreService.afficherTousMembres().subscribe(
       data => {
@@ -68,13 +69,12 @@ export class MapComponent implements OnInit {
               sprintBacklogData =>{
                 console.log(sprintBacklogData);
                 this.sprintBacklogs.push(sprintBacklogData);
-                
+
               }
             )
-          
+
       }
     );
-    
   }
 
   afficherDetailSprintBacklog(sprintBacklog:SprintBacklog){
@@ -84,42 +84,42 @@ export class MapComponent implements OnInit {
         data => {
           this.ticketsHistoireList = data;
           for(let ht of this.ticketsHistoireList){
-            
+
             this.ticketTacheService.getListTicketTacheParHt(ht.id).subscribe(
               listTacheData =>{
                 this.ticketsTache = listTacheData;
                 taskMap.set(ht,this.ticketsTache)
                 console.log(this.ticketsTache);
-            
-                
+
+
               }
             )
-           
+
           }
           this.taskMap = taskMap
         }
       )
-       
+
   }
 
-  //choix couleur tache 
+  //choix couleur tache
   getBackgroundColor(index: number): any {
     if (index % 2 === 0) {
-      return { 'background-color': '#B3BD51' };
-    } else if (index % 3 === 0 && index % 2 === 0) {
-      return { 'background-color': '#EEBF32' };
-    } else if (index % 3 === 0) {
-      return { 'background-color': '#D7CD52' };
-    } else if (index % 7 === 0) {
-      return { 'background-color': '#DDDAD3' };
-    }else if (index === 1) {
+      return { 'background-color': '#C8F8F3' };
+    } else if (index % 3 == 0 && index % 2 == 0) {
+      return { 'background-color': '#F0FCCA' };
+    } else if (index % 3 == 0) {
+      return { 'background-color': '#EFF8C2' };
+    } else if (index % 7 == 0) {
+      return { 'background-color': '#F8E7C2' };
+    }else if (index == 1) {
       return { 'background-color': '#DDDAD3' };
     } else {
       return {};
     }
   }
 
-  
+
   prendreTicket(membre:Membre,idTicketTache:number){
       this.ticketTacheService.affecterTicketAMembre(membre,idTicketTache).subscribe(
         dataTicket=>{
@@ -130,12 +130,12 @@ export class MapComponent implements OnInit {
                 ticket.membre = dataTicket.membre
                 ticket.membreId = dataTicket.membreId
               }
-                
+
             })
         }
       )
   }
- 
+
   reverseIndex(index: number, length: number): number {
     return length - index;
   }
@@ -163,7 +163,7 @@ export class MapComponent implements OnInit {
              ticketHistoire:ht
       }
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if(result){
       const ticketHistoire = result.ht
@@ -173,12 +173,47 @@ export class MapComponent implements OnInit {
           listeTache.push(result)
         }
        }
-     } 
-    }); 
+     }
+    });
   }
 
-  
+
+  openGestionTache(tt:TacheTicket){
+
+    const dialogRef = this.dialogGestion.open(GestionTacheDialogComponent,{
+      width: '650px',
+      height:'300px',
+      data: {
+        ticketTache:tt
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+
+      if(result.mode == 'modifier'){
+        console.log("test");
+          for(const key of this.taskMap.keys()) {
+            if (key.id === result.tt.ht.id) {
+              const listeTache = this.taskMap.get(key)
+              listeTache[listeTache.indexOf(tt)]=result.tt
+            }
+          }
+      }
+      else if(result.mode == 'supprimer'){
+      const ticketHistoire = result.tt.ht
+      for(const key of this.taskMap.keys()) {
+        if (key.id === ticketHistoire.id) {
+          const listeTache = this.taskMap.get(key)
+          console.log(listeTache.indexOf(tt));
+          listeTache.splice(listeTache.indexOf(tt),1)
+        }
+       }
+     }
+    });
+  }
+
 
 }
-  
-   
+
+

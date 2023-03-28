@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Inject } from '@angular/core';
 import { HistoireTicketService } from 'src/app/service/histoire-ticket.service';
-import {FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 
 @Component({
@@ -29,7 +29,6 @@ export class AjouterTicketHistoireFormComponent {
   onNoClick(): void {
     this.dialogRef.close();
   }
-
 
   onSave() {
     const formData = this.form.value;

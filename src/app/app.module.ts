@@ -45,6 +45,8 @@ import { AjoutTacheSpbComponent } from './pages/dialogs/ajout-tache-spb/ajout-ta
 import { UpdateUserStoryDialogComponent } from './pages/update-user-story-dialog/update-user-story-dialog.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ScrumBoardComponent } from './pages/scrum-board/scrum-board.component';
+import { GestionTacheDialogComponent } from './pages/dialogs/gestion-tache-dialog/gestion-tache-dialog.component';
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 
 @NgModule({
@@ -52,6 +54,7 @@ import { ScrumBoardComponent } from './pages/scrum-board/scrum-board.component';
     BrowserAnimationsModule,
     FormsModule,
     MatMenuModule,
+    MatAutocompleteModule,
     MatTooltipModule,
     MatDialogModule,
     MatToolbarModule,
@@ -82,7 +85,7 @@ import { ScrumBoardComponent } from './pages/scrum-board/scrum-board.component';
     MatStepperModule,
     MatSnackBarModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent, SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent, AjoutTacheSpbComponent, ConfirmDialogComponent, ConfirmDialogDeleteUserStoryComponent, ConfirmAddUserStoryDialogueComponent, UpdateUserStoryDialogComponent, ScrumBoardComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent, SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent, AjoutTacheSpbComponent, GestionTacheDialogComponent, ConfirmDialogComponent, ConfirmDialogDeleteUserStoryComponent, ConfirmAddUserStoryDialogueComponent, UpdateUserStoryDialogComponent, ScrumBoardComponent],
   providers: [],
   bootstrap: [AppComponent]
 

@@ -16,18 +16,18 @@ export interface DialogData {
 }
 import { HistoireTicketService } from "src/app/service/histoire-ticket.service";
 import { SprintService } from "src/app/service/sprint.service";
-import { MatDialog } from '@angular/material/dialog';
-import { AjouterTicketHistoireFormComponent } from "../ajouter-ticket-histoire-form/ajouter-ticket-histoire-form.component";
-import { AjouterSprintFormComponent } from "../ajouter-sprint-form/ajouter-sprint-form.component";
 import { MembreService } from "src/app/service/membre.service";
 import { ProductBacklog } from "src/app/model/product-backlog";
-import { ProductBacklogService } from "src/app/service/product-backlog.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 import { Observable } from "rxjs";
 import { ConfirmDialogDeleteUserStoryComponent } from "../confirm-dialog-delete-user-story/confirm-dialog-delete-user-story.component";
 import { ConfirmAddUserStoryDialogueComponent } from "../confirm-add-user-story-dialogue/confirm-add-user-story-dialogue.component";
 import { ToastrService } from "ngx-toastr";
 import { UpdateUserStoryDialogComponent } from "../update-user-story-dialog/update-user-story-dialog.component";
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { AjouterTicketHistoireFormComponent } from "../ajouter-ticket-histoire-form/ajouter-ticket-histoire-form.component";
+import { AjouterSprintFormComponent } from "../ajouter-sprint-form/ajouter-sprint-form.component";
+import { ProductBacklogService } from "src/app/service/product-backlog.service";
 
 const  updateTicketPositionUrl = "http://localhost:9999/gestion-histoire-ticket/histoireTickets/position";
 
@@ -76,7 +76,6 @@ const  updateTicketPositionUrl = "http://localhost:9999/gestion-histoire-ticket/
 
 export class IconsComponent implements OnInit {
   histoireTicketsSprint: TicketHistoire[];
-
   constructor(private histoireTicketService:HistoireTicketService,
     private httpClient:HttpClient,
     private productBacklogService:ProductBacklogService,
@@ -190,13 +189,15 @@ export class IconsComponent implements OnInit {
 }
 
 
+  //sprint details
   openDialogDetailsSprint(i:number,sp:Sprint) {
-    console.log(sp.id);
     let startedOne:Sprint
     let testStart :boolean
-    if(this.sprints.length>2){
-      startedOne= this.sprints[i-1]
-      testStart = startedOne.etat !='terminé'
+    if(this.sprints.length>1){
+      startedOne = this.sprints[i-1]
+      console.log(startedOne);
+
+      testStart = startedOne?.etat =='terminer'
     }
     else{
       startedOne = this.sprints[i]
@@ -206,7 +207,6 @@ export class IconsComponent implements OnInit {
     this.histoireTicketService.getHistoireTicketBySprintId(sp.id).subscribe(
       data =>{
         this.histoireTicketsSprint = data
-
         const dialogRef = this.dialog.open(SprintDialogPanelComponent,{
           width: '600px',
           height:'690px',
@@ -221,8 +221,6 @@ export class IconsComponent implements OnInit {
         });
       }
     )
-
-
   }
 
   getProductBacklogByIdFromLocalStorage(){

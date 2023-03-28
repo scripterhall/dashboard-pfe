@@ -9,6 +9,7 @@ import { HistoireTicketService } from 'src/app/service/histoire-ticket.service';
 import { SprintBacklogService } from 'src/app/service/sprint-backlog.service';
 import { SprintService } from 'src/app/service/sprint.service';
 import { TicketTacheService } from 'src/app/service/ticket-tache.service';
+import Swal from 'sweetalert2';
 import { DialogData } from '../../icons/icons.component';
 
 
@@ -35,14 +36,14 @@ export class SprintDialogPanelComponent implements OnInit{
     private histoireTicketService:HistoireTicketService,
     private sprintBacklogService:SprintBacklogService
     ){
-      
+
     }
 
     TicketTacheModif:FormGroup;
 
   ngOnInit(): void {
     console.log(this.data.sprint);
-    
+
     this.projet = JSON.parse(localStorage.getItem("projets"))
     this.TicketTacheModif = this.fb.group({
       id: ['', Validators.required],
@@ -59,24 +60,51 @@ export class SprintDialogPanelComponent implements OnInit{
       description: [null, Validators.required],
     });
     const conv_data = new Date(this.data.sprint.dateLancement);
-    
+    console.log(this.data.canStart);
+
     if(conv_data.getDay() == new Date().getDay()
       && this.data.sprint.etat != "en cours"
-      && !this.data.canStart
-      && confirm("Aujourd'hui c'est la date de Lancement de ce sprint voulez vous accepter !!")){
-      this.lancerSprint()
+      && this.data.canStart
+      &&this.data.TicketHistoires.length>0
+      ){
+        Swal.fire({
+          title: "en appuyant sur le boutton <ok> votre sprint sera lancé avec la date "+this.data.sprint.dateLancement.toDateString(),
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Oui, Lancer!',
+          cancelButtonText: 'Annuler',
+          background:'rgba(0,0,0,0.9)',
+
+          backdrop: 'rgba(0,0,0,0.4)',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          allowEnterKey: false,
+          focusConfirm: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Le code à exécuter si l'utilisateur a cliqué sur "Oui, supprimer!"
+            this.lancerSprint()
+            Swal.fire(
+              'succes de Lancement',
+              'Votre fichier a été supprimé.',
+              'success'
+            )
+          }
+        });
     }
-    
+
   }
   ajouterTick = false;
 
   //afficher tous les ticket tâche d'un ticket histoire
   afficherTicketTache(ht:TicketHistoire){
-    
+
     this.ticketTacheService.getListTicketTacheParHt(ht.id).subscribe(
       data=>{
         console.log(data);
-        this.ticketTacheList = data ; 
+        this.ticketTacheList = data ;
       }
     )
   }
@@ -91,7 +119,7 @@ export class SprintDialogPanelComponent implements OnInit{
   //detacher ticket histoire de sprint
   detacherHt(ht:TicketHistoire,i:number){
     console.log(ht.sprint);
-    
+
     if(confirm('vous êtes sur de detacher cette ticket histoire de sprint')){
       ht.sprintId = null
       this.histoireTicketService.DetacherHtSprint(ht).subscribe(
@@ -100,7 +128,7 @@ export class SprintDialogPanelComponent implements OnInit{
         }
       )
     }
-    
+
   }
 
   changeDates:FormGroup;
@@ -155,7 +183,7 @@ export class SprintDialogPanelComponent implements OnInit{
   ajouterTicketTache(ht:TicketHistoire){
 
     console.log(this.ticketTacheForm.value)
-    let ticketTache:TacheTicket = this.ticketTacheForm.value 
+    let ticketTache:TacheTicket = this.ticketTacheForm.value
     ticketTache.ht = ht
     ticketTache.sprintBacklogId = null
     ticketTache.ticketHistoireId = ht.id;
@@ -166,7 +194,7 @@ export class SprintDialogPanelComponent implements OnInit{
         this.ticketTacheList.push(data);
         this.ajouterTick = false;
       }
-    ) 
+    )
   }
 
   //supprimer une ticket tache dans le panel de details sprint
@@ -179,26 +207,51 @@ export class SprintDialogPanelComponent implements OnInit{
       )
   }
 
-   
+
 
   //lancer le sprint et generer un sprintBacklog avec force
   lancerSprintForcer(){
     this.data.sprint.dateLancement = new Date(Date.now());
-    if(confirm("en appuyant sur le boutton <ok> votre sprint sera lancé avec la date "+this.data.sprint.dateLancement)){
-      this.lancerSprint()
-    }
+    Swal.fire({
+      title: "en appuyant sur le boutton <ok> votre sprint sera lancé avec la date "+this.data.sprint.dateLancement.toDateString(),
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, Lancer!',
+      cancelButtonText: 'Annuler',
+      background:'rgba(0,0,0,0.9)',
+
+      backdrop: 'rgba(0,0,0,0.4)',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+      focusConfirm: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Le code à exécuter si l'utilisateur a cliqué sur "Oui, supprimer!"
+        this.lancerSprint()
+        Swal.fire(
+          'succes de Lancement',
+          'Votre fichier a été supprimé.',
+          'success'
+        )
+      }
+    });
+
+
   }
 
 
   //lancerNormalment le sprint dans la date de lancement
- 
+
   lancerSprint(){
     this.data.sprint.etat = "en cours"
     this.data.sprint.productBacklogId = this.data.sprint.productBacklog.id
     this.sprintService.modifierSprint(this.data.sprint).subscribe(dataSprint =>{
       console.log(dataSprint);
       let  sprintBacklog = new SprintBacklog();
-      sprintBacklog.velocite = dataSprint.velocite 
+      sprintBacklog.velocite = dataSprint.velocite
       sprintBacklog.sprint = dataSprint
       sprintBacklog.sprintId = this.data.sprint.id
       this.data.TicketHistoires.forEach(ht =>{
@@ -219,7 +272,7 @@ export class SprintDialogPanelComponent implements OnInit{
                     this.ticketTacheService.modifierTicketTache(this.ticketTacheList[j]).subscribe(
                       ttData=>{
                         console.log(ttData);
-                        
+
                       }
                     )
                   }
@@ -240,19 +293,39 @@ export class SprintDialogPanelComponent implements OnInit{
   //Supprimer le sprint
   supprimerSprint(){
     console.log(this.data.sprint.id);
-    
-    if(this.data.TicketHistoires.length>0){
-      for(let i = 0;i<this.data.TicketHistoires.length;i++){
-        this.detacherHt(this.data.TicketHistoires[i],i)
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: "Vous ne pourrez pas revenir en arrière!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, supprimez ce sprint!',
+      background:'rgba(0,0,0,0.9)',
+      backdrop: 'rgba(0,0,0,0.4)',
+      cancelButtonText: 'Annuler',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if(this.data.TicketHistoires.length>0){
+          for(let i = 0;i<this.data.TicketHistoires.length;i++){
+            this.detacherHt(this.data.TicketHistoires[i],i)
+          }
+        }
+        this.sprintService.supprimerSprint(this.data.sprint.id).subscribe(
+          data =>{
+            console.log(data)
+            this.dialogRef.close()
+          }
+
+        )
+        Swal.fire(
+          'Supprimé!',
+          'Votre fichier a été supprimé.',
+          'success'
+        )
       }
-    }
-    this.sprintService.supprimerSprint(this.data.sprint.id).subscribe(
-      data =>{
-        console.log(data)
-        this.dialogRef.close()
-      }
-      
-    )
+    })
+
   }
 
 

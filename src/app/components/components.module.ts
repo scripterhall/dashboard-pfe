@@ -8,7 +8,6 @@ import { NavbarComponent } from "./navbar/navbar.component";
 import { SidebarComponent } from "./sidebar/sidebar.component";
 import { MatSelectModule } from '@angular/material/select';
 
-
 @NgModule({
   imports: [CommonModule, RouterModule, NgbModule, MatSelectModule],
   declarations: [FooterComponent, NavbarComponent, SidebarComponent],

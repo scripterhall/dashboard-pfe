@@ -1,7 +1,7 @@
 <div class="d-flex">
   <h1 mat-dialog-title class="mr-auto p-2">Objectif de Sprint : {{data.sprint.objectif}} </h1>
   <div class="d-flex">
-    <button mat-stroked-button (click)="lancerSprintForcer()" class="p-2 m-1" [disabled]="data.sprint.etat=='en cours' || this.data.canStart" color="primary">Lancer
+    <button mat-stroked-button *ngIf="data.sprint.etat !='terminer'" (click)="lancerSprintForcer()" class="p-2 m-1" [disabled]="data.sprint.etat=='en cours' || this.data.canStart || this.data.TicketHistoires.length==0" color="primary">Lancer
       Sprint</button>
     <button mat-stroked-button class="p-2 m-1" *ngIf="data.sprint.etat=='en cours' "
       #tooltip="matTooltip" matTooltip="mettre le sprint en pause" color="accent">
@@ -130,7 +130,7 @@
               <h1 class="text-dark">{{ht.titre}}</h1>
             </mat-card-subtitle>
             <mat-card-title>
-              
+
               Etat de Ticket :<mat-icon>farward_arrow</mat-icon>
               <span style="margin-left:-2%;" class="badge rounded-pill" [ngClass]="{
                 'bg-success': ht.status === 'TERMINER',
@@ -143,8 +143,8 @@
           <mat-card-content>
             <br>
             <div class="d-flex title">
-              <mat-icon [ngClass]="ht.priorite === 'haute' 
-            ? 'text-danger' : (ht.priorite === 'moyenne' 
+              <mat-icon [ngClass]="ht.priorite === 'haute'
+            ? 'text-danger' : (ht.priorite === 'moyenne'
             ? 'text-warning' : 'text-success')">
                 flag
               </mat-icon>
@@ -169,7 +169,7 @@
                     </div>
                     <div class="col-lg-3 col-md-3">
                       <span class="badge badge-danger">nombre heurs : {{tt.nbHeurs}}H</span>
-                      
+
                     </div>
                     <div class="col-lg-1 col-md-1">
                       <button mat-mini-fab (click)="supprimerTicketTache(i)" *ngIf="this.data.sprint.etat=='en attente'"  color="warn" aria-label="icon pour supprimer une tache">
@@ -189,13 +189,13 @@
               <!-- form d'ajout -->
 
               <form [formGroup]="this.ticketTacheForm" (ngSubmit)="ajouterTicketTache(ht)" *ngIf="ajouterTick">
-               
+
                 <mat-form-field class="d-flex">
                   <mat-label>Titre</mat-label>
                   <textarea matInput formControlName="titre"  placeholder="Ex. It makes me feel..."></textarea>
                   <mat-error *ngIf="ticketTacheForm.get('titre').hasError('required')">Ce champ est obligatoire</mat-error>
                 </mat-form-field>
-              
+
                 <mat-form-field class="d-flex">
                   <mat-label>description</mat-label>
                   <textarea matInput formControlName="description"  placeholder="Ex. It makes me feel..."></textarea>
@@ -207,7 +207,7 @@
                   <input type="number" matInput formControlName="nbHeurs">
                   <mat-error *ngIf="ticketTacheForm.get('nbHeurs').hasError('required')">Ce champ est obligatoire</mat-error>
                 </mat-form-field>
-               
+
                 <button style="margin-left:3%;" mat-raised-button color="accent"  type="submit" [disabled]="this.ticketTacheForm.invalid">Créer</button>
               </form>
 
