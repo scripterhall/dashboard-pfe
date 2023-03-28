@@ -5,10 +5,9 @@
         <div class=" card-body all-icons">
           <div id="sprints" class=" row ">
             <!--sprint-->
-
             <div
             [@slideInSprint] class="m-small font-icon-list col-lg-2 col-md-2 col-sm-2 col-xs-6 col-xs-6"
-            *ngFor="let sp of sprints">
+            *ngFor="let sp of sprints" (click)="openDialogDetailsSprint(i,sp)">
               <div class="font-icon-detail">
                 <i class="fas fa-tasks"></i>
                 <p><i class="fas fa-duotone fa-spinner"></i>  {{sp.etat}}</p>
@@ -17,6 +16,7 @@
                   <br> {{sp.dateFin |date}} </p>
               </div>
             </div>
+
 
 
             <!--end-->
@@ -57,14 +57,23 @@
         [cdkDropListData]="histoireTicketsByProductBacklogId"
         (cdkDropListDropped)="drop($event)">
         <div id="element" cdkDrag class="example-box" *ngFor="let listHTByPB of histoireTicketsByProductBacklogId;index as i">
-            <i class="fa-sharp fa-solid fa-clipboard-check"></i>
-            <span class="numTicket" >Ticket-{{i+1}}</span>
-            <span>{{listHTByPB.titre}}</span> &nbsp;
-  <span id="priorite">({{listHTByPB.priorite}})</span>
-  <i id="btnDelete" (click)="removeUserStoryFromProductBacklog(listHTByPB.id)" class="fa-solid fa-trash"></i>
+          <i class="fa-sharp fa-solid fa-clipboard-check"></i>
+          <span class="numTicket" >Ticket-{{i+1}}</span>
+          <span>{{listHTByPB.titre}}</span> &nbsp;
+          <span id="priorite">({{listHTByPB.priorite}})</span>
+          <select (change)="assignUserStoryToSprint(listHTByPB.id, $event.target.value)"
+          [(ngModel)]="listHTByPB.sprintId">
+            <option value="" [selected]="!listHTByPB.sprintId">-- Sélectionner un sprint --</option>
+            <option *ngFor="let sprint of sprints; index as i" [value]="sprint.id" [selected]="listHTByPB.sprintId == sprint.id">{{'Sprint '+(i+1)}} </option>
+          </select>
+          <i id="btnUpdate" (click)="openDialogUpdateUserStory(listHTByPB.id)" class="fa-solid fa-pen"></i>
+          <i id="btnDelete" (click)="removeUserStoryFromProductBacklog(listHTByPB.id)" class="fa-solid fa-trash"></i>
         </div>
       </div>
     </div>
+
+
+
 </details>
 
 <!--liste histoire tickets-->

@@ -10,6 +10,8 @@
     <input type="text" matInput [matDatepicker]="picker1" formControlName="dateLancement">
     <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
     <mat-datepicker #picker1></mat-datepicker>
+    <mat-error *ngIf="form.controls['dateLancement'].hasError('dateInvalid')"
+    class="mat-error">La date doit être supérieure ou égale à la date système</mat-error>
   </mat-form-field>
 
   <mat-form-field class="form-field">

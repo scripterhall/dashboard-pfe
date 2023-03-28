@@ -29,7 +29,7 @@ export const ROUTES: RouteInfo[] = [
     icon: "icon-tie-bow",
     class: "" },
   {
-    path: "/notifications",
+    path: "/scrumBoard",
     title: "scrum board",
     rtlTitle: "لوحة السكروم",
     icon: "icon-pin",

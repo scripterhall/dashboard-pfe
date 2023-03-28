@@ -3,7 +3,9 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { Observable, Observer } from 'rxjs';
 import { Membre } from 'src/app/model/membre';
+import { ProductBacklog } from 'src/app/model/product-backlog';
 import { Projet } from 'src/app/model/projet';
+import { ProductBacklogService } from 'src/app/service/product-backlog.service';
 import { ProjetServiceService } from 'src/app/service/projet-service.service';
 
 export interface ExampleTab {
@@ -15,7 +17,6 @@ interface Animal {
   sound: string;
 }
 
-
 @Component({
   selector: 'app-select-projet',
   templateUrl: './select-projet.component.html',
@@ -24,7 +25,6 @@ interface Animal {
 
 
 export class SelectProjetComponent implements OnInit {
-
   valid:boolean=false;
   /*   formulaire d'ajout de projet   */
   projetForm:FormGroup;
@@ -56,6 +56,7 @@ export class SelectProjetComponent implements OnInit {
   panelOpenState2 = false;
  /*  end */
   constructor(private projetService: ProjetServiceService,
+              private productBacklogService:ProductBacklogService,
               private formBuilder: FormBuilder,
               private router: Router) {
     this.asyncTabs = new Observable((observer: Observer<ExampleTab[]>) => {
@@ -92,17 +93,31 @@ onCancel() {
   this.projetForm.reset();
 }
 
-/*   envoyer le formulaire de creation   */
 projet:Projet;
-onSubmit(){
+
+onSubmit() {
   console.log(this.projetForm.value);
   this.projetService.ajouterProjetByChef(this.projetForm.value).subscribe(
-    data=>{
-      this.projet = data;
-      localStorage.setItem('projet',JSON.stringify(this.projet));
+    projet => {
+      this.projet = projet;
+      localStorage.setItem('projet', JSON.stringify(this.projet));
+
+      const productBacklog: ProductBacklog = new ProductBacklog();
+      this.productBacklogService.createProductBacklog(productBacklog, this.projet.id).subscribe(
+        data => {
+          console.log('Product backlog créé avec succès:', data);
+        },
+        error => {
+          console.error('Erreur lors de la création du product backlog:', error);
+        }
+      );
+    },
+    error => {
+      console.error('Erreur lors de la création du projet:', error);
     }
-  )
+  );
 }
+
 
 
 /** passer d un expansion a un autre */

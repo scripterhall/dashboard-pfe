@@ -11,6 +11,9 @@ export class HistoireTicketService {
 
   constructor(private http: HttpClient) { }
 
+  efforts: number[] = [1, 2, 3, 5, 8, 13];
+  priorities: string[] = ['Haute', 'Moyenne', 'Faible'];
+
   public getListHistoireTicketByProductBacklog(productBacklogId:number){
     return this.http.get<TicketHistoire[]>(`${url1}/productBacklog/`+productBacklogId);
   }
@@ -47,5 +50,19 @@ export class HistoireTicketService {
     const url = `${url1}/new`;
     return this.http.post(url, userStory);
   }
+
+  getHistoireTicketBySprintId(idSprint:number){
+    return this.http.get<TicketHistoire[]>(`${url1}/sprint/`+idSprint)
+  }
+
+  DetacherHtSprint(histoireTicket:TicketHistoire){
+    return this.http.put(`${url1}`,histoireTicket)
+  }
+
+  updateUserStory(id: number, histoireTicket: TicketHistoire): Observable<TicketHistoire> {
+    const url = `${url1}/histoireTicket/${id}`;
+    return this.http.put<TicketHistoire>(url, histoireTicket);
+  }
+
 
 }

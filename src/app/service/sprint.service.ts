@@ -11,12 +11,22 @@ export class SprintService {
 
   constructor(private http: HttpClient) { }
 
-  public getListSprintsByProductBacklog(productBacklogId:number){
+   getListSprintsByProductBacklog(productBacklogId:number){
     return this.http.get<Sprint[]>(`${url1}/productBacklog/`+productBacklogId);
   }
 
-  public createSprint(sprint: Sprint, productBacklogId: number): Observable<Sprint> {
+   createSprint(sprint: Sprint, productBacklogId: number): Observable<Sprint> {
     return this.http.post<Sprint>(`${url1}?productBacklogId=${productBacklogId}`, sprint);
   }
+
+   modifierSprint(sprint:Sprint){
+    return this.http.put<Sprint>(`${url1}`,sprint)
+  }
+
+  supprimerSprint(id:number){
+    return this.http.delete<Sprint>(`${url1}/`+id)
+  }
+
+
 
 }

@@ -6,8 +6,8 @@ export class Sprint {
     public id?:number;
     public dateLancement?:Date; // date de debut de traivail dans le sprint
     public dateFin?:Date ;//respecter le timebox
-    public nbrEffortSprint?:number;//nombre d'effort prix dans le sprint
-    public etat?:string;// sprint en cours , en pause ,annuler ...
+    public velocite?:number;//nombre d'effort prix dans le sprint
+    public etat?:string;// sprint en cours , en attente ,annuler ,terminer ...
     public objectif?:string;
     public productBacklogId?:number;
     public productBacklog?:ProductBacklog;

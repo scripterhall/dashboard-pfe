@@ -18,11 +18,13 @@ import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 })
 export class AjouterTicketHistoireFormComponent {
 
+  efforts: number[]=this.histoireTicketService.efforts;
+  priorities: string[]=this.histoireTicketService.priorities;
+
   constructor(private fb: FormBuilder, private histoireTicketService:HistoireTicketService,
     public dialogRef: MatDialogRef<AjouterTicketHistoireFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
-
 
   onNoClick(): void {
     this.dialogRef.close();

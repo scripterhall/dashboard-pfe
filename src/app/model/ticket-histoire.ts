@@ -9,14 +9,14 @@ export class TicketHistoire extends Ticket{
 
     public id?:number;
     public priorite?:string;//haute,faible,moyenne
+    public status?:string;//en cours , en attente de prendre , terminer
     public effort?:number;//planing pocker
-
+    public position?:number;//our ordonner le product backlog
     public productBacklogId?:number;
     public productBacklog?:ProductBacklog;
 
     public sprintId?:number;
     public sprint?:Sprint;
 
-    public position?:number;
     public membreId?:number;
 }

@@ -9,6 +9,7 @@ const url1 = "http://localhost:9999/gestion-product-backlog/product-backlogs"
   providedIn: 'root'
 })
 export class ProductBacklogService {
+
   constructor(private http: HttpClient) { }
 
   public getProductBacklogById(productBacklogId:number){
@@ -22,5 +23,18 @@ export class ProductBacklogService {
 
   getHistoireTicketsByProductBacklogId(productBacklogId: number): Observable<TicketHistoire[]> {
     return this.http.get<TicketHistoire[]>(`${url1}/${productBacklogId}/histoiresTickets`);
+  }
+
+  createProductBacklog(productBacklog: ProductBacklog, projectId: number): Observable<ProductBacklog> {
+    productBacklog.projetId = projectId;
+    return this.http.post<ProductBacklog>(`${url1}?projectId=${projectId}`, productBacklog);
+  }
+
+  getProductBacklogByIdFromLocalStorage(){
+    let productBacklogCourantStr = localStorage.getItem("productBacklogCourant");
+    let productBacklogCourantObj = JSON.parse(productBacklogCourantStr);
+    let id = productBacklogCourantObj.id;
+    console.log("id product backlog courant = "+id);
+    return id;
   }
 }

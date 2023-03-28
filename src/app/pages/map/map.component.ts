@@ -1,6 +1,22 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Directive, OnInit } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { interval, map, Observable, of, takeWhile } from "rxjs";
+import { Membre } from "src/app/model/membre";
+import { Sprint } from "src/app/model/sprint";
+import { SprintBacklog } from "src/app/model/sprint-backlog";
+import { TacheTicket } from "src/app/model/tache-ticket";
+import { TicketHistoire } from "src/app/model/ticket-histoire";
+import { HistoireTicketService } from "src/app/service/histoire-ticket.service";
+import { MembreService } from "src/app/service/membre.service";
+import { SprintBacklogService } from "src/app/service/sprint-backlog.service";
+import { SprintService } from "src/app/service/sprint.service";
+import { TicketTacheService } from "src/app/service/ticket-tache.service";
+import { AjoutTacheSpbComponent } from "../dialogs/ajout-tache-spb/ajout-tache-spb.component";
 
-declare const google: any;
+export interface DialogDataTicketTache {
+  sprintBacklog: SprintBacklog;
+  ticketHistoire:TicketHistoire
+}
 
 interface Marker {
 lat: number;
@@ -11,214 +27,158 @@ draggable?: boolean;
 
 @Component({
   selector: "app-map",
-  templateUrl: "map.component.html"
+  templateUrl: "map.component.html",
+  styleUrls: ['./map.component.scss'],
+  
 })
+
+
 export class MapComponent implements OnInit {
-  constructor() {}
+  constructor(
+    private sprintService:SprintService,
+    private ticketHistoireService:HistoireTicketService,
+    private ticketTacheService:TicketTacheService,
+    private sprintBacklogService:SprintBacklogService,
+    private membreService:MembreService,
+    private dialogAjout: MatDialog,
+  ) {}
+  
+  sprintsList:Sprint[]
+  sprintBacklogs:SprintBacklog[]=[]
+  ticketsHistoireList:TicketHistoire[]
+  ticketsTache:TacheTicket[]=[]
+  taskMap:Map<TicketHistoire,TacheTicket[]>=new Map<TicketHistoire,TacheTicket[]>()
+  listMembre:Membre[]
+  ticketTachePrise:TacheTicket[]
+  endDate: Date = new Date('2023-03-31T23:59:59'); 
 
   ngOnInit() {
-
-        var myLatlng = new google.maps.LatLng(40.748817, -73.985428);
-        var mapOptions = {
-            zoom: 13,
-            center: myLatlng,
-            scrollwheel: false, //we disable de scroll over the map, it is a really annoing when you scroll through page
-            styles: [{
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#1d2c4d"
-                }]
-              },
-              {
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#8ec3b9"
-                }]
-              },
-              {
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                  "color": "#1a3646"
-                }]
-              },
-              {
-                "featureType": "administrative.country",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                  "color": "#4b6878"
-                }]
-              },
-              {
-                "featureType": "administrative.land_parcel",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#64779e"
-                }]
-              },
-              {
-                "featureType": "administrative.province",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                  "color": "#4b6878"
-                }]
-              },
-              {
-                "featureType": "landscape.man_made",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                  "color": "#334e87"
-                }]
-              },
-              {
-                "featureType": "landscape.natural",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#023e58"
-                }]
-              },
-              {
-                "featureType": "poi",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#283d6a"
-                }]
-              },
-              {
-                "featureType": "poi",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#6f9ba5"
-                }]
-              },
-              {
-                "featureType": "poi",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                  "color": "#1d2c4d"
-                }]
-              },
-              {
-                "featureType": "poi.park",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                  "color": "#023e58"
-                }]
-              },
-              {
-                "featureType": "poi.park",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#3C7680"
-                }]
-              },
-              {
-                "featureType": "road",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#304a7d"
-                }]
-              },
-              {
-                "featureType": "road",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#98a5be"
-                }]
-              },
-              {
-                "featureType": "road",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                  "color": "#1d2c4d"
-                }]
-              },
-              {
-                "featureType": "road.highway",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#2c6675"
-                }]
-              },
-              {
-                "featureType": "road.highway",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                  "color": "#9d2a80"
-                }]
-              },
-              {
-                "featureType": "road.highway",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                  "color": "#9d2a80"
-                }]
-              },
-              {
-                "featureType": "road.highway",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#b0d5ce"
-                }]
-              },
-              {
-                "featureType": "road.highway",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                  "color": "#023e58"
-                }]
-              },
-              {
-                "featureType": "transit",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#98a5be"
-                }]
-              },
-              {
-                "featureType": "transit",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                  "color": "#1d2c4d"
-                }]
-              },
-              {
-                "featureType": "transit.line",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                  "color": "#283d6a"
-                }]
-              },
-              {
-                "featureType": "transit.station",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#3a4762"
-                }]
-              },
-              {
-                "featureType": "water",
-                "elementType": "geometry",
-                "stylers": [{
-                  "color": "#0e1626"
-                }]
-              },
-              {
-                "featureType": "water",
-                "elementType": "labels.text.fill",
-                "stylers": [{
-                  "color": "#4e6d70"
-                }]
+    this.membreService.afficherTousMembres().subscribe(
+      data => {
+        this.listMembre = data
+      }
+    )
+    const productBacklog  = JSON.parse(localStorage.getItem('productBacklog'))
+    this.sprintService.getListSprintsByProductBacklog(productBacklog.id).subscribe(
+      listSprintData => {
+          console.log(listSprintData);
+          this.sprintsList = listSprintData
+          for(let i = 0; i<listSprintData.length;i++)
+            this.sprintBacklogService.afficherSprintBacklogBySprintId(listSprintData[i].id).subscribe(
+              sprintBacklogData =>{
+                console.log(sprintBacklogData);
+                this.sprintBacklogs.push(sprintBacklogData);
+                
               }
-            ]
-        };
-        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
-        var marker = new google.maps.Marker({
-            position: myLatlng,
-            title: "Hello World!"
-        });
-
-        // To add the marker to the map, call setMap();
-        marker.setMap(map);
+            )
+          
+      }
+    );
+    
   }
+
+  afficherDetailSprintBacklog(sprintBacklog:SprintBacklog){
+      console.log(sprintBacklog.sprint.id);
+      const taskMap = new Map();
+      this.ticketHistoireService.getHistoireTicketBySprintId(sprintBacklog.sprint.id).subscribe(
+        data => {
+          this.ticketsHistoireList = data;
+          for(let ht of this.ticketsHistoireList){
+            
+            this.ticketTacheService.getListTicketTacheParHt(ht.id).subscribe(
+              listTacheData =>{
+                this.ticketsTache = listTacheData;
+                taskMap.set(ht,this.ticketsTache)
+                console.log(this.ticketsTache);
+            
+                
+              }
+            )
+           
+          }
+          this.taskMap = taskMap
+        }
+      )
+       
+  }
+
+  //choix couleur tache 
+  getBackgroundColor(index: number): any {
+    if (index % 2 === 0) {
+      return { 'background-color': '#B3BD51' };
+    } else if (index % 3 === 0 && index % 2 === 0) {
+      return { 'background-color': '#EEBF32' };
+    } else if (index % 3 === 0) {
+      return { 'background-color': '#D7CD52' };
+    } else if (index % 7 === 0) {
+      return { 'background-color': '#DDDAD3' };
+    }else if (index === 1) {
+      return { 'background-color': '#DDDAD3' };
+    } else {
+      return {};
+    }
+  }
+
+  
+  prendreTicket(membre:Membre,idTicketTache:number){
+      this.ticketTacheService.affecterTicketAMembre(membre,idTicketTache).subscribe(
+        dataTicket=>{
+            this.ticketsTache.forEach(ticket=>{
+              if(ticket.id == idTicketTache){
+                ticket.dateFin = dataTicket.dateFin
+                ticket.dateLancement = dataTicket.dateLancement
+                ticket.membre = dataTicket.membre
+                ticket.membreId = dataTicket.membreId
+              }
+                
+            })
+        }
+      )
+  }
+ 
+  reverseIndex(index: number, length: number): number {
+    return length - index;
+  }
+
+  activeIndex = -1;
+
+  toggleAccordion(index: number) {
+    if (index === this.activeIndex) {
+      this.sprintBacklogs[index].isOpen = false;
+      this.activeIndex = -1;
+    } else {
+      this.sprintBacklogs.forEach((item, i) => {
+        item.isOpen = i === index ? true : false;
+      });
+      this.activeIndex = index;
+    }
+  }
+
+
+  openAjoutDialog(ht:TicketHistoire,sprintBacklog:SprintBacklog){
+    const dialogRef = this.dialogAjout.open(AjoutTacheSpbComponent,{
+      width: '350px',
+      height:'450px',
+      data: {sprintBacklog:sprintBacklog,
+             ticketHistoire:ht
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+      const ticketHistoire = result.ht
+      for(const key of this.taskMap.keys()) {
+        if (key.id === ticketHistoire.id) {
+          const listeTache = this.taskMap.get(key)
+          listeTache.push(result)
+        }
+       }
+     } 
+    }); 
+  }
+
+  
+
 }
+  
+   

@@ -1,0 +1,43 @@
+mat-list-item:hover{
+    border-bottom: 1px solid rgba($color: #255628, $alpha: 0.5);
+}
+p{
+    color: black;
+    
+}
+
+.example-card{
+    border-top:1px solid black;
+    border-left: 1px solid black;
+    border-top-right-radius: 45%;
+    border-top-left-radius:5px ;
+    box-shadow: 10px 10px 5px rgba(0,0,0,0.4);
+}
+
+my-select{
+    border-radius:50% ;
+    width: 40%;
+    height: 40%;
+}
+
+.custom-calendar .mat-calendar-body {
+    background-color: #f7f7f7;
+  }
+  
+  .custom-calendar .mat-calendar-table-header {
+    background-color: #f0ad4e;
+    color: #fff;
+  }
+  
+  .custom-calendar .mat-calendar-header {
+    background-color: #f0ad4e;
+    color: #fff;
+  }
+  
+  .custom-calendar .mat-calendar-header-arrow {
+    color: #fff;
+  }
+  
+  .custom-calendar .mat-calendar-cell:hover {
+    background-color: #e0e0e0;
+  }
