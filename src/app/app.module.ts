@@ -40,6 +40,8 @@ import {MatMenuModule} from '@angular/material/menu';
 import { AjoutTacheSpbComponent } from './pages/dialogs/ajout-tache-spb/ajout-tache-spb.component';
 import { GestionTacheDialogComponent } from './pages/dialogs/gestion-tache-dialog/gestion-tache-dialog.component';
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { DecisionComponent } from './pages/decision/decision.component';
+import { InvitationComponent } from './pages/dialogs/invitation/invitation.component';
 
 
 @NgModule({
@@ -76,7 +78,7 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
     MatButtonModule,
     MatDialogModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent,SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent, AjoutTacheSpbComponent, GestionTacheDialogComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent,SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent, AjoutTacheSpbComponent, GestionTacheDialogComponent, DecisionComponent, InvitationComponent],
   providers: [],
   bootstrap: [AppComponent]
 

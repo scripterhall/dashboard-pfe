@@ -2,12 +2,14 @@ import { Component, Directive, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { interval, map, Observable, of, takeWhile } from "rxjs";
 import { Membre } from "src/app/model/membre";
+import { Projet } from "src/app/model/projet";
 import { Sprint } from "src/app/model/sprint";
 import { SprintBacklog } from "src/app/model/sprint-backlog";
 import { TacheTicket } from "src/app/model/tache-ticket";
 import { TicketHistoire } from "src/app/model/ticket-histoire";
 import { HistoireTicketService } from "src/app/service/histoire-ticket.service";
 import { MembreService } from "src/app/service/membre.service";
+import { RoleService } from "src/app/service/role.service";
 import { SprintBacklogService } from "src/app/service/sprint-backlog.service";
 import { SprintService } from "src/app/service/sprint.service";
 import { TicketTacheService } from "src/app/service/ticket-tache.service";
@@ -42,6 +44,7 @@ export class MapComponent implements OnInit {
     private sprintBacklogService:SprintBacklogService,
     private membreService:MembreService,
     private dialogAjout: MatDialog,
+    private roleService:RoleService,
     private dialogGestion:MatDialog
   ) {}
   
@@ -50,16 +53,23 @@ export class MapComponent implements OnInit {
   ticketsHistoireList:TicketHistoire[]
   ticketsTache:TacheTicket[]=[]
   taskMap:Map<TicketHistoire,TacheTicket[]>=new Map<TicketHistoire,TacheTicket[]>()
-  listMembre:Membre[]
+  listMembre:Membre[]=[]
   ticketTachePrise:TacheTicket[]
   endDate: Date = new Date('2023-03-31T23:59:59'); 
  
   ngOnInit() {
-    this.membreService.afficherTousMembres().subscribe(
-      data => {
-        this.listMembre = data
+   
+    const projet:Projet = JSON.parse(localStorage.getItem('projets'))  
+    this.roleService.afficherListRoleParProjet(projet.id).subscribe(
+      data =>{
+        console.log(data);
+        for(let role of data){
+          this.listMembre.push(role.membre)
+        }
       }
-    )
+    ) 
+
+
     const productBacklog  = JSON.parse(localStorage.getItem('productBacklog'))
     this.sprintService.getListSprintsByProductBacklog(productBacklog.id).subscribe(
       listSprintData => {

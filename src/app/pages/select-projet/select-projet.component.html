@@ -95,18 +95,22 @@
                 <mat-form-field appearance="fill">
                   <mat-label>Projets</mat-label>
                   <mat-select formControlName="projetId" >
-                    <mat-option *ngFor="let p of projets" [value]="p.id">{{p.nom}} -- cles#{{p.cles}} </mat-option>
+                    <mat-option *ngFor="let p of projets" (click)="recupererMembreProjet()" [value]="p.id">{{p.nom}} -- cles#{{p.cles}} </mat-option>
                   </mat-select>
                   <mat-error *ngIf="rolePkForm.get('projetId').hasError('required')">il faut choisir un projet</mat-error>
                 </mat-form-field>
                 <mat-action-row>
-                  <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+                  <button mat-button color="primary" [disabled]="rolePkForm.invalid" (click)="nextStep()">Suivant</button>
                 </mat-action-row>
               
               </mat-expansion-panel>
               <!-- end block choix projet -->
 
-              <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 1" (opened)="setStep(1)" hideToggle>
+              <mat-expansion-panel style="margin-top:2%;" 
+              matTooltip="vous avez choisis un projet !!"
+              [disabled]="rolePkForm.invalid" 
+              [expanded]="step === 1" 
+              (opened)="setStep(1)" hideToggle>
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     Les membres
@@ -119,7 +123,7 @@
                 <mat-form-field appearance="fill">
                   <mat-label>Membres</mat-label>
                   <mat-select formControlName="membreId"  >
-                    <mat-option *ngFor="let m of membreList" [value]="m.id">{{m.email}}</mat-option>
+                    <mat-option *ngFor="let m of membreList"  [value]="m.id">{{m.email}}</mat-option>
                   </mat-select>
                 </mat-form-field>
                 <mat-action-row>
@@ -130,7 +134,12 @@
             </ng-container>
 
             <ng-container [formGroup]="invitationForm">
-              <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 2" (opened)="setStep(2)" hideToggle>
+              <mat-expansion-panel 
+              matTooltip="vous avez choisis un projet !!"
+              [disabled]="rolePkForm.invalid"
+               style="margin-top:2%;"
+                [expanded]="step === 2" 
+                (opened)="setStep(2)" hideToggle>
                 
                 <mat-expansion-panel-header>
                   <mat-panel-title>
@@ -145,17 +154,19 @@
                 <mat-form-field appearance="fill">
                   <mat-label>e-mail</mat-label>
                   <input formControlName="emailInvitee"  matInput>
-                  <mat-error *ngIf="invitationForm.get('emailInvitee').hasError('required')">le champ email est obligatoire</mat-error>
+                  <mat-error *ngIf="invitationForm.get('emailInvitee').touched && invitationForm.get('emailInvitee').hasError('required')">le champ email est obligatoire</mat-error>
+                  <mat-error *ngIf="invitationForm.get('emailInvitee').dirty && invitationForm.get('emailInvitee').errors?.emailExists">vous avez déjà envoyé une invitation a ce mail</mat-error>
+                  <mat-hint class="text-warning" *ngIf="invitationForm.get('emailInvitee').dirty && invitationForm.controls.emailInvitee.errors.invalidEmail">vous devez respecter les regle de nommage d'un mail "@"  et "."</mat-hint>
                 </mat-form-field>
 
                 <mat-action-row>
                   <button mat-button color="warn" (click)="prevStep()">Précedent</button>
-                  <button mat-button color="primary" (click)="nextStep()">Suivant</button>
+                  <button mat-button color="primary" [disabled]="invitationForm.invalid" (click)="nextStep()">Suivant</button>
                 </mat-action-row>
               </mat-expansion-panel>
             </ng-container>
             <ng-container [formGroup]="roleForm">
-              <mat-expansion-panel style="margin-top:2%;" [expanded]="step === 3" (opened)="setStep(3)"
+              <mat-expansion-panel style="margin-top:2%;" [disabled]="invitationForm.invalid" [expanded]="step === 3" (opened)="setStep(3)"
                hideToggle>
                 <mat-expansion-panel-header>
                   <mat-panel-title>

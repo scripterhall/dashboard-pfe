@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { RolePk } from '../model/keys/role-pk';
 import { Role } from '../model/role';
 
 const URL = "http://localhost:9999/invitation-service/roles"
@@ -25,4 +26,37 @@ export class RoleService {
         })
       );
   }
+
+  afficherRole(pk:RolePk):Observable<Role>{
+    return this.http.post(`${URL}/role`,pk,{observe:'response'})
+    .pipe(
+      map(response=>{
+        const roleRecup:Role = response.body
+        if(response.status === 404)
+          return null
+        return roleRecup 
+      })
+    )
+  }
+
+  supprimerRole(id:RolePk):Observable<void>{
+    let params = new HttpParams().set('rolePk', JSON.stringify(id));
+    return this.http.delete<void>(`${URL}`,{params:params});
+  }
+
+  afficherListRoleParProjet(idProjet:number){
+    return this.http.get<Role[]>(`${URL}/`+idProjet,{observe:'response'})
+    .pipe(
+      map(response =>{
+        const roleListe :Role[] = response.body
+        if(response.status === 404)
+          return null
+        if(response.status === 500)
+          return null
+        return roleListe
+      })
+    )
+  }
+
+
 }

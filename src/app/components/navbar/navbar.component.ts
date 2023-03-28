@@ -3,6 +3,14 @@ import { ROUTES } from "../sidebar/sidebar.component";
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog } from "@angular/material/dialog";
+import { InvitationComponent } from "src/app/pages/dialogs/invitation/invitation.component";
+import { Projet } from "src/app/model/projet";
+import { ChefProjet } from "src/app/model/chef-projet";
+
+export interface InvitationPanel{
+  projet:Projet
+}
 
 @Component({
   selector: "app-navbar",
@@ -23,6 +31,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     location: Location,
     private element: ElementRef,
+    private dialogInvitation: MatDialog,
     private router: Router,
     private modalService: NgbModal
   ) {
@@ -40,7 +49,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
        navbar.classList.add('navbar-transparent');
      }
    };
+   chef:ChefProjet
   ngOnInit() {
+
+    //this.chef = JSON.parse(localStorage.getItem('chef-projet'));
+
     window.addEventListener("resize", this.updateColor);
     this.listTitles = ROUTES.filter(listTitle => listTitle);
     const navbar: HTMLElement = this.element.nativeElement;
@@ -193,4 +206,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnDestroy(){
      window.removeEventListener("resize", this.updateColor);
   }
+  openDialogInvitation(){
+    const dialogRef = this.dialogInvitation.open(InvitationComponent,{
+      width: '350px',
+      height:'420px',
+      data: {
+        projet:JSON.parse(localStorage.getItem('projets'))
+      }
+    });
+  }
+
+
+
+
+
 }

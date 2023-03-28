@@ -6,6 +6,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.component";
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { SelectProjetComponent } from "./pages/select-projet/select-projet.component";
+import { DecisionComponent } from "./pages/decision/decision.component";
 
 const routes: Routes = [
   {
@@ -35,6 +36,10 @@ const routes: Routes = [
   {
     path:"liste-projet",
     component:SelectProjetComponent
+  },
+  {
+    path:"decision/:idProjet/:idMembre",
+    component:DecisionComponent
   },
   {
     path: "**",
