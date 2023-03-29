@@ -320,6 +320,7 @@ export class IconsComponent implements OnInit {
       this.productBacklogService.getProductBacklogByIdProjet(this.getProjetByIdFromLocalStorage()).subscribe(
         data => {
           const productBacklog = data;
+          console.log(productBacklog);
           localStorage.setItem('productBacklogCourant', JSON.stringify(productBacklog));
           console.log(this.productBacklog);
         },

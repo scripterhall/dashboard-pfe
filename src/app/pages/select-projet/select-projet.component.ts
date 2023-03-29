@@ -147,6 +147,7 @@ export class SelectProjetComponent implements OnInit {
               private roleService: RoleService,
               private invitationService: InvitationService,
               private membreService: MembreService,
+              private productBacklogService:ProductBacklogService,
               private router: Router) {
 
     this.asyncTabs = new Observable((observer: Observer<ExampleTab[]>) => {
@@ -172,7 +173,7 @@ export class SelectProjetComponent implements OnInit {
 /*   boutton gerer de content 1  */
   gerer(index:number){
     if(confirm("Vous etes sûr de gerer le projet "+this.projets[index].nom+" !!")){
-    localStorage.setItem('projets', JSON.stringify(this.projets[index]));
+    localStorage.setItem('projetCourant', JSON.stringify(this.projets[index]));
       this.router.navigateByUrl('/dashboard')
     }
 
@@ -186,14 +187,27 @@ onCancel() {
 
 /*   envoyer le formulaire de creation   */
 projet:Projet;
-onSubmit(){
+onSubmit() {
   console.log(this.projetForm.value);
   this.projetService.ajouterProjetByChef(this.projetForm.value).subscribe(
-    data=>{
-      this.projet = data;
-      localStorage.setItem('projet',JSON.stringify(this.projet));
+    projet => {
+      this.projet = projet;
+      localStorage.setItem('projet', JSON.stringify(this.projet));
+
+      const productBacklog: ProductBacklog = new ProductBacklog();
+      this.productBacklogService.createProductBacklog(productBacklog, this.projet.id).subscribe(
+        data => {
+          console.log('Product backlog créé avec succès:', data);
+        },
+        error => {
+          console.error('Erreur lors de la création du product backlog:', error);
+        }
+      );
+    },
+    error => {
+      console.error('Erreur lors de la création du projet:', error);
     }
-  )
+  );
 }
 
 
