@@ -26,7 +26,7 @@ export class AjoutTacheSpbComponent implements OnInit {
       titre: ['',Validators.required],
       sprintBacklogId:this.data.sprintBacklog.id,
       ticketHistoireId:this.data.ticketHistoire.id,
-      etat:"a faire",
+      etat:"à faire",
       description: [null, Validators.required],
     });
   }

@@ -96,10 +96,14 @@
                             </button>
                             <mat-menu #menu="matMenu" >
                               <div style="overflow-y:auto;max-height:100px;" >
-                              <button (click)="prendreTicket(membre,ticketTache.id)" mat-menu-item *ngFor="let membre of listMembre">
+                                <ng-container *ngFor="let membre of listMembre">
+                              <button (click)="prendreTicket(membre,ticketTache.id)" *ngIf="membre.nom!=null" mat-menu-item >
+                                
                                 <mat-icon>person</mat-icon>
                                 <span>{{membre.email}}</span>
+                                
                               </button>
+                            </ng-container>
                             </div>
                             </mat-menu>
                           </div>
@@ -146,9 +150,11 @@
                  style="margin-bottom: 4%;"
                  *ngFor="let tt of task.value;index as i">
                   
-                <span style="margin-left:1%;font-size:100%;" class="badge col-lg-12 col-md-12 col-sm-12 w-75 p-3 bg-secondary rounded-pill"><p class="title text-dark">
-                  #T{{i+1}}&nbsp;&nbsp;&nbsp;{{tt.nbHeurs}}H de travails
+                <span style="margin-left:1%;font-size:100%;"  class="badge col-lg-12 col-md-12 col-sm-12 w-75 p-3 bg-secondary rounded-pill"><p class="title text-dark">
+                  <s *ngIf="tt.etat == 'terminer'">#T{{i+1}}&nbsp;&nbsp;&nbsp;{{tt.nbHeurs}}H de travails</s>
+                  <span *ngIf="tt.etat!='terminer'">#T{{i+1}}&nbsp;&nbsp;&nbsp;{{tt.nbHeurs}}H de travails</span>
                 </p></span>
+              
               </div>
                 </div>
               </div>
