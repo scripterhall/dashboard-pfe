@@ -13,6 +13,7 @@ import { MembreService } from 'src/app/service/membre.service';
 import { ProjetServiceService } from 'src/app/service/projet-service.service';
 import { RoleService } from 'src/app/service/role.service';
 import Swal from 'sweetalert2';
+import { emailValidator, emailExistsValidator } from './email-exists.validator';
 
 export interface ExampleTab {
   label: string;
@@ -53,15 +54,11 @@ export class SelectProjetComponent implements OnInit {
   /** les formulaire d'invi et de creation de role */
   invitationForm:FormGroup;
   roleForm:FormGroup;
-  invitationPkForm:FormGroup;
   rolePkForm:FormGroup ;
   combinedForm:FormGroup;
   ngOnInit(): void {
 
-    this.invitationPkForm = this.formBuilder2.group({
 
-      id:null
-    })
 
     this.rolePkForm = this.formBuilder2.group({
       membreId:null,
@@ -70,7 +67,7 @@ export class SelectProjetComponent implements OnInit {
 
     this.invitationForm = this.formBuilder2.group({
       chefProjetId:1,
-      emailInvitee:["",Validators.required],
+      emailInvitee:["",[Validators.required,emailValidator]],
       membreId:null
     })
 
@@ -103,7 +100,8 @@ export class SelectProjetComponent implements OnInit {
 
     this.membreService.afficherTousMembres().subscribe(
       data=>{
-        this.membreList = data
+
+         /**test avec invtation list */
       }
     )
 
@@ -236,7 +234,7 @@ step = 0;
     return this.roleForm.valid
     && this.rolePkForm.valid
     && this.invitationForm.valid
-    && this.invitationPkForm.valid
+
   }
 
 
@@ -270,5 +268,31 @@ step = 0;
       'success',
     )
 
+  }
+
+  listNewMembre:Membre[]=[]
+  /** recuperer les membre de projet  */
+  recupererMembreProjet(){
+    /** initialiser */
+    this.invitationForm.patchValue({ emailInvitee: "" });
+    this.listNewMembre =[]
+    this.invitationForm.get('emailInvitee').setValidators([Validators.required,emailValidator])
+
+    const projetId = this.rolePkForm.get('projetId').value
+    this.membreService.afficherTousMembres().subscribe(
+      data => {
+        this.roleService.afficherListRoleParProjet(projetId).subscribe(
+          dataRoles => {
+            this.membreList =data.filter(membre=> membre.id != dataRoles.find(role => role.pk.membreId == membre?.id)?.pk.membreId)
+            this.listNewMembre = data.filter(
+              membre => membre.email == dataRoles.find(role => role.membre.email == membre.email)?.membre.email
+            )
+            console.log(this.listNewMembre);
+            if (this.listNewMembre.length > 0)
+              this.invitationForm.get('emailInvitee').setValidators([emailExistsValidator(this.listNewMembre),Validators.required,emailValidator]);
+          }
+        )
+      }
+    )
   }
 }

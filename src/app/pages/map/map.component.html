@@ -50,9 +50,9 @@
                     <span class="title">ticket histoire a une velocite de </span> <span class="text-warning"><bold>{{task.key.effort}}</bold></span>
                     <br>
                     <span class="title">ticket</span>&nbsp;<span class="badge rounded-pill" [ngClass]="{
-                      'bg-success': task.key.status === 'TERMINER',
+                      'bg-success': task.key.status === 'TERMINE',
                       'bg-warning': task.key.status === 'EN_ATTENTE',
-                      'bg-primary': task.key.status !== 'TERMINER' && task.key.status!== 'EN_ATTENTE'
+                      'bg-primary': task.key.status !== 'TERMINE' && task.key.status!== 'EN_ATTENTE'
                     }">{{task.key.status}}</span>
                     <div style="border:2px solid rgba(10,220,15,0.6);margin-top:2%;padding:5px;">
                     <span>{{task.key.description}}</span>

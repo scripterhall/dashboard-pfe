@@ -47,6 +47,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ScrumBoardComponent } from './pages/scrum-board/scrum-board.component';
 import { GestionTacheDialogComponent } from './pages/dialogs/gestion-tache-dialog/gestion-tache-dialog.component';
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { DecisionComponent } from './pages/decision/decision.component';
+import { InvitationComponent } from './pages/dialogs/invitation/invitation.component';
 
 
 @NgModule({
@@ -85,7 +87,11 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
     MatStepperModule,
     MatSnackBarModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent, SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent, AjoutTacheSpbComponent, GestionTacheDialogComponent, ConfirmDialogComponent, ConfirmDialogDeleteUserStoryComponent, ConfirmAddUserStoryDialogueComponent, UpdateUserStoryDialogComponent, ScrumBoardComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent,
+    SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent,
+    AjoutTacheSpbComponent, GestionTacheDialogComponent, ConfirmDialogComponent,
+    ConfirmDialogDeleteUserStoryComponent, ConfirmAddUserStoryDialogueComponent,
+    UpdateUserStoryDialogComponent, ScrumBoardComponent, DecisionComponent, InvitationComponent],
   providers: [],
   bootstrap: [AppComponent]
 

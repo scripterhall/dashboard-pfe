@@ -31,4 +31,19 @@ export class MembreService {
         return membres;
       }))
   }
+
+  getMembreById(idMembre:number){
+    return this.http.get<Membre>(`${URL}/`+idMembre,{ observe: 'response' })
+    .pipe(
+      map(response => {
+        const m: Membre = response.body;
+        if(response.status ===404)
+          return null;
+        return m;
+      }));
+  }
+  supprimerMembre(id:number):Observable<void>{
+    return this.http.delete<void>(`${URL}/`+id);
+  }
+
 }

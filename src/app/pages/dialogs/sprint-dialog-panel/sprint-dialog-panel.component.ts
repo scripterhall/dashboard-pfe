@@ -268,6 +268,7 @@ export class SprintDialogPanelComponent implements OnInit{
                   for(let j= 0;j<this.ticketTacheList.length;j++){
                     nbrHeurTotal+=this.ticketTacheList[j].nbHeurs
                     this.ticketTacheList[j].sprintBacklogId = dataSpBacklog.id
+                    this.ticketTacheList[j].etat = "à faire"
                     this.ticketTacheList[j].sprintBacklog = dataSpBacklog
                     this.ticketTacheService.modifierTicketTache(this.ticketTacheList[j]).subscribe(
                       ttData=>{
