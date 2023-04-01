@@ -16,13 +16,11 @@ export class ChefProjetServiceService {
     return this.http.get<ChefProjet>(`${url1}/`+idChef,{ observe: 'response' })
     .pipe(
       map(response => {
-        
+
         const chef: ChefProjet = response.body;
         if(response.status ===404)
           return null;
         return chef;
       }));
   }
-
-
 }

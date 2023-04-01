@@ -32,6 +32,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
 import { FireworksComponent } from '../../pages/fireworks/fireworks.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { HistoireMembreChartComponent } from '../../pages/histoire-membre-chart/histoire-membre-chart.component';
+import { StatCourbComponent } from "src/app/pages/dialogs/stat-courb/stat-courb.component";
 
 @NgModule({
   imports: [
@@ -58,7 +61,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTooltipModule
   ],
   declarations: [
     DashboardComponent,
@@ -69,6 +73,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     TypographyComponent,
     NotificationsComponent,
     MapComponent,
+    HistoireMembreChartComponent,
+    StatCourbComponent
     // RtlComponent
   ]
 })

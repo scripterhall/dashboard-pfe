@@ -2,21 +2,29 @@ import { Component } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Inject } from '@angular/core';
 import { HistoireTicketService } from 'src/app/service/histoire-ticket.service';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 
 @Component({
   selector: 'app-ajouter-ticket-histoire-form',
   templateUrl: './ajouter-ticket-histoire-form.component.html',
-  styleUrls: ['./ajouter-ticket-histoire-form.component.scss']
+  styleUrls: ['./ajouter-ticket-histoire-form.component.scss'],
+  providers: [
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: {showError: true},
+    },
+  ]
 })
 export class AjouterTicketHistoireFormComponent {
+
+  efforts: number[]=this.histoireTicketService.efforts;
+  priorities: string[]=this.histoireTicketService.priorities;
+
   constructor(private fb: FormBuilder, private histoireTicketService:HistoireTicketService,
     public dialogRef: MatDialogRef<AjouterTicketHistoireFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
-
-
-  form: FormGroup;
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -36,26 +44,16 @@ export class AjouterTicketHistoireFormComponent {
     );
   }
 
-  validateDateFin(control: AbstractControl): {[key: string]: any} | null {
-    const dateDeb = new Date(control.parent?.get('dateDeb').value);
-    const dateFin = new Date(control.value);
-    if (dateDeb && dateFin && dateDeb >= dateFin) {
-      return { 'dateFinInvalide': true };
-    }
-    return null;
-  }
-
-
+  form: FormGroup;
   ngOnInit(): void {
     this.form = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(5)]],
+      titre: ['', Validators.required],
       description: [''],
-      effort: ['', [Validators.required, Validators.min(1), Validators.max(13)]],
-      priorite: [''],
-      dateDeb: [],
-      dateFin: ['', this.validateDateFin.bind(this)]
+      effort: ['', Validators.required],
+      priorite: ['', Validators.required]
     });
   }
+
 
 }
 

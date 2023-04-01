@@ -42,10 +42,17 @@ export class DecisionComponent implements OnInit {
   }
 
   accepter(){
-    this.membreService.getMembreById(this.idMembre).subscribe(
+    this.role.status = "ACCEPTE"
+    this.roleService.modifierRole(this.role).subscribe(
       data =>{
-        localStorage.setItem('membre',JSON.stringify(data))
-        this.router.navigateByUrl('/dashboard')
+        console.log(data);
+        
+        this.membreService.getMembreById(this.idMembre).subscribe(
+          data =>{
+            localStorage.setItem('membre',JSON.stringify(data))
+            this.router.navigateByUrl('/dashboard')
+          }
+        )
       }
     )
   }

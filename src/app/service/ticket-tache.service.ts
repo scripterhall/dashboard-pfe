@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Membre } from '../model/membre';
@@ -73,5 +73,23 @@ export class TicketTacheService {
       );
   }
 
+  getTicketsTacheBySprint(sprintId: number): Observable<TacheTicket[]> {
+    const url = `${URL}?sprintId=${sprintId}`;
+    return this.http.get<TacheTicket[]>(url);
+  }
+
+
+  getTicketsTacheByMembreId(membreId:number): Observable<TacheTicket[]>{
+    return this.http.get<TacheTicket[]>(`${URL}/membre/`+membreId,{observe:'response'})
+    .pipe(
+      map(response =>{
+        const ticketsTache:TacheTicket[] = response.body
+        if(response.status === 400 || response.status === 500)
+          return []
+        else
+        return ticketsTache
+      })
+    )
+  }
 
 }

@@ -77,10 +77,12 @@
     "assert": "^2.0.0",
     "chart.js": "2.9.4",
     "core-js": "3.15.2",
+    "dragula": "^3.7.3",
     "fireworks-canvas": "^2.6.2",
     "ngx-countdown-timer": "^0.2.0",
     "ngx-toastr": "14.0.0",
     "rxjs": "7.8.0",
+    "sortablejs": "^1.15.0",
     "sweetalert2": "^11.7.3",
     "tslib": "2.3.0",
     "zone.js": "0.11.4"

@@ -1,23 +1,50 @@
-.form-container {
-  display: flex;
-  flex-direction: column;
+// .form-container {
+//   display: flex;
+//   flex-direction: column;
+// }
+
+// .form-field {
+//   width: 100%;
+//   margin-top: 16px;
+// }
+
+// .button-container {
+//   display: flex;
+//   justify-content: flex-end;
+//   margin-top: 16px;
+// }
+
+// .cancel-button {
+//   margin-right: 16px;
+// }
+
+// .save-button {
+//   min-width: 100px;
+// }
+
+
+h2 {
+  font-size: 22px;
+  margin-bottom: 16px;
+  text-align: left;
+  padding: 25px;
+  padding-bottom: 0;
+  color: black;
 }
 
-.form-field {
-  width: 100%;
-  margin-top: 16px;
+.step-title {
+  font-size: 17px;
+  text-align:center;
 }
 
 .button-container {
   display: flex;
   justify-content: flex-end;
-  margin-top: 16px;
+  align-items: center;
 }
 
-.cancel-button {
-  margin-right: 16px;
-}
-
-.save-button {
-  min-width: 100px;
+.btnSuivant{
+  background-color: rgb(91, 91, 255);
+  color: white;
+  padding: 15px;
 }

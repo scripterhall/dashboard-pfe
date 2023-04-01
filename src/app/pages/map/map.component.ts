@@ -1,8 +1,10 @@
 import { Component, Directive, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { ToastrService } from "ngx-toastr";
 import { interval, map, Observable, of, takeWhile } from "rxjs";
 import { Membre } from "src/app/model/membre";
 import { Projet } from "src/app/model/projet";
+import { Role } from "src/app/model/role";
 import { Sprint } from "src/app/model/sprint";
 import { SprintBacklog } from "src/app/model/sprint-backlog";
 import { TacheTicket } from "src/app/model/tache-ticket";
@@ -32,7 +34,7 @@ export interface DialogGererDataTicketTache {
   selector: "app-map",
   templateUrl: "map.component.html",
   styleUrls: ['./map.component.scss'],
-  
+
 })
 
 
@@ -45,9 +47,10 @@ export class MapComponent implements OnInit {
     private membreService:MembreService,
     private dialogAjout: MatDialog,
     private roleService:RoleService,
+    private toastr: ToastrService,
     private dialogGestion:MatDialog
   ) {}
-  
+
   sprintsList:Sprint[]
   sprintBacklogs:SprintBacklog[]=[]
   ticketsHistoireList:TicketHistoire[]
@@ -55,14 +58,15 @@ export class MapComponent implements OnInit {
   taskMap:Map<TicketHistoire,TacheTicket[]>=new Map<TicketHistoire,TacheTicket[]>()
   listMembre:Membre[]=[]
   ticketTachePrise:TacheTicket[]
-  endDate: Date = new Date('2023-03-31T23:59:59'); 
- 
+  endDate: Date = new Date('2023-03-31T23:59:59');
+  roles:Role[];
   ngOnInit() {
    
-    const projet:Projet = JSON.parse(localStorage.getItem('projets'))  
+    const projet:Projet = JSON.parse(localStorage.getItem('projet'))  
     this.roleService.afficherListRoleParProjet(projet.id).subscribe(
       data =>{
-        console.log(data);
+        // console.log(data);
+        this.roles = data
         for(let role of data){
           this.listMembre.push(role.membre)
         }
@@ -70,23 +74,22 @@ export class MapComponent implements OnInit {
     ) 
 
 
-    const productBacklog  = JSON.parse(localStorage.getItem('productBacklog'))
+    const productBacklog  = JSON.parse(localStorage.getItem('productBacklogCourant'))
     this.sprintService.getListSprintsByProductBacklog(productBacklog.id).subscribe(
       listSprintData => {
-          console.log(listSprintData);
+          // console.log(listSprintData);
           this.sprintsList = listSprintData
           for(let i = 0; i<listSprintData.length;i++)
             this.sprintBacklogService.afficherSprintBacklogBySprintId(listSprintData[i].id).subscribe(
               sprintBacklogData =>{
-                console.log(sprintBacklogData);
+                // console.log(sprintBacklogData);
                 this.sprintBacklogs.push(sprintBacklogData);
-                
+
               }
             )
-          
+
       }
     );
-   
   }
 
   afficherDetailSprintBacklog(sprintBacklog:SprintBacklog){
@@ -96,25 +99,25 @@ export class MapComponent implements OnInit {
         data => {
           this.ticketsHistoireList = data;
           for(let ht of this.ticketsHistoireList){
-            
+
             this.ticketTacheService.getListTicketTacheParHt(ht.id).subscribe(
               listTacheData =>{
                 this.ticketsTache = listTacheData;
                 taskMap.set(ht,this.ticketsTache)
                 console.log(this.ticketsTache);
-            
-                
+
+
               }
             )
-           
+
           }
           this.taskMap = taskMap
         }
       )
-       
+
   }
 
-  //choix couleur tache 
+  //choix couleur tache
   getBackgroundColor(index: number): any {
     if (index % 2 === 0) {
       return { 'background-color': '#C8F8F3' };
@@ -131,7 +134,7 @@ export class MapComponent implements OnInit {
     }
   }
 
-  
+
   prendreTicket(membre:Membre,idTicketTache:number){
       this.ticketTacheService.affecterTicketAMembre(membre,idTicketTache).subscribe(
         dataTicket=>{
@@ -141,13 +144,13 @@ export class MapComponent implements OnInit {
                 ticket.dateLancement = dataTicket.dateLancement
                 ticket.membre = dataTicket.membre
                 ticket.membreId = dataTicket.membreId
+                this.toastr.success(`ce ticket est pris par le membre qui a l'email `+membre.email);
               }
-                
             })
         }
       )
   }
- 
+
   reverseIndex(index: number, length: number): number {
     return length - index;
   }
@@ -175,7 +178,7 @@ export class MapComponent implements OnInit {
              ticketHistoire:ht
       }
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if(result){
       const ticketHistoire = result.ht
@@ -185,13 +188,13 @@ export class MapComponent implements OnInit {
           listeTache.push(result)
         }
        }
-     } 
-    }); 
+     }
+    });
   }
 
 
   openGestionTache(tt:TacheTicket){
-    
+
     const dialogRef = this.dialogGestion.open(GestionTacheDialogComponent,{
       width: '650px',
       height:'300px',
@@ -199,10 +202,10 @@ export class MapComponent implements OnInit {
         ticketTache:tt
       }
     });
-    
+
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
-      
+
       if(result.mode == 'modifier'){
         console.log("test");
           for(const key of this.taskMap.keys()) {
@@ -222,10 +225,16 @@ export class MapComponent implements OnInit {
         }
        }
      }
-    }); 
+    });
   }
-  
+
+
+  checkRole(membre:Membre){
+    const role = this.roles.find(role => role.membre.id === membre.id);
+    return role.status == "ACCEPTE"
+  }
+
 
 }
-  
-   
+
+

@@ -24,7 +24,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MatOption } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
@@ -34,14 +34,23 @@ import { SprintDialogPanelComponent } from './pages/dialogs/sprint-dialog-panel/
 import { MatDialogModule } from '@angular/material/dialog';
 import { AjouterTicketHistoireFormComponent } from './pages/ajouter-ticket-histoire-form/ajouter-ticket-histoire-form.component';
 import { AjouterSprintFormComponent } from './pages/ajouter-sprint-form/ajouter-sprint-form.component';
+import { ConfirmDialogComponent } from './pages/confirm-dialog/confirm-dialog.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { ConfirmDialogDeleteUserStoryComponent } from './pages/confirm-dialog-delete-user-story/confirm-dialog-delete-user-story.component';
+import { ConfirmAddUserStoryDialogueComponent } from './pages/confirm-add-user-story-dialogue/confirm-add-user-story-dialogue.component';
 import { MatListModule } from '@angular/material/list';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatMenuModule} from '@angular/material/menu';
 import { AjoutTacheSpbComponent } from './pages/dialogs/ajout-tache-spb/ajout-tache-spb.component';
+import { UpdateUserStoryDialogComponent } from './pages/update-user-story-dialog/update-user-story-dialog.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { ScrumBoardComponent } from './pages/scrum-board/scrum-board.component';
 import { GestionTacheDialogComponent } from './pages/dialogs/gestion-tache-dialog/gestion-tache-dialog.component';
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { DecisionComponent } from './pages/decision/decision.component';
 import { InvitationComponent } from './pages/dialogs/invitation/invitation.component';
+import { StatCourbComponent } from './pages/dialogs/stat-courb/stat-courb.component';
+
 
 
 @NgModule({
@@ -76,9 +85,19 @@ import { InvitationComponent } from './pages/dialogs/invitation/invitation.compo
     ToastrModule.forRoot(),
     DragDropModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    MatStepperModule,
+    MatSnackBarModule
   ],
-  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent,SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent, AjoutTacheSpbComponent, GestionTacheDialogComponent, DecisionComponent, InvitationComponent],
+  declarations: [AppComponent, AdminLayoutComponent, AuthLayoutComponent, SelectProjetComponent,
+    SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent,
+    AjoutTacheSpbComponent, GestionTacheDialogComponent, ConfirmDialogComponent,
+    ConfirmDialogDeleteUserStoryComponent, ConfirmAddUserStoryDialogueComponent,
+    UpdateUserStoryDialogComponent, 
+    ScrumBoardComponent, 
+    DecisionComponent, 
+    InvitationComponent
+    ],
   providers: [],
   bootstrap: [AppComponent]
 

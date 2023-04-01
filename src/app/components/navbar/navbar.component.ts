@@ -211,7 +211,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       width: '350px',
       height:'420px',
       data: {
-        projet:JSON.parse(localStorage.getItem('projets'))
+        projet:JSON.parse(localStorage.getItem('projet'))
       }
     });
   }

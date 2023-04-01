@@ -79,7 +79,8 @@ export class InvitationComponent implements OnInit {
       pk:this.rolePkForm,
       type :["",Validators.required],
       permission :"",
-      description:"" 
+      description:"",
+      status:"ATTENTE"
     })
 
    
@@ -123,12 +124,21 @@ export class InvitationComponent implements OnInit {
         console.log(data);
         let role:Role = this.roleForm.value
         role.pk.membreId = data.membreId
-        console.log(role);
-        
         this.roleService.ajouterRole(role).subscribe(
           data => {
             console.log("role : "+data);
-            
+            this.dialogRef.close()
+          },
+          error => {
+            this.invitationService.supprimerInvitation(data.id).subscribe(
+              data => console.log(data),
+              errorSupp => console.log(errorSupp)
+            )
+            Swal.fire(
+              'Invitation annulée',
+              'Une erreur est servenue Lors de l\'invitation, peut être que vous avez déjà invité ce membre pour ce projet',
+              'error',
+            )
           }
         )
       }

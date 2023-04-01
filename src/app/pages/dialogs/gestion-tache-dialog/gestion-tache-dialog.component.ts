@@ -42,7 +42,7 @@ export class GestionTacheDialogComponent implements OnInit {
   terminerTache(){
     
     console.log(this.data.ticketTache);
-    this.data.ticketTache.etat = "terminer"
+    this.data.ticketTache.etat = "terminé"
     this.ticketTacheService.modifierTicketTache(this.data.ticketTache).subscribe(
       data => {
         console.log("voici ticket retourner :",data);

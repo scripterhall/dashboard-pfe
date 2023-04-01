@@ -58,5 +58,18 @@ export class RoleService {
     )
   }
 
+  modifierRole(role:Role){
+    return this.http.put<Role>(`${URL}`,role,{observe:'response'})
+    .pipe(
+      map(response => {
+        const role :Role = response.body
+        if(response.status === 400)
+          return null
+        return role
+      })
+    )
+  }
+
+  
 
 }
