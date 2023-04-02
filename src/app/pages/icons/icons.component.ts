@@ -19,7 +19,6 @@ import { SprintService } from "src/app/service/sprint.service";
 import { MembreService } from "src/app/service/membre.service";
 import { ProductBacklog } from "src/app/model/product-backlog";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
-import { Observable } from "rxjs";
 import { ConfirmDialogDeleteUserStoryComponent } from "../confirm-dialog-delete-user-story/confirm-dialog-delete-user-story.component";
 import { ConfirmAddUserStoryDialogueComponent } from "../confirm-add-user-story-dialogue/confirm-add-user-story-dialogue.component";
 import { ToastrService } from "ngx-toastr";
@@ -77,7 +76,6 @@ const  updateTicketPositionUrl = "http://localhost:9999/gestion-histoire-ticket/
 export class IconsComponent implements OnInit {
   histoireTicketsSprint: TicketHistoire[];
   constructor(private histoireTicketService:HistoireTicketService,
-    private httpClient:HttpClient,
     private productBacklogService:ProductBacklogService,
     private sprintService:SprintService, private dialog: MatDialog,
     public dialogDetailSprint: MatDialog, private membreService:MembreService,
@@ -91,6 +89,8 @@ export class IconsComponent implements OnInit {
   histoireTicket: TicketHistoire;
   newProductBacklogId: number;
   selectedSprint: number;
+  sprintsVelocitySum: number = 0;
+
 
   drop(event: CdkDragDrop<TicketHistoire[]>) {
     if (event.previousContainer === event.container) {
@@ -236,7 +236,7 @@ export class IconsComponent implements OnInit {
       .subscribe(
         response => {
           console.log('Histoire ticket affecté au sprint', response);
-          const sprintIndex = this.sprints.findIndex(sprint => sprint.id === sprintId);
+          const sprintIndex = this.sprints.findIndex(sprint => sprint.id == sprintId);
           const selectedSprintValue = `Sprint ${sprintIndex + 1}`;
           this.toastr.success(`Histoire ticket affecté au ${selectedSprintValue}`);
         },
@@ -244,17 +244,33 @@ export class IconsComponent implements OnInit {
       );
   }
 
-
-
   assignUserStoryToProductBacklog(histoireTicketId: number, productBacklogId: number) {
-    this.histoireTicketService.assignUserStoryToProductBacklog(histoireTicketId, productBacklogId)
-      .subscribe(
-        response => {
-          console.log('Histoire ticket affecté au product backlog avec succès', response);
-        },
-        error => console.log(error)
-      );
+    this.histoireTicketService.getUserStoryById(histoireTicketId).subscribe(
+      histoireTicket => {
+        console.log(`L'ID de l'histoire ticket est : ${histoireTicket.id}`);
+        this.histoireTicketService.assignUserStoryToProductBacklog(histoireTicketId, productBacklogId).subscribe(
+          response => {
+            console.log('Histoire ticket affecté au product backlog avec succès', response);
+            this.elevateProductBacklogVelocity(productBacklogId, histoireTicketId);
+          },
+          error => console.log(error)
+        );
+      },
+      error => console.log(error)
+    );
   }
+
+  elevateProductBacklogVelocity(productBacklogId: number, histoireTicketId: number) {
+    this.productBacklogService.elevateProductBacklogVelocity(productBacklogId, histoireTicketId).subscribe(
+      response => {
+        console.log('La réponse de l\'API est :', response);
+      },
+      error => {
+        console.error('Une erreur est survenue :', error);
+      }
+    );
+  }
+
 
   elementCreated:boolean = false;
   @ViewChild('detailElement') detailElementRef!: ElementRef;
@@ -332,11 +348,22 @@ export class IconsComponent implements OnInit {
       this.getHistoireTicketsByMembreId(1);
       this.getHistoireTicketsByProductBacklogId(this.getProductBacklogByIdFromLocalStorage());
 
+      // this.sprintService.getListSprintsByProductBacklog(this.getProductBacklogByIdFromLocalStorage()).subscribe(
+      //   data => {
+      //     this.sprints = data ;
+      //   }
+      // );
+
       this.sprintService.getListSprintsByProductBacklog(this.getProductBacklogByIdFromLocalStorage()).subscribe(
         data => {
           this.sprints = data ;
+          this.sprints.forEach(sprint => {
+            this.sprintsVelocitySum += sprint.velocite;
+          });
+          console.log("Somme de vélocité des sprints: " + this.sprintsVelocitySum);
         }
       );
+
     }
 
     openDialogUpdateUserStory(id: number) {

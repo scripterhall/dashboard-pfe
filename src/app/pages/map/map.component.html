@@ -98,7 +98,7 @@
                               <div style="overflow-y:auto;max-height:100px;" >
                               <button (click)="prendreTicket(membre,ticketTache.id)" mat-menu-item *ngFor="let membre of listMembre">
                                 <mat-icon>person</mat-icon>
-                                <span>{{membre.email}}</span>
+                                <span>{{membre?.email}}</span>
                               </button>
                             </div>
                             </mat-menu>

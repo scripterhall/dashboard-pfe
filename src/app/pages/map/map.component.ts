@@ -57,19 +57,19 @@ export class MapComponent implements OnInit {
   ticketTachePrise:TacheTicket[]
   endDate: Date = new Date('2023-03-31T23:59:59');
   ngOnInit() {
-   
-    const projet:Projet = JSON.parse(localStorage.getItem('projets'))  
-    this.roleService.afficherListRoleParProjet(projet.id).subscribe(
-      data =>{
-        console.log(data);
-        for(let role of data){
-          this.listMembre.push(role.membre)
-        }
-      }
-    ) 
+
+    // const projet:Projet = JSON.parse(localStorage.getItem('projet'))
+    // this.roleService.afficherListRoleParProjet(projet.id).subscribe(
+    //   data =>{
+    //     console.log(data);
+    //     for(let role of data){
+    //       this.listMembre.push(role.membre)
+    //     }
+    //   }
+    // )
 
 
-    const productBacklog  = JSON.parse(localStorage.getItem('productBacklog'))
+    const productBacklog  = JSON.parse(localStorage.getItem('productBacklogCourant'))
     this.sprintService.getListSprintsByProductBacklog(productBacklog.id).subscribe(
       listSprintData => {
           console.log(listSprintData);

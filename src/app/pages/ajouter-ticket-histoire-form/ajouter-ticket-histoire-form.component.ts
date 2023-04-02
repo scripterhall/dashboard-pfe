@@ -36,6 +36,7 @@ export class AjouterTicketHistoireFormComponent {
       response => {
         console.log('Ticket histoire ajouté avec succès.');
         console.log(formData);
+console.log('id histoire ticket = '+formData.id)
         this.dialogRef.close();
       },
       error => {

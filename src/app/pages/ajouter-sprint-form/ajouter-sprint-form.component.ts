@@ -41,55 +41,6 @@ export class AjouterSprintFormComponent {
       );
     }
 
-  // onSave(): void {
-  //   const productBacklogId = this.getProductBacklogByIdFromLocalStorage();
-  //   const sprint = new Sprint();
-
-  //   sprint.objectif = this.form.get('objectif').value;
-  //   sprint.dateLancement = new Date(this.form.get('dateLancement').value);
-  //   sprint.dateFin = new Date(this.form.get('dateFin').value);
-
-  //   const dateDebProjet = new Date(this.getProjetByIdFromLocalStorage().dateDebut);
-  //   const dateFinProjet = new Date(this.getProjetByIdFromLocalStorage().dateFin);
-
-  //   const conflit = this.sprints.some(existingSprint => {
-  //     const existingSprintDebut = new Date(existingSprint.dateLancement);
-  //     const existingSprintFin = new Date(existingSprint.dateFin);
-  //     return (sprint.dateLancement >= existingSprintDebut && sprint.dateLancement <= existingSprintFin) ||
-  //       (sprint.dateFin >= existingSprintDebut && sprint.dateFin <= existingSprintFin) ||
-  //       (existingSprintDebut >= sprint.dateLancement && existingSprintDebut <= sprint.dateFin) ||
-  //       (existingSprintFin >= sprint.dateLancement && existingSprintFin <= sprint.dateFin);
-  //   });
-
-  //   if (conflit) {
-  //     this.toastr.error('La période du sprint se chevauche avec un sprint existant.');
-  //     return;
-  //   }
-
-  //   if (sprint.dateLancement < dateDebProjet || sprint.dateFin > dateFinProjet) {
-  //     this.toastr.error('Le sprint ne se trouve pas dans la période du projet');
-  //     return;
-  //   }
-
-  //   if (this.sprints.length === 0) {
-  //     const diffTime = Math.abs(sprint.dateFin.getTime() - sprint.dateLancement.getTime());
-  //     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  //     localStorage.setItem('firstSprintDuration', diffDays.toString());
-  //   }
-
-  //   this.sprintService.createSprint(sprint, productBacklogId).subscribe(
-  //     createdSprint => {
-  //       console.log(sprint);
-  //       console.log('Sprint créé avec succès :', createdSprint);
-  //       this.dialogRef.close(createdSprint);
-  //     },
-  //     error => {
-  //       console.error('Erreur lors de la création du sprint :', error);
-  //       this.toastr.error('Erreur lors de la création du sprint.');
-  //     }
-  //   );
-  // }
-
   onSave(): void {
     const productBacklogId = this.getProductBacklogByIdFromLocalStorage();
     const sprint = new Sprint();

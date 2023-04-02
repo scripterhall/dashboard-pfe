@@ -56,9 +56,13 @@ export class SelectProjetComponent implements OnInit {
   roleForm:FormGroup;
   rolePkForm:FormGroup ;
   combinedForm:FormGroup;
+
+  clearLocalStorage() {
+    localStorage.clear();
+  }
+
   ngOnInit(): void {
-
-
+    // this.clearLocalStorage();
 
     this.rolePkForm = this.formBuilder2.group({
       membreId:null,
@@ -295,4 +299,5 @@ step = 0;
       }
     )
   }
+
 }

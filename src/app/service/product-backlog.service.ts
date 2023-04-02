@@ -37,4 +37,10 @@ export class ProductBacklogService {
     console.log("id product backlog courant = "+id);
     return id;
   }
+
+  elevateProductBacklogVelocity(productBacklogId: number, histoireTicketId: number): Observable<any> {
+    const url = `${url1}`;
+    const requestBody = { productBacklogId, histoireTicketId };
+    return this.http.put(url, requestBody);
+  }
 }

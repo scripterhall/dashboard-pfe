@@ -10,7 +10,7 @@ const url1 = "http://localhost:9999/initialiser-projet-service/projets"
 })
 export class ProjetServiceService {
 
-  
+
 
   constructor(private http: HttpClient) { }
 
@@ -28,4 +28,5 @@ export class ProjetServiceService {
   public ajouterProjetByChef(projet:Projet){
     return this.http.post<Projet>(url1,projet);
   }
+
 }
