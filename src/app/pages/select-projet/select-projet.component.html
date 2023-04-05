@@ -209,6 +209,15 @@
                                </mat-option>
                             </mat-select>
                             <mat-error *ngIf="roleForm.get('type').hasError('required')">tu dois choisir le role dans l'equipe</mat-error>
+                            <!-- validateur de role existant -->
+                            <mat-error *ngIf="roleForm.get('type').errors?.invalidRole" >
+                              Un projet peut avoire un seule
+                              <span *ngIf="roleForm.get('type').value == 'po'">Product owner</span>
+                              <span *ngIf="roleForm.get('type').value == 'scrum master'">Scrum master</span>
+                              est vous avez déjà envoyé une invitation contient ce role 
+                              
+                              </mat-error>
+                            <!-- end  -->
                           </mat-form-field>
                         </td>
                         <td>

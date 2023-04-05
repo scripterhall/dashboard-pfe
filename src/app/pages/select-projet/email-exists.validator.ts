@@ -1,5 +1,6 @@
 import { AbstractControl, FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Membre } from 'src/app/model/membre';
+import { Role } from 'src/app/model/role';
 
 
 
@@ -25,4 +26,25 @@ export function emailExistsValidator(members: Membre[]): ValidatorFn {
     } else {
       return { 'invalidEmail': true };
     }
+  }
+
+
+  export function roleExists(roles:Role[]):ValidatorFn{
+
+    return (control:FormControl): ValidationErrors | null =>{
+      const role = control.value
+      if(roles?.length == 0)
+        return null ;
+
+      if(role == "po"){
+        const productOwner = roles.find(r => r.type == role)
+        return productOwner ? {'invalidRole':true} : null;
+      }else if(role == "scrum master"){
+        const scrumMaster = roles.find(r => r.type == role)
+        return scrumMaster ? {'invalidRole':true} : null;
+      }
+
+      
+    }
+
   }

@@ -50,6 +50,8 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { DecisionComponent } from './pages/decision/decision.component';
 import { InvitationComponent } from './pages/dialogs/invitation/invitation.component';
 import { StatCourbComponent } from './pages/dialogs/stat-courb/stat-courb.component';
+import { ListMembreProjetComponent } from './pages/list-membre-projet/list-membre-projet.component';
+import { PerformanceCourbeComponent } from './pages/dialogs/performance-courbe/performance-courbe.component';
 
 
 
@@ -96,7 +98,7 @@ import { StatCourbComponent } from './pages/dialogs/stat-courb/stat-courb.compon
     UpdateUserStoryDialogComponent, 
     ScrumBoardComponent, 
     DecisionComponent, 
-    InvitationComponent
+    InvitationComponent, PerformanceCourbeComponent
     ],
   providers: [],
   bootstrap: [AppComponent]

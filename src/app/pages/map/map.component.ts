@@ -17,6 +17,7 @@ import { SprintService } from "src/app/service/sprint.service";
 import { TicketTacheService } from "src/app/service/ticket-tache.service";
 import { AjoutTacheSpbComponent } from "../dialogs/ajout-tache-spb/ajout-tache-spb.component";
 import { GestionTacheDialogComponent } from "../dialogs/gestion-tache-dialog/gestion-tache-dialog.component";
+import Swal from "sweetalert2";
 
 
 export interface DialogDataTicketTache {
@@ -57,6 +58,7 @@ export class MapComponent implements OnInit {
   ticketsTache:TacheTicket[]=[]
   taskMap:Map<TicketHistoire,TacheTicket[]>=new Map<TicketHistoire,TacheTicket[]>()
   listMembre:Membre[]=[]
+  showCourbe=false;
   ticketTachePrise:TacheTicket[]
   endDate: Date = new Date('2023-03-31T23:59:59');
   roles:Role[];
@@ -78,6 +80,7 @@ export class MapComponent implements OnInit {
     this.sprintService.getListSprintsByProductBacklog(productBacklog.id).subscribe(
       listSprintData => {
           // console.log(listSprintData);
+          listSprintData = listSprintData.filter(sprint => sprint.etat!="en attente")
           this.sprintsList = listSprintData
           for(let i = 0; i<listSprintData.length;i++)
             this.sprintBacklogService.afficherSprintBacklogBySprintId(listSprintData[i].id).subscribe(
@@ -135,8 +138,26 @@ export class MapComponent implements OnInit {
   }
 
 
-  prendreTicket(membre:Membre,idTicketTache:number){
-      this.ticketTacheService.affecterTicketAMembre(membre,idTicketTache).subscribe(
+  prendreTicket(idTicketTache:number){
+    const  ticket = this.ticketsTache.find(tache=>tache.id === idTicketTache)
+    Swal.fire({
+      title: "vous êtes sûr de prendre la tâche : "+ticket.titre,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, Lancer!',
+      cancelButtonText: 'Annuler',
+      background:'rgba(0,0,0,0.9)',
+      backdrop: 'rgba(0,0,0,0.4)',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+      focusConfirm: false
+    }).then((result) => {
+      if (result.isConfirmed) {  
+        const membre = JSON.parse(localStorage.getItem('membre'))
+        this.ticketTacheService.affecterTicketAMembre(membre,idTicketTache).subscribe(
         dataTicket=>{
             this.ticketsTache.forEach(ticket=>{
               if(ticket.id == idTicketTache){
@@ -144,11 +165,21 @@ export class MapComponent implements OnInit {
                 ticket.dateLancement = dataTicket.dateLancement
                 ticket.membre = dataTicket.membre
                 ticket.membreId = dataTicket.membreId
-                this.toastr.success(`ce ticket est pris par le membre qui a l'email `+membre.email);
+                Swal.fire(
+                  'tâche pris',
+                  'Vous êtes le responsable de cette tâche vieulliez à ce quelle soit terminé dans '+ticket.nbHeurs+"H",
+                  'success'
+                )
               }
             })
         }
       )
+      
+      }
+     }      
+    );
+  
+    
   }
 
   reverseIndex(index: number, length: number): number {
@@ -173,7 +204,7 @@ export class MapComponent implements OnInit {
   openAjoutDialog(ht:TicketHistoire,sprintBacklog:SprintBacklog){
     const dialogRef = this.dialogAjout.open(AjoutTacheSpbComponent,{
       width: '350px',
-      height:'450px',
+      height:'550px',
       data: {sprintBacklog:sprintBacklog,
              ticketHistoire:ht
       }
@@ -186,6 +217,15 @@ export class MapComponent implements OnInit {
         if (key.id === ticketHistoire.id) {
           const listeTache = this.taskMap.get(key)
           listeTache.push(result)
+          console.log(result);
+          result.ht.sprintId = result.sprintBacklog.sprintId
+          result.ht.status = "EN_COURS"
+          this.ticketHistoireService.updateUserStory(result.ht.id,result.ht).subscribe(
+            dataHistoire =>{
+              console.log(dataHistoire)
+              key.status = "EN_COURS"
+            }
+          ) 
         }
        }
      }
@@ -224,6 +264,31 @@ export class MapComponent implements OnInit {
           listeTache.splice(listeTache.indexOf(tt),1)
         }
        }
+     }else if(result.mode == 'terminer'){
+      const ticketHistoire = result.tt.ht
+      for(const key of this.taskMap.keys()) {
+        if (key.id === ticketHistoire.id) {
+          const listeTache = this.taskMap.get(key)
+          const listeTacheTermine = listeTache.filter(tache => tache.etat == "terminé")
+          if(listeTacheTermine.length == listeTache.length){
+            ticketHistoire.status = "TERMINE"
+            console.log(ticketHistoire);
+            
+            this.ticketHistoireService.updateUserStory(ticketHistoire.id,ticketHistoire).subscribe(
+              dataHistoire =>{
+                console.log(dataHistoire)
+                Swal.fire(
+                  'Félicitation ',
+                  'vous avez terminer un histoire de sprint',
+                  'success'
+                )
+              }
+            )
+          }
+
+        }
+
+      }
      }
     });
   }
@@ -232,6 +297,15 @@ export class MapComponent implements OnInit {
   checkRole(membre:Membre){
     const role = this.roles.find(role => role.membre.id === membre.id);
     return role.status == "ACCEPTE"
+  }
+
+
+  verifierPersPris(membre:Membre){
+    const prendre = "cette ticket est pris par "
+    if(JSON.parse(localStorage.getItem('membre')).id == membre.id)
+      this.toastr.success(`${prendre} Vous 	😀`);
+    else
+      this.toastr.success(`${prendre} ${membre.email}`);
   }
 
 

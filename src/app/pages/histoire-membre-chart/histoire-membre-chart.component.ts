@@ -39,7 +39,7 @@ export class HistoireMembreChartComponent implements OnInit   {
 
 
   bubbleChartLegend = true;
-
+  
   bubbleChartPlugins = [];
   chart: Chart;
   listMembre: Membre[];
@@ -231,8 +231,8 @@ export class HistoireMembreChartComponent implements OnInit   {
     
     if (array.length > 0) {
       const dialogRef = this.dialog.open(StatCourbComponent, {
-        width: '600px',
-        height:'430px',
+        width: '650px',
+        height:'570px',
         data: { 
           membre: member,
           histoire:ticketHistoire

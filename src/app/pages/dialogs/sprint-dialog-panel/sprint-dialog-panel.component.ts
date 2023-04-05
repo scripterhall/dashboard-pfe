@@ -43,7 +43,8 @@ export class SprintDialogPanelComponent implements OnInit{
 
   ngOnInit(): void {
     console.log(this.data.sprint);
-
+    console.log(this.data.TicketHistoires);
+    
     this.projet = JSON.parse(localStorage.getItem("projets"))
     this.TicketTacheModif = this.fb.group({
       id: ['', Validators.required],
@@ -222,6 +223,11 @@ export class SprintDialogPanelComponent implements OnInit{
 
   //lancer le sprint et generer un sprintBacklog avec force
   lancerSprintForcer(){
+    if(
+    this.data.sprint.etat != "en cours"
+    && this.data.canStart
+    &&this.data.TicketHistoires.length>0
+    ){
     this.data.sprint.dateLancement = new Date(Date.now());
     Swal.fire({
       title: "en appuyant sur le boutton <ok> votre sprint sera lancé avec la date "+this.data.sprint.dateLancement.toDateString(),
@@ -249,7 +255,9 @@ export class SprintDialogPanelComponent implements OnInit{
         )
       }
     });
+  }else{
 
+  }
 
   }
 
@@ -266,7 +274,12 @@ export class SprintDialogPanelComponent implements OnInit{
       sprintBacklog.sprint = dataSprint
       sprintBacklog.sprintId = this.data.sprint.id
       this.data.TicketHistoires.forEach(ht =>{
-        sprintBacklog.velocite +=ht.effort
+        ht.status = "EN_COURS"
+        this.histoireTicketService.updateUserStory(ht.id,ht).subscribe(
+          data =>{
+            console.log(data);
+          }
+        )
       })
       console.log("spb  : ",sprintBacklog);
       this.sprintBacklogService.genererSprintBacklog(sprintBacklog).subscribe(
@@ -328,7 +341,6 @@ export class SprintDialogPanelComponent implements OnInit{
             console.log(data)
             this.dialogRef.close()
           }
-
         )
         Swal.fire(
           'Supprimé!',

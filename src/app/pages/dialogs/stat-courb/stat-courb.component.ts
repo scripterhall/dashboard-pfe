@@ -4,6 +4,7 @@ import { ChartDialog } from '../../histoire-membre-chart/histoire-membre-chart.c
 import { TicketTacheService } from 'src/app/service/ticket-tache.service';
 import { TacheTicket } from 'src/app/model/tache-ticket';
 import {Chart} from 'chart.js';
+import * as mdb from 'mdb-ui-kit';
 @Component({
   selector: 'app-stat-courb',
   templateUrl: './stat-courb.component.html',
@@ -16,9 +17,10 @@ export class StatCourbComponent implements OnInit {
     private ticketTacheService: TicketTacheService){}
     barChart:Chart;
     ticketsTache:TacheTicket[]
+    
 
   ngOnInit(): void {
-    
+   
     this.ticketTacheService.getTicketsTacheByMembreId(this.data.membre.id).subscribe(
       data => {
         data = data.filter(tt => tt.ht.id == this.data.histoire.id)
@@ -41,7 +43,7 @@ export class StatCourbComponent implements OnInit {
           data: {
             labels: ticketTitres,
             datasets: [{
-              label: 'Nombre d\'heures',
+              label: 'mes tâche pour cette ticket histoire',
               data: ticketHeurs,
               backgroundColor: barColors,
             }]
@@ -83,6 +85,8 @@ export class StatCourbComponent implements OnInit {
         });
         }
        )
+       
+    
   }
 
 

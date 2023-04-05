@@ -35,6 +35,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { HistoireMembreChartComponent } from '../../pages/histoire-membre-chart/histoire-membre-chart.component';
 import { StatCourbComponent } from "src/app/pages/dialogs/stat-courb/stat-courb.component";
+import { ListMembreProjetComponent } from "src/app/pages/list-membre-projet/list-membre-projet.component";
+
 
 @NgModule({
   imports: [
@@ -74,7 +76,8 @@ import { StatCourbComponent } from "src/app/pages/dialogs/stat-courb/stat-courb.
     NotificationsComponent,
     MapComponent,
     HistoireMembreChartComponent,
-    StatCourbComponent
+    StatCourbComponent, 
+    ListMembreProjetComponent
     // RtlComponent
   ]
 })

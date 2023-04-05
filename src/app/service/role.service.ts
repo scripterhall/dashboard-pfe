@@ -39,8 +39,11 @@ export class RoleService {
     )
   }
 
-  supprimerRole(id:RolePk):Observable<void>{
-    let params = new HttpParams().set('rolePk', JSON.stringify(id));
+  supprimerRole(id:RolePk,idChef:number):Observable<void>{
+    console.log(idChef);
+    let params = new HttpParams()
+    .set('rolePk', JSON.stringify(id))
+    .set('idchef',idChef.toString())
     return this.http.delete<void>(`${URL}`,{params:params});
   }
 
