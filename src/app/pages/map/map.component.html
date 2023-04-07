@@ -76,7 +76,7 @@
                       <mat-card-header>
                         <mat-card-title class="title">
                           #{{i+1}}&nbsp; - {{ticketTache.titre}}
-                          <span class="pull-right"><mat-icon class="text-success" *ngIf="ticketTache.etat=='terminer'">done_all</mat-icon></span>
+                          <span class="pull-right"><mat-icon class="text-success" *ngIf="ticketTache.etat=='terminé'">done_all</mat-icon></span>
                         </mat-card-title>
                         <mat-card-subtitle class="title">{{ticketTache.description}}</mat-card-subtitle>
                       </mat-card-header>
@@ -91,17 +91,12 @@
                           <div class="p-2 bd-highlight"><mat-icon>av_timer</mat-icon></div>
                           <div class="p-2 bd-highlight">{{ticketTache.dateLancement|date}}</div>
                           <div class="ms-auto p-2 bd-highlight">
-                            <button mat-icon-button [matMenuTriggerFor]="menu" style="margin-top:-27%;border:1px solidblack;" aria-label="Example icon-button with a menu">
+                            <button mat-icon-button *ngIf="ticketTache.membreId==null" [matMenuTriggerFor]="menu" (click)="prendreTicket(ticketTache.id)" style="margin-top:-27%;border:1px solidblack;" aria-label="Example icon-button with a menu">
                               <mat-icon>person_add</mat-icon>
                             </button>
-                            <mat-menu #menu="matMenu" >
-                              <div style="overflow-y:auto;max-height:100px;" >
-                              <button (click)="prendreTicket(membre,ticketTache.id)" mat-menu-item *ngFor="let membre of listMembre">
-                                <mat-icon>person</mat-icon>
-                                <span>{{membre?.email}}</span>
-                              </button>
-                            </div>
-                            </mat-menu>
+                            <button mat-icon-button *ngIf="ticketTache.membreId!=null" [matMenuTriggerFor]="menu" (click)="verifierPersPris(ticketTache.membre)" style="margin-top:-27%;border:1px solidblack;" aria-label="Example icon-button with a menu">
+                              <mat-icon>how_to_reg</mat-icon>
+                            </button>
                           </div>
                         </div>
                       </mat-card-footer>
@@ -146,9 +141,11 @@
                  style="margin-bottom: 4%;"
                  *ngFor="let tt of task.value;index as i">
 
-                <span style="margin-left:1%;font-size:100%;" class="badge col-lg-12 col-md-12 col-sm-12 w-75 p-3 bg-secondary rounded-pill"><p class="title text-dark">
-                  #T{{i+1}}&nbsp;&nbsp;&nbsp;{{tt.nbHeurs}}H de travails
+                <span style="margin-left:1%;font-size:100%;"  class="badge col-lg-12 col-md-12 col-sm-12 w-75 p-3 bg-secondary rounded-pill"><p class="title text-dark">
+                  <s *ngIf="tt.etat == 'terminé'">#T{{i+1}}&nbsp;&nbsp;&nbsp;{{tt.nbHeurs}}H de travails</s>
+                  <span *ngIf="tt.etat!='terminé'">#T{{i+1}}&nbsp;&nbsp;&nbsp;{{tt.nbHeurs}}H de travails</span>
                 </p></span>
+
               </div>
                 </div>
               </div>
@@ -159,6 +156,9 @@
       </div>
     </div>
   </div>
-</ng-container>
+  <button style="margin-top:-1%;" mat-raised-button (click)="showCourbe=!showCourbe" color="accent">Graph</button>
 
+    <app-histoire-membre-chart *ngIf="showCourbe" [sprintId]="sprintBacklog.sprintId"></app-histoire-membre-chart>
+
+</ng-container>
 </div>

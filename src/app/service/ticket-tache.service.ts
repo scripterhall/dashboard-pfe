@@ -78,4 +78,18 @@ export class TicketTacheService {
     return this.http.get<TacheTicket[]>(url);
   }
 
+
+  getTicketsTacheByMembreId(membreId:number): Observable<TacheTicket[]>{
+    return this.http.get<TacheTicket[]>(`${URL}/membre/`+membreId,{observe:'response'})
+    .pipe(
+      map(response =>{
+        const ticketsTache:TacheTicket[] = response.body
+        if(response.status === 400 || response.status === 500)
+          return []
+        else
+        return ticketsTache
+      })
+    )
+  }
+
 }

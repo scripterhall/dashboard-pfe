@@ -28,6 +28,7 @@ import { AjouterTicketHistoireFormComponent } from "../ajouter-ticket-histoire-f
 import { AjouterSprintFormComponent } from "../ajouter-sprint-form/ajouter-sprint-form.component";
 import { ProductBacklogService } from "src/app/service/product-backlog.service";
 import { Ticket } from "src/app/model/ticket";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-icons",
@@ -199,18 +200,6 @@ removeUserStoryFromProductBacklog(id: number) {
 
   //sprint details
   openDialogDetailsSprint(i:number,sp:Sprint) {
-    let startedOne:Sprint
-    let testStart :boolean
-    if(this.sprints.length>1){
-      startedOne = this.sprints[i-1]
-      console.log(startedOne);
-
-      testStart = startedOne?.etat =='terminer'
-    }
-    else{
-      startedOne = this.sprints[i]
-      testStart = false
-    }
     console.log(sp);
     this.histoireTicketService.getHistoireTicketBySprintId(sp.id).subscribe(
       data =>{
@@ -220,7 +209,7 @@ removeUserStoryFromProductBacklog(id: number) {
           height:'690px',
           data: {sprint:this.sprints[i],
                 TicketHistoires:this.histoireTicketsSprint,
-                canStart :testStart
+                canStart :this.checkStartOneSprint()
           }
         });
 
@@ -250,6 +239,51 @@ removeUserStoryFromProductBacklog(id: number) {
         },
         error => console.log(error)
       );
+    console.log('id sprint :'+sprintId);
+    const sprint = this.sprints.find(sprint => sprint.id == sprintId);
+    const ticketHistoire = this.histoireTicketsByProductBacklogId.find(histoire => histoire.id == histoireTicketId)
+    console.log(ticketHistoire);
+    console.log(sprint);
+    if(sprint.etat == "en attente")
+      this.addUserStoryToSprint(histoireTicketId,sprintId)
+      else{
+        if(((this.sprints.indexOf(sprint)+1) - this.sprints.length) == 0){
+          Swal.fire(
+            'insertion impossible ⛔',
+            'ce sprint est lancé si possible \n creer un autre sprint pour les affecter \n d\'autres ticket histoire',
+            'error',
+          )
+        }else{
+          const nextSprint = this.sprints[this.sprints.indexOf(sprint)+1]
+          Swal.fire({
+            title: "voullez vous inserer cette ticket histoire dans le sprint suivant : ",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Inserer',
+            cancelButtonText: 'Annuler',
+            background:'rgba(0,0,0,0.9)',
+            backdrop: 'rgba(0,0,0,0.4)',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            focusConfirm: false
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Le code à exécuter si l'utilisateur a cliqué sur "Oui, supprimer!"
+              this.addUserStoryToSprint(histoireTicketId,nextSprint.id)
+              console.log(nextSprint);
+              Swal.fire(
+                'insertion effectué',
+                'consulter le sprint pour voire le details',
+                'success',
+              )
+
+            }
+          });
+        }
+      }
   }
 
   assignUserStoryToProductBacklog(histoireTicketId: number, productBacklogId: number) {
@@ -304,6 +338,32 @@ removeUserStoryFromProductBacklog(id: number) {
     }
   }
 
+  addUserStoryToSprint(histoireTicketId: number, sprintId: number){
+    const sprint = this.sprints.find(sprint => sprint.id == sprintId);
+    console.log(sprint);
+
+    const ticketHistoire = this.histoireTicketsByProductBacklogId.find(histoire => histoire.id == histoireTicketId)
+    this.histoireTicketService.assignUserStoryToSprint(histoireTicketId, sprintId)
+        .subscribe(
+          response => {
+            console.log('Histoire ticket affecté au sprint', response);
+            const indexSprint = this.sprints.indexOf(this.sprints.find(sprint => sprint.id == sprintId))+ 1
+            const selectedSprintValue = `Sprint ${indexSprint}`;
+            /** block add  velocity to sprint */
+            sprint.velocite += ticketHistoire.effort
+            sprint.productBacklogId = JSON.parse(localStorage.getItem('productBacklogCourant')).id
+            this.sprintService.modifierSprint(sprint).subscribe(
+              sprintNewData =>{
+                sprint.velocite = sprintNewData.velocite
+                console.log(sprintNewData);
+              }
+            )
+            /** end block  */
+            this.toastr.success(`Histoire ticket affecté au ${selectedSprintValue}`);
+          },
+          error => console.log(error)
+        );
+  }
 
   clickCount = 0;
   move(){
@@ -318,7 +378,9 @@ removeUserStoryFromProductBacklog(id: number) {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.histoireTicketsByMembreId.push(result)
       console.log('The dialog was closed');
+
     });
   }
 
@@ -326,11 +388,14 @@ removeUserStoryFromProductBacklog(id: number) {
     const dialogRef = this.dialog.open(AjouterSprintFormComponent, {
       width: '500',
       height:'400px',
-      data: {}
+      data: {
+
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
+      this.sprints.push(result)
     });
   }
 
@@ -377,5 +442,14 @@ removeUserStoryFromProductBacklog(id: number) {
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
       });
+    }
+
+
+    checkStartOneSprint():Boolean{
+      for(let sprint of this.sprints){
+        if (sprint.etat == "en cours")
+          return true;
+      }
+
     }
 }

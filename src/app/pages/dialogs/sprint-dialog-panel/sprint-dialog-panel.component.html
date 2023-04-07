@@ -3,10 +3,7 @@
   <div class="d-flex">
     <button mat-stroked-button *ngIf="data.sprint.etat !='terminer'" (click)="lancerSprintForcer()" class="p-2 m-1" [disabled]="data.sprint.etat=='en cours' || this.data.canStart || this.data.TicketHistoires.length==0" color="primary">Lancer
       Sprint</button>
-    <button mat-stroked-button class="p-2 m-1" *ngIf="data.sprint.etat=='en cours' "
-      #tooltip="matTooltip" matTooltip="mettre le sprint en pause" color="accent">
-      <mat-icon class="text-danger m-1">play_arrow</mat-icon>
-    </button>
+    
     <mat-icon class="text-warning m-2" *ngIf="data.sprint.etat=='en cours'">alarm</mat-icon>
   </div>
   <button mat-icon-button class="p-2" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">

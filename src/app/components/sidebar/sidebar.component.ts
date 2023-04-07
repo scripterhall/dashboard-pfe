@@ -1,10 +1,12 @@
 import { Component, OnInit } from "@angular/core";
+import { SprintService } from "src/app/service/sprint.service";
 
 declare interface RouteInfo {
   path: string;
   title: string;
   rtlTitle: string;
   icon: string;
+  disabled?:boolean,
   class: string;
 }
 export const ROUTES: RouteInfo[] = [
@@ -27,7 +29,9 @@ export const ROUTES: RouteInfo[] = [
     title: "sprint backlog",
     rtlTitle: "مهام سبرنت",
     icon: "icon-tie-bow",
-    class: "" },
+    class: "" ,
+    disabled: true
+  },
   {
     path: "/scrumBoard",
     title: "scrum board",
@@ -74,10 +78,27 @@ export const ROUTES: RouteInfo[] = [
 export class SidebarComponent implements OnInit {
   menuItems: any[];
 
-  constructor() {}
+  constructor(
+    private sprintService: SprintService
+  ) {}
 
+  sprintLancee:number
   ngOnInit() {
-    this.menuItems = ROUTES.filter(menuItem => menuItem);
+    this.sprintService.getListSprintsByProductBacklog(JSON.parse(localStorage.getItem('productBacklogCourant')).id)
+    .subscribe(
+      data => {
+        this.sprintLancee = data.filter(sprint => sprint.etat == "en cours")?.length
+        this.menuItems = ROUTES.map((menuItem) =>
+        menuItem.path === "/maps"
+          ? {
+              ...menuItem,
+              disabled: this.sprintLancee == 0,
+            }
+          : menuItem
+      );
+      }
+    )
+   // this.menuItems = ROUTES.filter(menuItem => menuItem);
   }
   isMobileMenu() {
     if (window.innerWidth > 991) {

@@ -63,7 +63,10 @@
         (cdkDropListDropped)="drop($event)">
         <div id="element" cdkDrag class="example-box" *ngFor="let listHTByPB of histoireTicketsByProductBacklogId">
           <i class="fa-sharp fa-solid fa-clipboard-check"></i>
-          <!-- <span class="numTicket" >Ticket-{{i+1}}</span> -->
+          <span class="numTicket" >
+            <s *ngIf="listHTByPB.status=='TERMINE'">Ticket-{{i+1}}</s>
+            <span *ngIf="listHTByPB.status!='TERMINE'">Ticket-{{i+1}}</span>
+          </span>
           <span>{{listHTByPB.titre}}</span> &nbsp;
           <span id="priorite">({{listHTByPB.priorite}})</span>
           <select (change)="assignUserStoryToSprint(listHTByPB.id, $event.target.value)"

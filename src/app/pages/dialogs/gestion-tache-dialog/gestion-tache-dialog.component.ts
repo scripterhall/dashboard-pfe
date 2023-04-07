@@ -42,19 +42,32 @@ export class GestionTacheDialogComponent implements OnInit {
   terminerTache(){
     
     console.log(this.data.ticketTache);
-    this.data.ticketTache.etat = "terminer"
+    if(this.data.ticketTache.membreId!=null){
+    this.data.ticketTache.etat = "terminé"
     this.ticketTacheService.modifierTicketTache(this.data.ticketTache).subscribe(
       data => {
         console.log("voici ticket retourner :",data);
+        data.ht.sprintId=data.sprintBacklog.sprintId
         Swal.fire(
           'bon travail :)',
           'tâche terminer',
           'success',
         )
-        this.dialogRef.close();
+        const terminerData = {
+          mode :'terminer',
+          tt:data
+      }
+        this.dialogRef.close(terminerData);
         
       }
     )
+    }else{
+      Swal.fire(
+        'Impossible de terminer cette tâche',
+        'Il n\'existe pas un membre pour cette ticket tâche ',
+        'error',
+      )
+    }
     
   }
 

@@ -51,10 +51,10 @@
             <mat-form-field appearance="fill" *ngIf="this.data.ticketTache?.membreId!=null" class="d-flex col-lg-6 col-md-6 col-sm-6">
                 <mat-label></mat-label>
                 <mat-select formControlName="etat" >
-                  <mat-option value="terminer" [selected]="this.data.ticketTache.etat=='terminer'">terminer</mat-option>
-                  <mat-option value="a verifier"[selected]="this.data.ticketTache.etat=='a verifier'"> a verifier</mat-option>
+                  <mat-option value="terminé" [selected]="this.data.ticketTache.etat=='terminé'">terminer</mat-option>
+                  <mat-option value="à vérifier"[selected]="this.data.ticketTache.etat=='à vérifier'"> a verifier</mat-option>
                   <mat-option value="en cours" [selected]="this.data.ticketTache.etat=='en cours'">en cours</mat-option>
-                  <mat-option value="a faire" [selected]="this.data.ticketTache.etat=='a faire'">a faire</mat-option>
+                  <mat-option value="à faire" [selected]="this.data.ticketTache.etat=='à faire'">a faire</mat-option>
                 </mat-select>
             </mat-form-field>
             <div class="d-flex justify-content-center">
