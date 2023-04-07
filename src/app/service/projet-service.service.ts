@@ -29,4 +29,12 @@ export class ProjetServiceService {
     return this.http.post<Projet>(url1,projet);
   }
 
+  getProjetByIdFromLocalStorage(){
+    let projetCourantStr = localStorage.getItem("projetCourant");
+    let projetCourantObj = JSON.parse(projetCourantStr);
+    let id = projetCourantObj.id;
+    console.log("id projet courant = "+id);
+    return id;
+  }
+
 }

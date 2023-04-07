@@ -33,6 +33,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import { FireworksComponent } from '../../pages/fireworks/fireworks.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { CourbesComponent } from "src/app/pages/courbes/courbes.component";
 
 @NgModule({
   imports: [
@@ -71,6 +72,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     TypographyComponent,
     NotificationsComponent,
     MapComponent,
+    CourbesComponent
     // RtlComponent
   ]
 })
