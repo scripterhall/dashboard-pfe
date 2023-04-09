@@ -61,9 +61,9 @@
       <div class="example-list" cdkDropList #list1="cdkDropList"
         [cdkDropListData]="histoireTicketsByProductBacklogId"
         (cdkDropListDropped)="drop($event)">
-        <div id="element" cdkDrag class="example-box" *ngFor="let listHTByPB of histoireTicketsByProductBacklogId;index as i">
+        <div id="element" cdkDrag class="example-box" *ngFor="let listHTByPB of histoireTicketsByProductBacklogId">
           <i class="fa-sharp fa-solid fa-clipboard-check"></i>
-          <span class="numTicket" >Ticket-{{i+1}}</span>
+          <!-- <span class="numTicket" >Ticket-{{i+1}}</span> -->
           <span>{{listHTByPB.titre}}</span> &nbsp;
           <span id="priorite">({{listHTByPB.priorite}})</span>
           <select (change)="assignUserStoryToSprint(listHTByPB.id, $event.target.value)"
@@ -94,12 +94,12 @@
       [cdkDropListData]="histoireTicketsByMembreId" [cdkDropListConnectedTo]="[list1]" (cdkDropListDropped)="drop($event)">
 
       <div class="example-box" style="background-color:rgb(223, 223, 223)" *ngFor="let listHTByMembre of histoireTicketsByMembreId; index as i" cdkDrag>
-        <span matTooltip="Titre : {{listHTByMembre.titre}}
-        Description : {{listHTByMembre.description}}
-        Priorité: {{listHTByMembre.priorite}}
-        Effort: {{listHTByMembre.effort}}"
+        <span matTooltip="Titre : {{listHTByMembre?.titre}}
+        Description : {{listHTByMembre?.description}}
+        Priorité: {{listHTByMembre?.priorite}}
+        Effort: {{listHTByMembre?.effort}}"
       [matTooltipPosition]="'above'">
-      {{i}} {{listHTByMembre.titre}}
+      {{i}} {{listHTByMembre?.titre}}
         </span>
         <i (click)="deleteUserStoryById(listHTByMembre.id)" id="deleteUSIcon" class="fa-solid fa-trash ml-auto"></i>
       </div>

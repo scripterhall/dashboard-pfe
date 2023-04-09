@@ -176,10 +176,17 @@ export class SelectProjetComponent implements OnInit {
   gerer(index:number){
     if(confirm("Vous etes sûr de gerer le projet "+this.projets[index].nom+" !!")){
     localStorage.setItem('projetCourant', JSON.stringify(this.projets[index]));
-      this.router.navigateByUrl('/dashboard')
+    this.productBacklogService.getProductBacklogByIdProjet(this.projets[index].id).subscribe(
+      data => {
+        const productBacklog = data;
+        localStorage.setItem('productBacklogCourant', JSON.stringify(productBacklog));
+        this.router.navigateByUrl('/dashboard');
+      },
+      error => {
+        console.log('Une erreur s\'est produite lors de la récupération du product backlog : ', error);
+      }
+    );
     }
-
-
   }
 
   /*   annuler* ou gerer  */

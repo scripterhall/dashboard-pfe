@@ -27,8 +27,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AjouterTicketHistoireFormComponent } from "../ajouter-ticket-histoire-form/ajouter-ticket-histoire-form.component";
 import { AjouterSprintFormComponent } from "../ajouter-sprint-form/ajouter-sprint-form.component";
 import { ProductBacklogService } from "src/app/service/product-backlog.service";
-
-const  updateTicketPositionUrl = "http://localhost:9999/gestion-histoire-ticket/histoireTickets/position";
+import { Ticket } from "src/app/model/ticket";
 
 @Component({
   selector: "app-icons",
@@ -97,44 +96,46 @@ export class IconsComponent implements OnInit {
 
       console.log('dropped', event);
 
-      const sprintId = this.sprints[event.currentIndex].id;
-      console.log('sprintId', sprintId);
-
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+
+      event.container.data.forEach((element, index) => {
+        element.position = index + 1;
+        this.histoireTicketService.updateUserStory(element.id, element).subscribe(
+          res => {
+            console.log('element : '+element.id+', nouvelle position = '+element.position)
+          },
+          err => {
+            console.log('Erreur lors de la mise à jour de l\'élément : '+element.id);
+          }
+        );
+      });
     }
     else {
       const item = event.previousContainer.data[event.previousIndex];
-
       if (item.productBacklogId !== null) {
         const dialogRef = this.dialog.open(ConfirmAddUserStoryDialogueComponent, {
           width: '650px',
           height:'440px',
           data: { item: item },
         });
-      } else {
+      }else{
         const productBacklogId = this.getProductBacklogByIdFromLocalStorage();
-        const updatedItem = {...item, productBacklogId: productBacklogId};
         this.assignUserStoryToProductBacklog(item.id, productBacklogId);
-        console.log("Elémént déplacé: ", item);
-        this.toastr.success(`Le ticket histoire est déplacé`);
+
         transferArrayItem(event.previousContainer.data,
           event.container.data,
           event.previousIndex,
           event.currentIndex);
-      }
-    }
-  }
+      }}}
 
   deleteUserStoryById(id: number) {
     const dialogRef = this.dialog.open(ConfirmDialogDeleteUserStoryComponent, {
       width: '250px',
       data: 'Êtes-vous sûr de vouloir supprimer cet élément ?'
     });
-
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.histoireTicketService.deleteUserStoryById(id).subscribe(data => {
@@ -157,7 +158,7 @@ export class IconsComponent implements OnInit {
       .subscribe(
         histoireTicketsByProductBacklogId => this.histoireTicketsByProductBacklogId = histoireTicketsByProductBacklogId,
         );
-  }
+      }
 
   getProjetByIdFromLocalStorage(){
     let projetCourantStr = localStorage.getItem("projetCourant");
@@ -167,25 +168,32 @@ export class IconsComponent implements OnInit {
     return id;
   }
 
-  removeUserStoryFromProductBacklog(id: number) {
-    event.stopPropagation();
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '250px',
-      data: 'Êtes-vous sûr de vouloir supprimer cet élément ?'
-    });
+removeUserStoryFromProductBacklog(id: number) {
+  event.stopPropagation();
+  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    width: '250px',
+    data: 'Êtes-vous sûr de vouloir supprimer cet élément ?'
+  });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
         this.histoireTicketService.removeUserStoryFromProductBacklog(id)
-          .subscribe(response => {
-            console.log("Ticket histoire supprimé avec succès.");
-          });
-            const index = this.histoireTicketsByProductBacklogId.findIndex(item => item.id === id);
-            if (index !== -1) {
-              this.histoireTicketsByProductBacklogId.splice(index, 1);
-            }
+        .subscribe(response => {
+        console.log("Ticket histoire supprimé avec succès.");
+      });
+      this.productBacklogService.decreaseProductBacklogVelocity(this.productBacklogService.getProductBacklogByIdFromLocalStorage(), id)
+        .subscribe(response => {
+          console.log("Effort retiré avec succès du backlog produit.");
+        },
+        error => {
+          console.error('Une erreur est survenue :', error);
+        });
+      const index = this.histoireTicketsByProductBacklogId.findIndex(item => item.id === id);
+      if (index !== -1) {
+        this.histoireTicketsByProductBacklogId.splice(index, 1);
       }
-    });
+    }
+  });
 }
 
 
@@ -251,7 +259,7 @@ export class IconsComponent implements OnInit {
         this.histoireTicketService.assignUserStoryToProductBacklog(histoireTicketId, productBacklogId).subscribe(
           response => {
             console.log('Histoire ticket affecté au product backlog avec succès', response);
-            this.elevateProductBacklogVelocity(productBacklogId, histoireTicketId);
+            this.elevateProductBacklogVelocity(productBacklogId, histoireTicket.effort);
           },
           error => console.log(error)
         );
@@ -260,17 +268,18 @@ export class IconsComponent implements OnInit {
     );
   }
 
-  elevateProductBacklogVelocity(productBacklogId: number, histoireTicketId: number) {
-    this.productBacklogService.elevateProductBacklogVelocity(productBacklogId, histoireTicketId).subscribe(
-      response => {
-        console.log('La réponse de l\'API est :', response);
-      },
-      error => {
-        console.error('Une erreur est survenue :', error);
-      }
-    );
-  }
 
+  elevateProductBacklogVelocity(productBacklogId: number, effort: number) {
+    this.productBacklogService.elevateProductBacklogVelocity(productBacklogId, effort)
+      .subscribe(
+        response => {
+          console.log('Response:', response);
+        },
+        error => {
+          console.error('Error:', error);
+        }
+      );
+  }
 
   elementCreated:boolean = false;
   @ViewChild('detailElement') detailElementRef!: ElementRef;
@@ -332,28 +341,9 @@ export class IconsComponent implements OnInit {
         );
   }
 
-    ngOnInit() {
-      this.productBacklogService.getProductBacklogByIdProjet(this.getProjetByIdFromLocalStorage()).subscribe(
-        data => {
-          const productBacklog = data;
-          console.log(productBacklog);
-          localStorage.setItem('productBacklogCourant', JSON.stringify(productBacklog));
-          console.log(this.productBacklog);
-        },
-        error => {
-          console.log('Une erreur s\'est produite lors de la récupération du product backlog : ', error);
-        }
-      );
-
+    ngOnInit(){
       this.getHistoireTicketsByMembreId(1);
       this.getHistoireTicketsByProductBacklogId(this.getProductBacklogByIdFromLocalStorage());
-
-      // this.sprintService.getListSprintsByProductBacklog(this.getProductBacklogByIdFromLocalStorage()).subscribe(
-      //   data => {
-      //     this.sprints = data ;
-      //   }
-      // );
-
       this.sprintService.getListSprintsByProductBacklog(this.getProductBacklogByIdFromLocalStorage()).subscribe(
         data => {
           this.sprints = data ;

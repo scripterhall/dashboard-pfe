@@ -19,6 +19,6 @@ export class TicketHistoire extends Ticket{
     public sprint?:Sprint;
 
     public membreId?:number;
-    public dateDebut:Date;
-    public dateFin:Date;
+    public dateDebut?:Date;
+    public dateFin?:Date;
 }

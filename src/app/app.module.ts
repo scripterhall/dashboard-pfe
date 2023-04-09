@@ -49,7 +49,6 @@ import { GestionTacheDialogComponent } from './pages/dialogs/gestion-tache-dialo
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { DecisionComponent } from './pages/decision/decision.component';
 import { InvitationComponent } from './pages/dialogs/invitation/invitation.component';
-import { CourbesComponent } from './pages/courbes/courbes.component';
 
 
 @NgModule({
@@ -92,7 +91,7 @@ import { CourbesComponent } from './pages/courbes/courbes.component';
     SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent,
     AjoutTacheSpbComponent, GestionTacheDialogComponent, ConfirmDialogComponent,
     ConfirmDialogDeleteUserStoryComponent, ConfirmAddUserStoryDialogueComponent,
-    UpdateUserStoryDialogComponent, ScrumBoardComponent, DecisionComponent, InvitationComponent, CourbesComponent],
+    UpdateUserStoryDialogComponent, ScrumBoardComponent, DecisionComponent, InvitationComponent],
   providers: [],
   bootstrap: [AppComponent]
 

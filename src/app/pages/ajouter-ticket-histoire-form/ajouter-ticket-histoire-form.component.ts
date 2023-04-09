@@ -32,6 +32,7 @@ export class AjouterTicketHistoireFormComponent {
 
   onSave() {
     const formData = this.form.value;
+    formData.membreId=1;
     this.histoireTicketService.addTicket(formData).subscribe(
       response => {
         console.log('Ticket histoire ajouté avec succès.');

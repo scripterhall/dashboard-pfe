@@ -38,8 +38,14 @@ export class ProductBacklogService {
     return id;
   }
 
-  elevateProductBacklogVelocity(productBacklogId: number, histoireTicketId: number): Observable<any> {
+  elevateProductBacklogVelocity(productBacklogId: number, effort: number) {
     const url = `${url1}`;
+    const body = { productBacklogId, effort };
+    return this.http.put(url, body);
+  }
+
+  decreaseProductBacklogVelocity(productBacklogId: number, histoireTicketId: number): Observable<any> {
+    const url = `${url1}/`;
     const requestBody = { productBacklogId, histoireTicketId };
     return this.http.put(url, requestBody);
   }
