@@ -1,0 +1,16 @@
+ul {
+    list-style: none; /* Supprime les puces par défaut */
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    font-family: serif ;
+}
+li::before{
+    content: "🢫";
+}
+ul ul li:before {
+    content: ">"; /* Définit le contenu de l'icône */
+    margin-right: 10px; /* Ajoute de l'espace entre l'icône et le texte */
+    color: #f00; /* Définit la couleur de l'icône */
+    font-size: 1.2em; /* Définit la taille de l'icône */
+  }

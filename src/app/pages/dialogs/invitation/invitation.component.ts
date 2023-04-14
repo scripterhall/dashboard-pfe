@@ -10,6 +10,7 @@ import { InvitationService } from 'src/app/service/invitation.service';
 import { MembreService } from 'src/app/service/membre.service';
 import { RoleService } from 'src/app/service/role.service';
 import Swal from 'sweetalert2';
+import { roleExists } from '../../select-projet/email-exists.validator';
 
 interface Request {
   invitation: Invitation;
@@ -35,6 +36,7 @@ export class InvitationComponent implements OnInit {
   ]);
 
 
+
   constructor(
     public dialogRef: MatDialogRef<InvitationComponent>,
     private membreService: MembreService,
@@ -49,7 +51,6 @@ export class InvitationComponent implements OnInit {
   combinedForm:FormGroup;
   membreList:Membre[]
 
-
   
 
   ngOnInit(): void {
@@ -58,6 +59,8 @@ export class InvitationComponent implements OnInit {
       data => {
         this.roleService.afficherListRoleParProjet(this.data.projet.id).subscribe(
           dataRoles => {
+            
+            this.roleForm.get('type').setValidators([Validators.required,roleExists(dataRoles)])
             this.membreList =data.filter(membre=> membre.id != dataRoles.find(role => role.pk.membreId == membre?.id)?.pk.membreId) 
           }
         )
@@ -79,7 +82,8 @@ export class InvitationComponent implements OnInit {
       pk:this.rolePkForm,
       type :["",Validators.required],
       permission :"",
-      description:"" 
+      description:"",
+      status:"ATTENTE"
     })
 
    
@@ -123,12 +127,21 @@ export class InvitationComponent implements OnInit {
         console.log(data);
         let role:Role = this.roleForm.value
         role.pk.membreId = data.membreId
-        console.log(role);
-        
         this.roleService.ajouterRole(role).subscribe(
           data => {
             console.log("role : "+data);
-            
+            this.dialogRef.close()
+          },
+          error => {
+            this.invitationService.supprimerInvitation(data.id).subscribe(
+              data => console.log(data),
+              errorSupp => console.log(errorSupp)
+            )
+            Swal.fire(
+              'Invitation annulée',
+              'Une erreur est servenue Lors de l\'invitation, peut être que vous avez déjà invité ce membre pour ce projet',
+              'error',
+            )
           }
         )
       }

@@ -34,6 +34,9 @@ import { FireworksComponent } from '../../pages/fireworks/fireworks.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { CourbesComponent } from "src/app/pages/courbes/courbes.component";
+import { HistoireMembreChartComponent } from '../../pages/histoire-membre-chart/histoire-membre-chart.component';
+import { StatCourbComponent } from "src/app/pages/dialogs/stat-courb/stat-courb.component";
+import { ListMembreProjetComponent } from "src/app/pages/list-membre-projet/list-membre-projet.component";
 
 @NgModule({
   imports: [
@@ -72,7 +75,10 @@ import { CourbesComponent } from "src/app/pages/courbes/courbes.component";
     TypographyComponent,
     NotificationsComponent,
     MapComponent,
-    CourbesComponent
+    CourbesComponent,
+    HistoireMembreChartComponent,
+    StatCourbComponent,
+    ListMembreProjetComponent
     // RtlComponent
   ]
 })

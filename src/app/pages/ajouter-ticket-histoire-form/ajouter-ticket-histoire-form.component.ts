@@ -38,7 +38,7 @@ export class AjouterTicketHistoireFormComponent {
         console.log('Ticket histoire ajouté avec succès.');
         console.log(formData);
 console.log('id histoire ticket = '+formData.id)
-        this.dialogRef.close();
+        this.dialogRef.close(response);
       },
       error => {
         console.error("Erreur d'enregistrement du ticket histoire ! : ", error);
@@ -52,7 +52,8 @@ console.log('id histoire ticket = '+formData.id)
       titre: ['', Validators.required],
       description: [''],
       effort: ['', Validators.required],
-      priorite: ['', Validators.required]
+      priorite: ['', Validators.required],
+      membreId:1
     });
   }
 

@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { TicketHistoire } from '../model/ticket-histoire';
-// /{membreId}/histoiresTickets
 import { map } from 'rxjs';
 import { Membre } from '../model/membre';
 const URL = "http://localhost:9999/membre-service/membres"

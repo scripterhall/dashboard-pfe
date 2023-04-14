@@ -9,6 +9,7 @@ export class Role {
     public permission ?:string; //les fonctionalite qui peut effectuer sur le projet
     public description?:string;//description du role
     public membre?:Membre //qui a le role
+    public status?:string;//ATTENTE,ACCEPTE
     public projet?:Projet;//dons quelle projet
 
 }

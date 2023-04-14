@@ -30,7 +30,7 @@ export class ProjetServiceService {
   }
 
   getProjetByIdFromLocalStorage(){
-    let projetCourantStr = localStorage.getItem("projetCourant");
+    let projetCourantStr = localStorage.getItem("projet");
     let projetCourantObj = JSON.parse(projetCourantStr);
     let id = projetCourantObj.id;
     console.log("id projet courant = "+id);

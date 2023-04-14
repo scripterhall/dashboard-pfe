@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
     projet:Projet;
 
     ngOnInit() {
-      const storedObject = localStorage.getItem("projetCourant");
+      const storedObject = localStorage.getItem("projet");
       const parsedObject = JSON.parse(storedObject);
       this.projet = parsedObject;
 
@@ -56,7 +56,7 @@ export class DashboardComponent implements OnInit {
         for (let i = 0; i < this.sprints.length; i++) {
           const sprint = this.sprints[i];
 
-          this.histoireTicketService.getHistoireTicketBySprintId(sprint.id).subscribe((tickets: TicketHistoire[]) => {
+          this.histoireTicketService.getHistoireTicketBySprintId(sprint?.id).subscribe((tickets: TicketHistoire[]) => {
             const labels = [];
             const data = [];
             let remainingEffort = sprint.velocite;
@@ -73,7 +73,7 @@ export class DashboardComponent implements OnInit {
             labels.push(new Date(sprint.dateFin));
             data.push(0);
 
-            const chart = new Chart(`canvas-${sprint.id}`, {
+            const chart = new Chart(`canvas-${sprint?.id}`, {
               type: 'line',
               data: {
                 labels: labels,
@@ -211,6 +211,8 @@ export class DashboardComponent implements OnInit {
 
     if(this.sprintsProjet && this.sprintsProjet.length>0){
       const labels = this.sprintsProjet.map((sprint, index) => 'Sprint' + (index + 1));
+      labels.unshift('0');
+
       const data = {
       labels: labels,
       datasets: [
@@ -225,26 +227,33 @@ export class DashboardComponent implements OnInit {
           borderDash: [],
           borderDashOffset: 0.0,
           backgroundColor: gradient,
-          pointBackgroundColor: '#ec250d',
-          pointBorderColor: 'rgba(255,255,255,0)',
-          borderColor: '#ec250d'
+          pointBackgroundColor: '#FC836B',
+          pointBorderColor: '#FC836B',
+          borderColor: '#FC836B'
         },
         {
           label: 'Effort planifié',
           data: this.getEffortPlanifieData(),
           fill: false,
-          borderColor: 'green',
+          borderWidth: 2,
+          borderDash: [],
+          borderDashOffset: 0.0,
+          borderColor: '#64FF25',
           pointBorderWidth: 1.5,
+          pointBackgroundColor: '#64FF25',
+          pointBorderColor: '#64FF25'
         }]};
         return data;
     }
+
     }
 
     getScopeCreepData() {
       const scopeCreepData: number[] = [];
+      scopeCreepData.push(0);
       let scopeCreepTotal = 0;
         for (const sprint of this.sprintsProjet) {
-          const userStoriesInSprint = this.tickets.filter(us => us.sprintId === sprint.id);
+          const userStoriesInSprint = this.tickets.filter(us => us.sprintId === sprint?.id);
           const scopeCreepInSprint = userStoriesInSprint.reduce((acc, us) => acc + (us.effort * (us.status === 'TERMINE' ? 1 : 0)), 0);
           scopeCreepTotal = scopeCreepTotal + scopeCreepInSprint;
           scopeCreepData.push(scopeCreepTotal);
@@ -255,6 +264,7 @@ export class DashboardComponent implements OnInit {
     getEffortPlanifieData(){
       if(this.sprintsProjet && this.sprintsProjet.length>0){
         const effortPlanifieData: number[] = [];
+        effortPlanifieData.push(0)
         let effortPlanifieTotal = 0;
         for (const sprint of this.sprintsProjet) {
           effortPlanifieTotal += sprint.velocite;

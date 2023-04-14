@@ -11,10 +11,19 @@
           <h4 class=" card-title">A faire</h4>
         </div>
         <div id="à faire" class="card-body" style="overflow-y:auto;max-height:700px;">
-          <span *ngFor="let tache of ticketsTache" [draggable]="true" (drop)="onDrop($event, tache)">
+          <span *ngFor="let tache of ticketsTache"  
+            [draggable]="true"
+            (dragend)="onDragEnd($event,tache)"
+            (drop)="onDrop($event, tache)">
           <ngb-alert [type]="'info'" *ngIf="tache.etat === 'à faire'" [dismissible]="false">
-            <span>
+            <span>                 
               <b>{{tache.titre}} </b> De {{tache.dateLancement |date}} à {{tache.dateFin |date}}
+              <button mat-icon-button *ngIf="tache.membreId==null" [matMenuTriggerFor]="menu" (click)="prendreTicket(tache.id)" style="border:1px solidblack;" aria-label="Example icon-button with a menu">
+                <mat-icon>person_add</mat-icon>
+              </button>
+              <button mat-icon-button *ngIf="tache.membreId!=null" [matMenuTriggerFor]="menu" (click)="verifierPersPris(tache.membre)" style="border:1px solidblack;" aria-label="Example icon-button with a menu">
+                <mat-icon>how_to_reg</mat-icon>
+              </button> 
             </span>
           </ngb-alert>
           </span>
@@ -45,14 +54,19 @@
         <div class=" card-header" >
           <h4 class=" card-title">Terminé</h4>
         </div>
+      
         <div id="terminé" class="card-body" style="overflow-y:auto;max-height: 454px;">
+        
           <span *ngFor="let tache of ticketsTache" [draggable]="true" (drop)="onDrop($event, tache)">
           <ngb-alert *ngIf="tache.etat === 'terminé'" [type]="'primary'" [dismissible]="false">
+            <ng-container [diabled]="tache.etat == 'terminé'">
             <span>
               <b>{{tache.titre}} </b> De {{tache.dateLancement |date}} à {{tache.dateFin |date}}
             </span>
+          </ng-container>
           </ngb-alert>
           </span>
+       
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
-<div class="card col-lg-4 col-md-4 col-sm-4" style=" margin-top:9%;" *ngIf="this.role">
+
+<div class="card col-lg-4 col-md-4 col-sm-4" style=" margin-top:9%;" *ngIf="this.role && this.dateExpirationToken > aujourdhui ">
 
         <!-- Image à la une -->
         <div class="card-image"><img src="../../../assets/img/numeryx.png" alt="logo" /></div>
@@ -33,4 +34,10 @@
         </div>
         <!-- Fin du corp de notre carte -->
         
+</div>
+
+<div class="invitation-card" *ngIf="this.dateExpirationToken <= aujourdhui">
+    <h1>Votre invitation expirée</h1>
+    <p class="expiration-date">Cette invitation a expiré le {{this.dateExpirationToken|date:'dd-MM-yyyy'}}</p>
+    <a href="https://www.numeryx.fr/fr/numeryx-technologies-inaugure-filiale-tunisie"  class="btn-anuler">Retourner à la page Numeryx</a>
 </div>

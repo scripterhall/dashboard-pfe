@@ -155,7 +155,7 @@
                   <input formControlName="emailInvitee"  matInput>
                   <mat-error *ngIf="invitationForm.get('emailInvitee').touched && invitationForm.get('emailInvitee').hasError('required')">le champ email est obligatoire</mat-error>
                   <mat-error *ngIf="invitationForm.get('emailInvitee').dirty && invitationForm.get('emailInvitee').errors?.emailExists">vous avez déjà envoyé une invitation a ce mail</mat-error>
-                  <mat-hint class="text-warning" *ngIf="invitationForm.get('emailInvitee').dirty && invitationForm.controls.emailInvitee.errors.invalidEmail">vous devez respecter les regle de nommage d'un mail "@"  et "."</mat-hint>
+                  <mat-hint class="text-warning" *ngIf="invitationForm.get('emailInvitee').dirty && invitationForm.get('emailInvitee').errors?.invalidEmail">vous devez respecter les regle de nommage d'un mail "@"  et "."</mat-hint>
                 </mat-form-field>
 
                 <mat-action-row>
@@ -209,6 +209,15 @@
                                </mat-option>
                             </mat-select>
                             <mat-error *ngIf="roleForm.get('type').hasError('required')">tu dois choisir le role dans l'equipe</mat-error>
+                            <!-- validateur de role existant -->
+                            <mat-error *ngIf="roleForm.get('type').errors?.invalidRole" >
+                              Un projet peut avoire un seule
+                              <span *ngIf="roleForm.get('type').value == 'po'">Product owner</span>
+                              <span *ngIf="roleForm.get('type').value == 'scrum master'">Scrum master</span>
+                              est vous avez déjà envoyé une invitation contient ce role 
+                              
+                              </mat-error>
+                            <!-- end  -->
                           </mat-form-field>
                         </td>
                         <td>

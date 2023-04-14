@@ -38,7 +38,7 @@ const routes: Routes = [
     component:SelectProjetComponent
   },
   {
-    path:"decision/:idProjet/:idMembre",
+    path:"decision/:idProjet/membres/:idMembre/:token",
     component:DecisionComponent
   },
   {

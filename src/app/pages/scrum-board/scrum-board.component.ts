@@ -6,6 +6,8 @@ import { ProductBacklogService } from 'src/app/service/product-backlog.service';
 import { SprintService } from 'src/app/service/sprint.service';
 import { TicketTacheService } from 'src/app/service/ticket-tache.service';
 import Sortable from 'sortablejs';
+import Swal from 'sweetalert2';
+import { Membre } from 'src/app/model/membre';
 
 @Component({
   selector: 'app-scrum-board',
@@ -123,10 +125,12 @@ ngAfterViewInit() {
   }
 
   onDrop(event: DragEvent, tache: any) {
+  
     const targetElement = event.target as Element;
     const containerElement = targetElement.closest('.card-body') as HTMLElement;
     const containerId = containerElement.getAttribute('id');
     console.log('Nouvel etat du ticket tâche: ', containerId);
+    if(tache.membreId!=null){
     tache.etat = containerId;
     this.ticketTacheService.modifierTicketTache(tache).subscribe(
         (modifiedTicket: TacheTicket) => {
@@ -136,6 +140,69 @@ ngAfterViewInit() {
             console.error('Erreur: ', error);
         });
   }
+}
+
+onDragEnd(event:DragEvent,tache:TacheTicket){
+  console.log(tache);
+  if(tache.membreId==null){
+    
+    this.toastr.error(`Cette ticket n'a pas de membre`);
+    window.location.reload();
+  }
+}
+
+prendreTicket(idTicketTache:number){
+  const  ticket = this.ticketsTache.find(tache=>tache.id === idTicketTache)
+  Swal.fire({
+    title: "vous êtes sûr de prendre la tâche : "+ticket.titre,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Oui, Lancer!',
+    cancelButtonText: 'Annuler',
+    background:'rgba(0,0,0,0.9)',
+    backdrop: 'rgba(0,0,0,0.4)',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false,
+    focusConfirm: false
+  }).then((result) => {
+    if (result.isConfirmed) {  
+      const membre = JSON.parse(localStorage.getItem('membre'))
+      this.ticketTacheService.affecterTicketAMembre(membre,idTicketTache).subscribe(
+      dataTicket=>{
+          this.ticketsTache.forEach(ticket=>{
+            if(ticket.id == idTicketTache){
+              ticket.dateFin = dataTicket.dateFin
+              ticket.dateLancement = dataTicket.dateLancement
+              ticket.membre = dataTicket.membre
+              ticket.membreId = dataTicket.membreId
+              Swal.fire(
+                'tâche pris',
+                'Vous êtes le responsable de cette tâche vieulliez à ce quelle soit terminé dans '+ticket.nbHeurs+"H",
+                'success'
+              )
+            }
+          })
+      }
+    )
+    
+    }
+   }      
+  );
+
+  
+}
+
+verifierPersPris(membre:Membre){
+  const prendre = "cette ticket est pris par "
+  if(JSON.parse(localStorage.getItem('membre')).id == membre.id)
+    this.toastr.success(`${prendre} Vous 	😀`);
+  else
+    this.toastr.success(`${prendre} ${membre.email}`);
+}
+
 
 }
 

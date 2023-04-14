@@ -13,7 +13,7 @@ import { MembreService } from 'src/app/service/membre.service';
 import { ProjetServiceService } from 'src/app/service/projet-service.service';
 import { RoleService } from 'src/app/service/role.service';
 import Swal from 'sweetalert2';
-import { emailValidator, emailExistsValidator } from './email-exists.validator';
+import { emailValidator, emailExistsValidator,roleExists } from './email-exists.validator';
 
 export interface ExampleTab {
   label: string;
@@ -71,7 +71,7 @@ export class SelectProjetComponent implements OnInit {
 
     this.invitationForm = this.formBuilder2.group({
       chefProjetId:1,
-      emailInvitee:["",[Validators.required,emailValidator]],
+      emailInvitee:["",[Validators.required]],
       membreId:null
     })
 
@@ -79,7 +79,8 @@ export class SelectProjetComponent implements OnInit {
       pk:this.rolePkForm,
       type :["",Validators.required],
       permission :[""],
-      description:[""]
+      description:[""],
+      status:"ATTENTE"
     })
 
 
@@ -122,18 +123,12 @@ export class SelectProjetComponent implements OnInit {
 
     this.roleForm.get('type').valueChanges.subscribe(
       typeNumber=>{
+        //injecter le validateur
 
         this.roleForm.patchValue({ permission: this.permissionMap.get(typeNumber) || null });
-      }
-    )
-
-    this.roleForm.get('type').valueChanges.subscribe(
-      typeNumber=>{
-
         this.roleForm.patchValue({ description: this.descriptionMap.get(typeNumber) || null });
       }
     )
-
 
   }
 
@@ -175,7 +170,7 @@ export class SelectProjetComponent implements OnInit {
 /*   boutton gerer de content 1  */
   gerer(index:number){
     if(confirm("Vous etes sûr de gerer le projet "+this.projets[index].nom+" !!")){
-    localStorage.setItem('projetCourant', JSON.stringify(this.projets[index]));
+    localStorage.setItem('projet', JSON.stringify(this.projets[index]));
     this.productBacklogService.getProductBacklogByIdProjet(this.projets[index].id).subscribe(
       data => {
         const productBacklog = data;
@@ -268,7 +263,22 @@ step = 0;
         this.roleService.ajouterRole(role).subscribe(
           data => {
             console.log("role : "+data);
-
+            this.invitationForm.reset();
+            this.rolePkForm.reset();
+            this.roleForm.reset();
+            this.step = 0
+          },
+          error => {
+            console.log(error);
+            this.invitationService.supprimerInvitation(data.id).subscribe(
+              data => console.log(data),
+              errorSupp => console.log(errorSupp)
+            )
+            Swal.fire(
+              'Invitation annulée',
+              'Une erreur est servenue Lors de l\'invitation, peut être que vous avez déjà invité ce membre pour ce projet',
+              'error',
+            )
           }
         )
       }
@@ -294,12 +304,19 @@ step = 0;
       data => {
         this.roleService.afficherListRoleParProjet(projetId).subscribe(
           dataRoles => {
+            //pour les membre qui sont deja la
             this.membreList =data.filter(membre=> membre.id != dataRoles.find(role => role.pk.membreId == membre?.id)?.pk.membreId)
+            //si il n ya pas de membre
             this.listNewMembre = data.filter(
               membre => membre.email == dataRoles.find(role => role.membre.email == membre.email)?.membre.email
             )
             console.log(this.listNewMembre);
+
+            //injection de validateur de role
+            this.roleForm.get('type').setValidators([Validators.required,roleExists(dataRoles)])
+
             if (this.listNewMembre.length > 0)
+            //ken lista akber men  0 ninjecti fiha les validateur
               this.invitationForm.get('emailInvitee').setValidators([emailExistsValidator(this.listNewMembre),Validators.required,emailValidator]);
           }
         )

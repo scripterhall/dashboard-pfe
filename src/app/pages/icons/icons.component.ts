@@ -1,6 +1,5 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
-import { CdkDragDrop, CdkDragEnd, CdkDragExit, CdkDragStart, CdkDropList, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { HttpClient } from "@angular/common/http";
+import { CdkDragDrop, CdkDropList, transferArrayItem } from "@angular/cdk/drag-drop";
 import { Component, ElementRef, HostBinding, OnInit, ViewChild } from "@angular/core";
 import { Sprint } from "src/app/model/sprint";
 import { TicketHistoire } from "src/app/model/ticket-histoire";
@@ -28,6 +27,7 @@ import { AjouterTicketHistoireFormComponent } from "../ajouter-ticket-histoire-f
 import { AjouterSprintFormComponent } from "../ajouter-sprint-form/ajouter-sprint-form.component";
 import { ProductBacklogService } from "src/app/service/product-backlog.service";
 import { Ticket } from "src/app/model/ticket";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-icons",
@@ -89,7 +89,6 @@ export class IconsComponent implements OnInit {
   newProductBacklogId: number;
   selectedSprint: number;
   sprintsVelocitySum: number = 0;
-
 
   drop(event: CdkDragDrop<TicketHistoire[]>) {
     if (event.previousContainer === event.container) {
@@ -161,7 +160,7 @@ export class IconsComponent implements OnInit {
       }
 
   getProjetByIdFromLocalStorage(){
-    let projetCourantStr = localStorage.getItem("projetCourant");
+    let projetCourantStr = localStorage.getItem("projet");
     let projetCourantObj = JSON.parse(projetCourantStr);
     let id = projetCourantObj.id;
     console.log("id projet courant = "+id);
@@ -199,18 +198,6 @@ removeUserStoryFromProductBacklog(id: number) {
 
   //sprint details
   openDialogDetailsSprint(i:number,sp:Sprint) {
-    let startedOne:Sprint
-    let testStart :boolean
-    if(this.sprints.length>1){
-      startedOne = this.sprints[i-1]
-      console.log(startedOne);
-
-      testStart = startedOne?.etat =='terminer'
-    }
-    else{
-      startedOne = this.sprints[i]
-      testStart = false
-    }
     console.log(sp);
     this.histoireTicketService.getHistoireTicketBySprintId(sp.id).subscribe(
       data =>{
@@ -220,7 +207,7 @@ removeUserStoryFromProductBacklog(id: number) {
           height:'690px',
           data: {sprint:this.sprints[i],
                 TicketHistoires:this.histoireTicketsSprint,
-                canStart :testStart
+                canStart :this.checkStartOneSprint()
           }
         });
 
@@ -250,6 +237,12 @@ removeUserStoryFromProductBacklog(id: number) {
         },
         error => console.log(error)
       );
+    console.log('id sprint :'+sprintId);
+    const sprint = this.sprints.find(sprint => sprint.id == sprintId);
+    const ticketHistoire = this.histoireTicketsByProductBacklogId.find(histoire => histoire.id == histoireTicketId)
+    console.log(ticketHistoire);
+    console.log(sprint);
+      this.addUserStoryToSprint(histoireTicketId,sprintId)
   }
 
   assignUserStoryToProductBacklog(histoireTicketId: number, productBacklogId: number) {
@@ -304,6 +297,32 @@ removeUserStoryFromProductBacklog(id: number) {
     }
   }
 
+  addUserStoryToSprint(histoireTicketId: number, sprintId: number){
+    const sprint = this.sprints.find(sprint => sprint.id == sprintId);
+    console.log(sprint);
+
+    const ticketHistoire = this.histoireTicketsByProductBacklogId.find(histoire => histoire.id == histoireTicketId)
+    this.histoireTicketService.assignUserStoryToSprint(histoireTicketId, sprintId)
+        .subscribe(
+          response => {
+            console.log('Histoire ticket affecté au sprint', response);
+            const indexSprint = this.sprints.indexOf(this.sprints.find(sprint => sprint.id == sprintId))+ 1
+            const selectedSprintValue = `Sprint ${indexSprint}`;
+            /** block add  velocity to sprint */
+            sprint.velocite += ticketHistoire.effort
+            sprint.productBacklogId = JSON.parse(localStorage.getItem('productBacklogCourant')).id
+            this.sprintService.modifierSprint(sprint).subscribe(
+              sprintNewData =>{
+                sprint.velocite = sprintNewData.velocite
+                console.log(sprintNewData);
+              }
+            )
+            /** end block  */
+            this.toastr.success(`Histoire ticket affecté au ${selectedSprintValue}`);
+          },
+          error => console.log(error)
+        );
+  }
 
   clickCount = 0;
   move(){
@@ -318,7 +337,9 @@ removeUserStoryFromProductBacklog(id: number) {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.histoireTicketsByMembreId.push(result)
       console.log('The dialog was closed');
+
     });
   }
 
@@ -326,11 +347,14 @@ removeUserStoryFromProductBacklog(id: number) {
     const dialogRef = this.dialog.open(AjouterSprintFormComponent, {
       width: '500',
       height:'400px',
-      data: {}
+      data: {
+
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
+      this.sprints.push(result)
     });
   }
 
@@ -366,4 +390,20 @@ removeUserStoryFromProductBacklog(id: number) {
         console.log('The dialog was closed');
       });
     }
-}
+
+
+    checkStartOneSprint():Boolean{
+      for(let sprint of this.sprints){
+        if (sprint.etat == "en cours")
+          return true;
+      }
+    }
+
+    isSprintInProgress(sprintId: number): boolean {
+      if(this.sprints?.length>0){
+        const sprint = this.sprints.find(sprint => sprint.id === sprintId);
+        return sprint && sprint.etat === 'en cours';
+      }
+    }
+
+  }
