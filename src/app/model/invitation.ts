@@ -12,6 +12,6 @@ export class Invitation {
     public membreId?:number;
     public chefProjet:ChefProjet// qui a envoyer l'invitation
     public membre:Membre//l'invitee
-
+    
 
 }

@@ -141,7 +141,7 @@ export class MapComponent implements OnInit {
   prendreTicket(idTicketTache:number){
     const  ticket = this.ticketsTache.find(tache=>tache.id === idTicketTache)
     Swal.fire({
-      title: "vous êtes sûr de prendre la tâche : "+ticket.titre,
+      title: "vous êtes sûr de prendre la tâche : "+ticket?.titre,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -272,8 +272,8 @@ export class MapComponent implements OnInit {
           const listeTacheTermine = listeTache.filter(tache => tache.etat == "terminé")
           if(listeTacheTermine.length == listeTache.length){
             ticketHistoire.status = "TERMINE"
-            console.log(ticketHistoire);
             
+            console.log(ticketHistoire);
             this.ticketHistoireService.updateUserStory(ticketHistoire.id,ticketHistoire).subscribe(
               dataHistoire =>{
                 console.log(dataHistoire)

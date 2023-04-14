@@ -10,8 +10,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 export interface DialogData {
-  sprint: Sprint;
-  TicketHistoires:TicketHistoire[]
+  sprint: Sprint,
+  TicketHistoires:TicketHistoire[],
   canStart:boolean
 }
 import { HistoireTicketService } from "src/app/service/histoire-ticket.service";
@@ -161,7 +161,7 @@ export class IconsComponent implements OnInit {
   }
 
   getProjetByIdFromLocalStorage(){
-    let projetCourantStr = localStorage.getItem("projetCourant");
+    let projetCourantStr = localStorage.getItem("projet");
     let projetCourantObj = JSON.parse(projetCourantStr);
     let id = projetCourantObj.id;
     console.log("id projet courant = "+id);
@@ -194,6 +194,7 @@ export class IconsComponent implements OnInit {
   //sprint details
   openDialogDetailsSprint(i:number,sp:Sprint) {
     console.log(sp);
+    let test = this.checkStartOneSprint()
     this.histoireTicketService.getHistoireTicketBySprintId(sp.id).subscribe(
       data =>{
         this.histoireTicketsSprint = data
@@ -202,7 +203,7 @@ export class IconsComponent implements OnInit {
           height:'690px',
           data: {sprint:this.sprints[i],
                 TicketHistoires:this.histoireTicketsSprint,
-                canStart :this.checkStartOneSprint()
+                canStart :test
           }
         });
 
@@ -227,47 +228,47 @@ export class IconsComponent implements OnInit {
     const ticketHistoire = this.histoireTicketsByProductBacklogId.find(histoire => histoire.id == histoireTicketId)
     console.log(ticketHistoire);
     console.log(sprint);
-    if(sprint.etat == "en attente")
+    // if(sprint.etat == "en attente")
       this.addUserStoryToSprint(histoireTicketId,sprintId)
-      else{
-        if(((this.sprints.indexOf(sprint)+1) - this.sprints.length) == 0){
-          Swal.fire(
-            'insertion impossible ⛔',
-            'ce sprint est lancé si possible \n creer un autre sprint pour les affecter \n d\'autres ticket histoire',
-            'error',
-          )
-        }else{
-          const nextSprint = this.sprints[this.sprints.indexOf(sprint)+1]
-          Swal.fire({
-            title: "voullez vous inserer cette ticket histoire dans le sprint suivant : ",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Inserer',
-            cancelButtonText: 'Annuler',
-            background:'rgba(0,0,0,0.9)',
-            backdrop: 'rgba(0,0,0,0.4)',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false,
-            focusConfirm: false
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // Le code à exécuter si l'utilisateur a cliqué sur "Oui, supprimer!"
-              this.addUserStoryToSprint(histoireTicketId,nextSprint.id)
-              console.log(nextSprint);
-              Swal.fire(
-                'insertion effectué',
-                'consulter le sprint pour voire le details',
-                'success',
-              )
+      // else{
+      //   if(((this.sprints.indexOf(sprint)+1) - this.sprints.length) == 0){
+      //     Swal.fire(
+      //       'insertion impossible ⛔',
+      //       'ce sprint est lancé si possible \n creer un autre sprint pour les affecter \n d\'autres ticket histoire',
+      //       'error',
+      //     )
+      //   }else{
+      //     const nextSprint = this.sprints[this.sprints.indexOf(sprint)+1]
+      //     Swal.fire({
+      //       title: "voullez vous inserer cette ticket histoire dans le sprint suivant : ",
+      //       icon: 'warning',
+      //       showCancelButton: true,
+      //       confirmButtonColor: '#3085d6',
+      //       cancelButtonColor: '#d33',
+      //       confirmButtonText: 'Inserer',
+      //       cancelButtonText: 'Annuler',
+      //       background:'rgba(0,0,0,0.9)',
+      //       backdrop: 'rgba(0,0,0,0.4)',
+      //       allowOutsideClick: false,
+      //       allowEscapeKey: false,
+      //       allowEnterKey: false,
+      //       focusConfirm: false
+      //     }).then((result) => {
+      //       if (result.isConfirmed) {
+      //         // Le code à exécuter si l'utilisateur a cliqué sur "Oui, supprimer!"
+      //         this.addUserStoryToSprint(histoireTicketId,nextSprint.id)
+      //         console.log(nextSprint);
+      //         Swal.fire(
+      //           'insertion effectué',
+      //           'consulter le sprint pour voire le details',
+      //           'success',
+      //         )
               
-            }
-          });
-        }
+      //       }
+      //     });
+      //   }
       }
-  }
+  
 
 
 
@@ -313,7 +314,7 @@ export class IconsComponent implements OnInit {
         .subscribe(
           response => {
             console.log('Histoire ticket affecté au sprint', response);
-            const indexSprint = this.sprints.indexOf(this.sprints.find(sprint => sprint.id == sprintId))+ 1
+            const indexSprint = this.sprints.indexOf(this.sprints.find(sprint => sprint.id == sprintId))+1
             const selectedSprintValue = `Sprint ${indexSprint}`;
             /** block add  velocity to sprint */
             sprint.velocite += ticketHistoire.effort
@@ -407,11 +408,12 @@ export class IconsComponent implements OnInit {
     }
 
 
-    checkStartOneSprint():Boolean{
+    checkStartOneSprint():boolean{
       for(let sprint of this.sprints){
         if (sprint.etat == "en cours")
           return true;
       }
+      return false;
 
     }
 }

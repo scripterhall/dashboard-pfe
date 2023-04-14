@@ -54,7 +54,6 @@ import { ListMembreProjetComponent } from './pages/list-membre-projet/list-membr
 import { PerformanceCourbeComponent } from './pages/dialogs/performance-courbe/performance-courbe.component';
 
 
-
 @NgModule({
   imports: [
     BrowserAnimationsModule,

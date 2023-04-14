@@ -1,0 +1,1 @@
+{"ast":null,"code":"var Reponse = /** @class */function () {\n  function Reponse() {}\n  return Reponse;\n}();\nexport { Reponse };","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

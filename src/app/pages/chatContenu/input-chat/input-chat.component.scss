@@ -1,0 +1,15 @@
+textarea{
+    width:90%;
+    min-height: 60px;
+    background-color:transparent;
+    border:none;
+    font-family: sans-serif;
+    color: #fff;
+    font-size: 17px;
+    padding-left: 2%;
+    padding-top: 1%;
+}
+textarea:focus{
+    outline: none;
+}
+

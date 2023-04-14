@@ -56,7 +56,7 @@ export const ROUTES: RouteInfo[] = [
   },
   {
     path: "/typography",
-    title: "Typography",
+    title: "Scrum teacher",
     rtlTitle: "طباعة",
     icon: "icon-align-center",
     class: ""
@@ -100,6 +100,20 @@ export class SidebarComponent implements OnInit {
     )
    // this.menuItems = ROUTES.filter(menuItem => menuItem);
   }
+
+  ngOnChanges() {
+    if (this.sprintLancee != 0) {
+      this.menuItems = ROUTES.map((menuItem) =>
+      menuItem.path === "/maps"
+        ? {
+            ...menuItem,
+            disabled: false,
+          }
+        : menuItem
+    );
+    }
+  }
+
   isMobileMenu() {
     if (window.innerWidth > 991) {
       return false;

@@ -92,7 +92,7 @@ export class GestionTacheDialogComponent implements OnInit {
           data => {
             Swal.fire(
               'tâche supprimé',
-              'Cette tâche a été supprimé.',
+              'Cette tâche a été modifié.',
               'success'
             )
             const modifData = {

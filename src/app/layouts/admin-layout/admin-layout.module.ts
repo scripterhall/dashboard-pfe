@@ -3,7 +3,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { RouterModule } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-
+import { ReactiveFormsModule } from "@angular/forms";
 import { AdminLayoutRoutes } from "./admin-layout.routing";
 import { DashboardComponent } from "../../pages/dashboard/dashboard.component";
 import { IconsComponent } from "../../pages/icons/icons.component";
@@ -38,11 +38,17 @@ import { StatCourbComponent } from "src/app/pages/dialogs/stat-courb/stat-courb.
 import { ListMembreProjetComponent } from "src/app/pages/list-membre-projet/list-membre-projet.component";
 
 
+import { InputChatComponent } from '../../pages/chatContenu/input-chat/input-chat.component';
+import { ContenaireMessageComponent } from '../../pages/chatContenu/contenaire-message/contenaire-message.component';
+
+
+
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild(AdminLayoutRoutes),
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     MatSelectModule,
     MatMenuModule,
@@ -77,7 +83,9 @@ import { ListMembreProjetComponent } from "src/app/pages/list-membre-projet/list
     MapComponent,
     HistoireMembreChartComponent,
     StatCourbComponent, 
-    ListMembreProjetComponent
+    ListMembreProjetComponent,
+    InputChatComponent,
+    ContenaireMessageComponent
     // RtlComponent
   ]
 })

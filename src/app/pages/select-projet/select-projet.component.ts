@@ -76,7 +76,8 @@ export class SelectProjetComponent implements OnInit {
       type :["",Validators.required],
       permission :[""],
       description:[""],
-      status:"ATTENTE"
+      status:"ATTENTE",
+      invitation:null
     })
 
 
@@ -166,8 +167,14 @@ export class SelectProjetComponent implements OnInit {
 /*   boutton gerer de content 1  */
   gerer(index:number){
     if(confirm("Vous etes sûr de gerer le projet "+this.projets[index].nom+" !!")){
-    localStorage.setItem('projetCourant', JSON.stringify(this.projets[index]));
-      this.router.navigateByUrl('/dashboard')
+    this.productBacklogService.getProductBacklogByIdProjet(this.projets[index].id).subscribe(
+      data =>{
+        localStorage.setItem('productBacklogCourant',JSON.stringify(data))
+        localStorage.setItem('projet', JSON.stringify(this.projets[index]));
+        this.router.navigateByUrl('/dashboard')
+      }
+    )
+      
     }
 
 
@@ -244,7 +251,8 @@ step = 0;
     }
     this.invitationService.envoyerInvitation(request).subscribe(
       data => {
-        console.log(data);
+        this.roleForm.get('invitation').setValue(data) 
+        console.log( this.roleForm.get('invitation').value);
         let role:Role = this.roleForm.value
         role.pk.membreId = data.membreId
         console.log(role);
@@ -291,6 +299,9 @@ step = 0;
     const projetId = this.rolePkForm.get('projetId').value
     this.membreService.afficherTousMembres().subscribe(
       data => {
+        /** injection validateur membre de email existe dans la base */
+
+        /** end */
         this.roleService.afficherListRoleParProjet(projetId).subscribe(
           dataRoles => {
             //pour les membre qui sont deja la

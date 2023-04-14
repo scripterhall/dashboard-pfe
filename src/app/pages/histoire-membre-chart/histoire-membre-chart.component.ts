@@ -41,7 +41,7 @@ export class HistoireMembreChartComponent implements OnInit   {
   bubbleChartLegend = true;
   
   bubbleChartPlugins = [];
-  chart: Chart;
+  chart: Chart 
   listMembre: Membre[];
   listTicketHistoire:TicketHistoire[]=[];
   constructor(
@@ -63,26 +63,31 @@ export class HistoireMembreChartComponent implements OnInit   {
 
   ngOnInit(): void {
     const idProjet = JSON.parse(localStorage.getItem('projet')).id
+    console.log(idProjet);
+    
     const ticketsObservable: Observable<TacheTicket[]>= this.ticketTacheService.getTicketsTacheBySprint(this.sprintId)
     const roleObservable:Observable<Role[]> = this.roleService.afficherListRoleParProjet(idProjet);
 
     // Utilisation de forkJoin pour attendre la récupération de toutes les données
-
+   
     forkJoin([roleObservable, ticketsObservable])
   .subscribe(
     ([roles,tickets])=>{
       //recuoerer les membre par role
-      const membres = []
+      const membres:Membre[] = []
+      console.log(roles);
+      
       this.generateColors(roles.length);
       for(let role of roles)
         membres.push(role.membre)
         this.listMembre = membres
-      console.log(membres);
+        console.log(membres);
       
       const bubbleChartData = [];
       //ajouté dans le graphe 
       const membersAdded = [];
       const historiesAdded = [];
+      const labels:string[] = []
       for (let i = 0; i < membres.length; i++) {
         const  memberData = { data: [], label: membres[i].email, backgroundColor: this.colors[i], borderColor: this.colors[i] };
         for (let j = 0; j < tickets.length; j++) {
@@ -92,13 +97,15 @@ export class HistoireMembreChartComponent implements OnInit   {
             if (historyIndex == null) {
               this.listTicketHistoire.push(tache.ht);
               historiesAdded.push(tache.ht);
-              memberData.data.push({ x: i, y: tache.ht.id,r:10,pointStyle: 'fa-user'});
-            } else {
-              // Histoire de ticket déjà présente, on ignore cette histoire de ticket et on passe à l'itération suivante
-              memberData.data.push({ x: i,y: tache.ht.id,r:10,pointStyle: 'fa-user'});
-              
+              memberData.data.push({ x: i, y: tache.ht.id,r:10});
+              labels.push(tache.ht.titre)
             }
-            if (membersAdded.indexOf(membres[i].id) === -1) {
+
+            // } else {
+            //   // Histoire de ticket déjà présente, on ignore cette histoire de ticket et on passe à l'itération suivante
+              
+            // }
+            else {
               // Membre non présent, on l'ajoute au tableau des membres
               membersAdded.push(membres[i].id);
             }
@@ -111,25 +118,26 @@ export class HistoireMembreChartComponent implements OnInit   {
           console.log(bubbleChartData);
           
       }
+      console.log(membres);
+      
       //conf
       const chartOptions = {
         scales: {
           yAxes: [{
-            min: 0,
-            max: tickets.length,
+            min:0,
+            max:historiesAdded.length,
             scaleLabel: {
-              display: true,
+            
               labelString: 'Histoire de ticket'
             },
-            
+
             ticks: {
               autoSkip:true,
-              beginAtZero: true,
+              beginAtZero: false,
               stepsSize:1,
-              callback: function(value, index, values) {
-                console.log(historiesAdded);
-                
-                return historiesAdded[index]?.titre;
+              maxTicksLimit:historiesAdded.length, 
+              callback :(value, index, values) => {
+                return historiesAdded[index]?.titre 
               }
             },
             gridLines: { 
@@ -137,7 +145,8 @@ export class HistoireMembreChartComponent implements OnInit   {
               drawBorder: true,
               color: 'rgba(200, 200, 200, 0.2)',
               drawOnChartArea: true,
-              drawTicks: true }
+              drawTicks: true 
+             }
           }],
           xAxes: [{
             
@@ -147,9 +156,11 @@ export class HistoireMembreChartComponent implements OnInit   {
             },
             ticks: {
               stepSize: 1 ,
-              beginAtZero: false,
+              beginAtZero: true,
               min: 0, // La première valeur sera 0
-              callback: function(value, index, values) { // Personnalisation des labels
+              max:membersAdded.length,
+              maxTicksLimit:membersAdded.length, 
+              callback :(value, index, values) => { // Personnalisation des labels
                 return membres[index]?.email;
               }
             },
@@ -193,7 +204,7 @@ export class HistoireMembreChartComponent implements OnInit   {
         },
         onClick: this.handleChartClick.bind(this)
       };
-
+     
       //creation 
       this.canvas = document.getElementById("bubble-chart");
       this.ctx = this.canvas.getContext("2d");
@@ -206,7 +217,8 @@ export class HistoireMembreChartComponent implements OnInit   {
         options: chartOptions
       });
       
-      
+     
+    
     }
   )
 

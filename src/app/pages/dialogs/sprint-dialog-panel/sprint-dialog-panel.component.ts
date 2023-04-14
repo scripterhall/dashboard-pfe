@@ -65,7 +65,7 @@ export class SprintDialogPanelComponent implements OnInit{
 
     if(conv_data.getDay() == new Date().getDay()
       && this.data.sprint.etat != "en cours"
-      && this.data.canStart
+      && !this.data.canStart
       &&this.data.TicketHistoires.length>0
       ){
         Swal.fire({
@@ -223,9 +223,11 @@ export class SprintDialogPanelComponent implements OnInit{
 
   //lancer le sprint et generer un sprintBacklog avec force
   lancerSprintForcer(){
+    console.log(this.data.canStart);
+    
     if(
     this.data.sprint.etat != "en cours"
-    && this.data.canStart
+    && !this.data.canStart
     &&this.data.TicketHistoires.length>0
     ){
     this.data.sprint.dateLancement = new Date(Date.now());
@@ -250,7 +252,7 @@ export class SprintDialogPanelComponent implements OnInit{
         this.lancerSprint()
         Swal.fire(
           'succes de Lancement',
-          'Votre fichier a été supprimé.',
+          'Votre sprint eest lancé .',
           'success'
         )
       }
@@ -265,6 +267,8 @@ export class SprintDialogPanelComponent implements OnInit{
   //lancerNormalment le sprint dans la date de lancement
 
   lancerSprint(){
+    console.log(this.data.sprint);
+    
     this.data.sprint.etat = "en cours"
     this.data.sprint.productBacklogId = this.data.sprint.productBacklog.id
     this.sprintService.modifierSprint(this.data.sprint).subscribe(dataSprint =>{

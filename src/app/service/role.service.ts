@@ -48,7 +48,7 @@ export class RoleService {
   }
 
   afficherListRoleParProjet(idProjet:number){
-    return this.http.get<Role[]>(`${URL}/`+idProjet,{observe:'response'})
+    return this.http.get<Role[]>(`${URL}/projets/`+idProjet,{observe:'response'})
     .pipe(
       map(response =>{
         const roleListe :Role[] = response.body
@@ -73,6 +73,23 @@ export class RoleService {
     )
   }
 
+
+  afficherListRoleParMembre(idMembre:number){
+    return this.http.get<Role[]>(`${URL}/membres/`+idMembre,{observe:'response'})
+    .pipe(
+      map(response =>{
+        const roleListe :Role[] = response.body
+        if(response.status === 404)
+          return null
+        if(response.status === 500)
+          return null
+        return roleListe
+      })
+    )
+  }
   
+
+
+
 
 }

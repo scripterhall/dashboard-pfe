@@ -1,3 +1,4 @@
+import { Invitation } from "./invitation";
 import { RolePk } from "./keys/role-pk";
 import { Membre } from "./membre";
 import { Projet } from "./projet";
@@ -11,5 +12,6 @@ export class Role {
     public membre?:Membre //qui a le role
     public status?:string;//ATTENTE,ACCEPTE
     public projet?:Projet;//dons quelle projet
+    public invitation?:Invitation
 
 }

@@ -83,7 +83,8 @@ export class InvitationComponent implements OnInit {
       type :["",Validators.required],
       permission :"",
       description:"",
-      status:"ATTENTE"
+      status:"ATTENTE",
+      invitation:null
     })
 
    
@@ -124,7 +125,8 @@ export class InvitationComponent implements OnInit {
     }
     this.invitationService.envoyerInvitation(request).subscribe(
       data => {
-        console.log(data);
+        this.roleForm.get('invitation').setValue(data) 
+        console.log(this.roleForm.get('invitation').value);
         let role:Role = this.roleForm.value
         role.pk.membreId = data.membreId
         this.roleService.ajouterRole(role).subscribe(

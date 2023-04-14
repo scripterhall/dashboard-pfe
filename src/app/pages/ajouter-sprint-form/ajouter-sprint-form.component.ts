@@ -175,7 +175,7 @@ export class AjouterSprintFormComponent {
   }
 
   getProjetByIdFromLocalStorage(){
-    let projetCourantStr = localStorage.getItem("projetCourant");
+    let projetCourantStr = localStorage.getItem("projet");
     let projetCourantObj:Projet= JSON.parse(projetCourantStr);
     console.log(projetCourantObj);
     return projetCourantObj;

@@ -7,6 +7,11 @@ import { MatDialog } from "@angular/material/dialog";
 import { InvitationComponent } from "src/app/pages/dialogs/invitation/invitation.component";
 import { Projet } from "src/app/model/projet";
 import { ChefProjet } from "src/app/model/chef-projet";
+import { RoleService } from "src/app/service/role.service";
+import { Role } from "src/app/model/role";
+import { Membre } from "src/app/model/membre";
+import { ToastrService } from "ngx-toastr";
+import Swal from "sweetalert2";
 
 export interface InvitationPanel{
   projet:Projet
@@ -22,15 +27,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
   location: Location;
   mobile_menu_visible: any = 0;
   private toggleButton: any;
-  private sidebarVisible: boolean;
-
+  private sidebarVisible: boolean
   public isCollapsed = true;
-
+  listeRole:Role[]
   closeResult: string;
 
   constructor(
     location: Location,
+    private toastr: ToastrService,
     private element: ElementRef,
+    private roleService: RoleService,
     private dialogInvitation: MatDialog,
     private router: Router,
     private modalService: NgbModal
@@ -50,10 +56,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
      }
    };
    chef:ChefProjet
+   membre:Membre
   ngOnInit() {
 
     //this.chef = JSON.parse(localStorage.getItem('chef-projet'));
-
+    this.membre = JSON.parse(localStorage?.getItem('membre'));
     window.addEventListener("resize", this.updateColor);
     this.listTitles = ROUTES.filter(listTitle => listTitle);
     const navbar: HTMLElement = this.element.nativeElement;
@@ -66,6 +73,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.mobile_menu_visible = 0;
       }
     });
+    if(this.membre)
+      this.roleService.afficherListRoleParMembre(this.membre.id).subscribe(
+        data =>{
+          data = data.filter(role => role.status=="ATTENTE")
+          this.listeRole = data
+        }
+      )
+
   }
 
   collapse() {
@@ -216,8 +231,49 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
   }
 
+  accepter(role:Role){
+    role.status = "ACCEPTE"
+    this.roleService.modifierRole(role).subscribe(
+      data =>{
+        console.log(data);
+        this.listeRole.splice(this.listeRole.indexOf(role),1)
+        this.toastr.success("vous avez accepté l'invitation")     
+      }
+    )
+  }
 
+  refuser(role:Role){
+    Swal.fire({
+      title: "Vous êtes sûr de refuser l'invitation",
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui',
+      cancelButtonText: 'Annuler',
+      background:'rgba(0,0,0,0.9)',
+      backdrop: 'rgba(0,0,0,0.4)',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+      focusConfirm: false
+    }).then((result) => {
+      if (result.isConfirmed) {   
+          this.roleService.supprimerRole(role.pk,role.invitation.chefProjetId).subscribe(
+            data =>{
+              Swal.fire(
+                'Refus',
+                'Vous avez rejeté l offre',
+                'warning'
+              ) 
+              this.listeRole.splice(this.listeRole.indexOf(role),1)
+            }
+          )  
+      }
+    });
+   
 
+  }
 
 
 }
