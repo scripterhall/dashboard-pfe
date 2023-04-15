@@ -33,7 +33,6 @@ export class AjoutTacheSpbComponent implements OnInit {
 
 
   ajouterTicketTacheAuSpb(){
-
     this.ticketTacheService.ajouterTicketTache(this.ticketTacheForm.value).subscribe(
       data => {
         this.dialogRef.close(data);

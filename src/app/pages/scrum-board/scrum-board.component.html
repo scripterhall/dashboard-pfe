@@ -71,35 +71,7 @@
       </div>
     </div>
 
-
-    <!-- <div class="col-md-4">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Terminé</h4>
-        </div>
-        <div id="terminé" class="card-body" style="overflow-y:auto;max-height: 454px;">
-          <span *ngFor="let tache of ticketsTache">
-            <ng-container *ngIf="tache.etat === 'terminé'; else draggableTicket">
-              <ngb-alert [type]="'primary'" [dismissible]="false">
-                <span>
-                  <b>{{tache.titre}} </b> De {{tache.dateLancement | date}} à {{tache.dateFin | date}}
-                </span>
-              </ngb-alert>
-            </ng-container>
-            <ng-template #draggableTicket>
-              <ngb-alert [type]="'primary'" [dismissible]="false" [draggable]="false" (drop)="onDrop($event, tache)">
-                <span>
-                  <b>{{tache.titre}} </b> De {{tache.dateLancement | date}} à {{tache.dateFin | date}}
-                </span>
-              </ngb-alert>
-            </ng-template>
-          </span>
-        </div>
-      </div>
-    </div> -->
-
-
-    <div class=" col-md-8 offset-md-4 "  style="margin-top:-19%;">
+    <div class=" col-md-8 offset-md-4"  style="margin-top:-19%;">
       <div class="card">
         <div class="card-body" style="overflow-x:auto;max-width:100%">
           <div class=" places-buttons">

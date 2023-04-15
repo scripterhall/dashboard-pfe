@@ -56,9 +56,13 @@ export class SelectProjetComponent implements OnInit {
   roleForm:FormGroup;
   rolePkForm:FormGroup ;
   combinedForm:FormGroup;
+
+  clearLocalStorage() {
+    localStorage.clear();
+  }
+
   ngOnInit(): void {
-
-
+    // this.clearLocalStorage();
 
     this.rolePkForm = this.formBuilder2.group({
       membreId:null,
@@ -167,17 +171,18 @@ export class SelectProjetComponent implements OnInit {
 /*   boutton gerer de content 1  */
   gerer(index:number){
     if(confirm("Vous etes sûr de gerer le projet "+this.projets[index].nom+" !!")){
+    localStorage.setItem('projet', JSON.stringify(this.projets[index]));
     this.productBacklogService.getProductBacklogByIdProjet(this.projets[index].id).subscribe(
-      data =>{
-        localStorage.setItem('productBacklogCourant',JSON.stringify(data))
-        localStorage.setItem('projet', JSON.stringify(this.projets[index]));
-        this.router.navigateByUrl('/dashboard')
+      data => {
+        const productBacklog = data;
+        localStorage.setItem('productBacklogCourant', JSON.stringify(productBacklog));
+        this.router.navigateByUrl('/dashboard');
+      },
+      error => {
+        console.log('Une erreur s\'est produite lors de la récupération du product backlog : ', error);
       }
-    )
-      
+    );
     }
-
-
   }
 
   /*   annuler* ou gerer  */
@@ -312,15 +317,16 @@ step = 0;
             )
             console.log(this.listNewMembre);
 
-            //injection de validateur de role  
+            //injection de validateur de role
             this.roleForm.get('type').setValidators([Validators.required,roleExists(dataRoles)])
 
             if (this.listNewMembre.length > 0)
-            //ken lista akber men  0 ninjecti fiha les validateur 
+            //ken lista akber men  0 ninjecti fiha les validateur
               this.invitationForm.get('emailInvitee').setValidators([emailExistsValidator(this.listNewMembre),Validators.required,emailValidator]);
           }
         )
       }
     )
   }
+
 }

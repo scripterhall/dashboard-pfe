@@ -7,7 +7,6 @@ import { RoleService } from 'src/app/service/role.service';
 import Swal from 'sweetalert2';
 import jwt_decode from 'jwt-decode';
 
-
 @Component({
   selector: 'app-decision',
   templateUrl: './decision.component.html',
@@ -39,13 +38,13 @@ export class DecisionComponent implements OnInit {
 
     console.log(decodedToken);
     console.log("id : ",this.idChef);
-    
-    
+
+
     const rolePk:RolePk = {
       membreId: this.idMembre,
       projetId: this.idProjet,
     }
-   
+
 
 
 
@@ -62,7 +61,7 @@ export class DecisionComponent implements OnInit {
     this.roleService.modifierRole(this.role).subscribe(
       data =>{
         console.log(data);
-        
+
         this.membreService.getMembreById(this.idMembre).subscribe(
           data =>{
             localStorage.setItem('membre',JSON.stringify(data))
@@ -75,7 +74,7 @@ export class DecisionComponent implements OnInit {
                 this.router.navigateByUrl('/dashboard')
               }
             )
-           
+
           }
         )
       }
@@ -114,10 +113,10 @@ export class DecisionComponent implements OnInit {
                 }
               )
             }
-          )  
+          )
       }
     });
-   
+
 
   }
 

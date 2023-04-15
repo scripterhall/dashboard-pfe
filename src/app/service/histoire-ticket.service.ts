@@ -52,7 +52,7 @@ export class HistoireTicketService {
   }
 
   getHistoireTicketBySprintId(idSprint:number){
-    return this.http.get<TicketHistoire[]>(`${url1}/sprint/`+idSprint)
+    return this.http.get<TicketHistoire[]>(`${url1}/sprint/`+idSprint);
   }
 
   DetacherHtSprint(histoireTicket:TicketHistoire){

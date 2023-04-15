@@ -4,8 +4,9 @@
     background-color: white; /*3*/
     box-shadow: 0px 5px 20px #999; /*4*/
   }
+
   .card a { /*5*/
-    color: #333; 
+    color: #333;
     text-decoration: none;
   }
   .card:hover .card-image img { /*6*/
@@ -15,16 +16,16 @@
   .card-date {
     font-family: 'Source Sans Pro', sans-serif;
   }
-  
+
   .card-title, .card-excerpt {
     color: #777;
     font-family: 'Playfair Display', serif;
   }
-  
+
 
 
 h2,h3,h4{
-  color: #333; 
+  color: #333;
 }
 
 p{

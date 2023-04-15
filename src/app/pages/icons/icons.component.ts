@@ -1,6 +1,5 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
-import { CdkDragDrop, CdkDragEnd, CdkDragExit, CdkDragStart, CdkDropList, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { HttpClient } from "@angular/common/http";
+import { CdkDragDrop, CdkDropList, transferArrayItem } from "@angular/cdk/drag-drop";
 import { Component, ElementRef, HostBinding, OnInit, ViewChild } from "@angular/core";
 import { Sprint } from "src/app/model/sprint";
 import { TicketHistoire } from "src/app/model/ticket-histoire";
@@ -19,7 +18,6 @@ import { SprintService } from "src/app/service/sprint.service";
 import { MembreService } from "src/app/service/membre.service";
 import { ProductBacklog } from "src/app/model/product-backlog";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
-import { Observable } from "rxjs";
 import { ConfirmDialogDeleteUserStoryComponent } from "../confirm-dialog-delete-user-story/confirm-dialog-delete-user-story.component";
 import { ConfirmAddUserStoryDialogueComponent } from "../confirm-add-user-story-dialogue/confirm-add-user-story-dialogue.component";
 import { ToastrService } from "ngx-toastr";
@@ -28,9 +26,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AjouterTicketHistoireFormComponent } from "../ajouter-ticket-histoire-form/ajouter-ticket-histoire-form.component";
 import { AjouterSprintFormComponent } from "../ajouter-sprint-form/ajouter-sprint-form.component";
 import { ProductBacklogService } from "src/app/service/product-backlog.service";
+import { Ticket } from "src/app/model/ticket";
 import Swal from "sweetalert2";
-
-const  updateTicketPositionUrl = "http://localhost:9999/gestion-histoire-ticket/histoireTickets/position";
 
 @Component({
   selector: "app-icons",
@@ -78,7 +75,6 @@ const  updateTicketPositionUrl = "http://localhost:9999/gestion-histoire-ticket/
 export class IconsComponent implements OnInit {
   histoireTicketsSprint: TicketHistoire[];
   constructor(private histoireTicketService:HistoireTicketService,
-    private httpClient:HttpClient,
     private productBacklogService:ProductBacklogService,
     private sprintService:SprintService, private dialog: MatDialog,
     public dialogDetailSprint: MatDialog, private membreService:MembreService,
@@ -92,50 +88,53 @@ export class IconsComponent implements OnInit {
   histoireTicket: TicketHistoire;
   newProductBacklogId: number;
   selectedSprint: number;
+  sprintsVelocitySum: number = 0;
 
   drop(event: CdkDragDrop<TicketHistoire[]>) {
     if (event.previousContainer === event.container) {
 
       console.log('dropped', event);
 
-      const sprintId = this.sprints[event.currentIndex].id;
-      console.log('sprintId', sprintId);
-
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+
+      event.container.data.forEach((element, index) => {
+        element.position = index + 1;
+        this.histoireTicketService.updateUserStory(element.id, element).subscribe(
+          res => {
+            console.log('element : '+element.id+', nouvelle position = '+element.position)
+          },
+          err => {
+            console.log('Erreur lors de la mise à jour de l\'élément : '+element.id);
+          }
+        );
+      });
     }
     else {
       const item = event.previousContainer.data[event.previousIndex];
-
       if (item.productBacklogId !== null) {
         const dialogRef = this.dialog.open(ConfirmAddUserStoryDialogueComponent, {
           width: '650px',
           height:'440px',
           data: { item: item },
         });
-      } else {
+      }else{
         const productBacklogId = this.getProductBacklogByIdFromLocalStorage();
-        const updatedItem = {...item, productBacklogId: productBacklogId};
         this.assignUserStoryToProductBacklog(item.id, productBacklogId);
-        console.log("Elémént déplacé: ", item);
-        this.toastr.success(`Le ticket histoire est déplacé`);
+
         transferArrayItem(event.previousContainer.data,
           event.container.data,
           event.previousIndex,
           event.currentIndex);
-      }
-    }
-  }
+      }}}
 
   deleteUserStoryById(id: number) {
     const dialogRef = this.dialog.open(ConfirmDialogDeleteUserStoryComponent, {
       width: '250px',
       data: 'Êtes-vous sûr de vouloir supprimer cet élément ?'
     });
-
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.histoireTicketService.deleteUserStoryById(id).subscribe(data => {
@@ -158,7 +157,7 @@ export class IconsComponent implements OnInit {
       .subscribe(
         histoireTicketsByProductBacklogId => this.histoireTicketsByProductBacklogId = histoireTicketsByProductBacklogId,
         );
-  }
+      }
 
   getProjetByIdFromLocalStorage(){
     let projetCourantStr = localStorage.getItem("projet");
@@ -168,26 +167,32 @@ export class IconsComponent implements OnInit {
     return id;
   }
 
-  removeUserStoryFromProductBacklog(id: number) {
-    event.stopPropagation();
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '250px',
-      data: 'Êtes-vous sûr de vouloir supprimer cet élément ?'
-    });
+removeUserStoryFromProductBacklog(id: number) {
+  event.stopPropagation();
+  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    width: '250px',
+    data: 'Êtes-vous sûr de vouloir supprimer cet élément ?'
+  });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
         this.histoireTicketService.removeUserStoryFromProductBacklog(id)
-          .subscribe(response => {
-            console.log("Ticket histoire supprimé avec succès.");
-          });
-          // c'est quoid
-            const index = this.histoireTicketsByProductBacklogId.findIndex(item => item.id === id);
-            if (index !== -1) {
-              this.histoireTicketsByProductBacklogId.splice(index, 1);
-            }
+        .subscribe(response => {
+        console.log("Ticket histoire supprimé avec succès.");
+      });
+      this.productBacklogService.decreaseProductBacklogVelocity(this.productBacklogService.getProductBacklogByIdFromLocalStorage(), id)
+        .subscribe(response => {
+          console.log("Effort retiré avec succès du backlog produit.");
+        },
+        error => {
+          console.error('Une erreur est survenue :', error);
+        });
+      const index = this.histoireTicketsByProductBacklogId.findIndex(item => item.id === id);
+      if (index !== -1) {
+        this.histoireTicketsByProductBacklogId.splice(index, 1);
       }
-    });
+    }
+  });
 }
 
 
@@ -199,8 +204,8 @@ export class IconsComponent implements OnInit {
       data =>{
         this.histoireTicketsSprint = data
         const dialogRef = this.dialog.open(SprintDialogPanelComponent,{
-          width: '600px',
-          height:'690px',
+          width: '500px',
+          height:'600px',
           data: {sprint:this.sprints[i],
                 TicketHistoires:this.histoireTicketsSprint,
                 canStart :test
@@ -223,62 +228,50 @@ export class IconsComponent implements OnInit {
   }
 
   assignUserStoryToSprint(histoireTicketId: number, sprintId: number) {
+    this.histoireTicketService.assignUserStoryToSprint(histoireTicketId, sprintId)
+      .subscribe(
+        response => {
+          console.log('Histoire ticket affecté au sprint', response);
+          const sprintIndex = this.sprints.findIndex(sprint => sprint.id == sprintId);
+          const selectedSprintValue = `Sprint ${sprintIndex + 1}`;
+          this.toastr.success(`Histoire ticket affecté au ${selectedSprintValue}`);
+        },
+        error => console.log(error)
+      );
     console.log('id sprint :'+sprintId);
     const sprint = this.sprints.find(sprint => sprint.id == sprintId);
     const ticketHistoire = this.histoireTicketsByProductBacklogId.find(histoire => histoire.id == histoireTicketId)
     console.log(ticketHistoire);
     console.log(sprint);
-    // if(sprint.etat == "en attente")
       this.addUserStoryToSprint(histoireTicketId,sprintId)
-      // else{
-      //   if(((this.sprints.indexOf(sprint)+1) - this.sprints.length) == 0){
-      //     Swal.fire(
-      //       'insertion impossible ⛔',
-      //       'ce sprint est lancé si possible \n creer un autre sprint pour les affecter \n d\'autres ticket histoire',
-      //       'error',
-      //     )
-      //   }else{
-      //     const nextSprint = this.sprints[this.sprints.indexOf(sprint)+1]
-      //     Swal.fire({
-      //       title: "voullez vous inserer cette ticket histoire dans le sprint suivant : ",
-      //       icon: 'warning',
-      //       showCancelButton: true,
-      //       confirmButtonColor: '#3085d6',
-      //       cancelButtonColor: '#d33',
-      //       confirmButtonText: 'Inserer',
-      //       cancelButtonText: 'Annuler',
-      //       background:'rgba(0,0,0,0.9)',
-      //       backdrop: 'rgba(0,0,0,0.4)',
-      //       allowOutsideClick: false,
-      //       allowEscapeKey: false,
-      //       allowEnterKey: false,
-      //       focusConfirm: false
-      //     }).then((result) => {
-      //       if (result.isConfirmed) {
-      //         // Le code à exécuter si l'utilisateur a cliqué sur "Oui, supprimer!"
-      //         this.addUserStoryToSprint(histoireTicketId,nextSprint.id)
-      //         console.log(nextSprint);
-      //         Swal.fire(
-      //           'insertion effectué',
-      //           'consulter le sprint pour voire le details',
-      //           'success',
-      //         )
-              
-      //       }
-      //     });
-      //   }
-      }
-  
-
-
+  }
 
   assignUserStoryToProductBacklog(histoireTicketId: number, productBacklogId: number) {
-    this.histoireTicketService.assignUserStoryToProductBacklog(histoireTicketId, productBacklogId)
+    this.histoireTicketService.getUserStoryById(histoireTicketId).subscribe(
+      histoireTicket => {
+        console.log(`L'ID de l'histoire ticket est : ${histoireTicket.id}`);
+        this.histoireTicketService.assignUserStoryToProductBacklog(histoireTicketId, productBacklogId).subscribe(
+          response => {
+            console.log('Histoire ticket affecté au product backlog avec succès', response);
+            this.elevateProductBacklogVelocity(productBacklogId, histoireTicket.effort);
+          },
+          error => console.log(error)
+        );
+      },
+      error => console.log(error)
+    );
+  }
+
+
+  elevateProductBacklogVelocity(productBacklogId: number, effort: number) {
+    this.productBacklogService.elevateProductBacklogVelocity(productBacklogId, effort)
       .subscribe(
         response => {
-          console.log('Histoire ticket affecté au product backlog avec succès', response);
+          console.log('Response:', response);
         },
-        error => console.log(error)
+        error => {
+          console.error('Error:', error);
+        }
       );
   }
 
@@ -308,7 +301,7 @@ export class IconsComponent implements OnInit {
   addUserStoryToSprint(histoireTicketId: number, sprintId: number){
     const sprint = this.sprints.find(sprint => sprint.id == sprintId);
     console.log(sprint);
-    
+
     const ticketHistoire = this.histoireTicketsByProductBacklogId.find(histoire => histoire.id == histoireTicketId)
     this.histoireTicketService.assignUserStoryToSprint(histoireTicketId, sprintId)
         .subscribe(
@@ -356,7 +349,7 @@ export class IconsComponent implements OnInit {
       width: '500',
       height:'400px',
       data: {
-        
+
       }
     });
 
@@ -373,27 +366,19 @@ export class IconsComponent implements OnInit {
         );
   }
 
-    ngOnInit() {
-      this.productBacklogService.getProductBacklogByIdProjet(this.getProjetByIdFromLocalStorage()).subscribe(
-        data => {
-          const productBacklog = data;
-          console.log(productBacklog);
-          localStorage.setItem('productBacklogCourant', JSON.stringify(productBacklog));
-          console.log(this.productBacklog);
-        },
-        error => {
-          console.log('Une erreur s\'est produite lors de la récupération du product backlog : ', error);
-        }
-      );
-
+    ngOnInit(){
       this.getHistoireTicketsByMembreId(1);
       this.getHistoireTicketsByProductBacklogId(this.getProductBacklogByIdFromLocalStorage());
-
       this.sprintService.getListSprintsByProductBacklog(this.getProductBacklogByIdFromLocalStorage()).subscribe(
         data => {
           this.sprints = data ;
+          this.sprints.forEach(sprint => {
+            this.sprintsVelocitySum += sprint.velocite;
+          });
+          console.log("Somme de vélocité des sprints: " + this.sprintsVelocitySum);
         }
       );
+
     }
 
     openDialogUpdateUserStory(id: number) {
@@ -416,4 +401,12 @@ export class IconsComponent implements OnInit {
       return false;
 
     }
-}
+
+    isSprintInProgress(sprintId: number): boolean {
+      if(this.sprints?.length>0){
+        const sprint = this.sprints.find(sprint => sprint.id === sprintId);
+        return sprint && sprint.etat === 'en cours';
+      }
+    }
+
+  }

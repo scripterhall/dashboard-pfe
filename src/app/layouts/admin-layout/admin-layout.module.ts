@@ -33,10 +33,10 @@ import {MatMenuModule} from '@angular/material/menu';
 import { FireworksComponent } from '../../pages/fireworks/fireworks.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { CourbesComponent } from "src/app/pages/courbes/courbes.component";
 import { HistoireMembreChartComponent } from '../../pages/histoire-membre-chart/histoire-membre-chart.component';
 import { StatCourbComponent } from "src/app/pages/dialogs/stat-courb/stat-courb.component";
 import { ListMembreProjetComponent } from "src/app/pages/list-membre-projet/list-membre-projet.component";
-
 
 import { InputChatComponent } from '../../pages/chatContenu/input-chat/input-chat.component';
 import { ContenaireMessageComponent } from '../../pages/chatContenu/contenaire-message/contenaire-message.component';
@@ -81,6 +81,7 @@ import { ContenaireMessageComponent } from '../../pages/chatContenu/contenaire-m
     TypographyComponent,
     NotificationsComponent,
     MapComponent,
+    CourbesComponent,
     HistoireMembreChartComponent,
     StatCourbComponent, 
     ListMembreProjetComponent,

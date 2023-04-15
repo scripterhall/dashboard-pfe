@@ -94,9 +94,9 @@ import { PerformanceCourbeComponent } from './pages/dialogs/performance-courbe/p
     SprintDialogPanelComponent, AjouterTicketHistoireFormComponent, AjouterSprintFormComponent,
     AjoutTacheSpbComponent, GestionTacheDialogComponent, ConfirmDialogComponent,
     ConfirmDialogDeleteUserStoryComponent, ConfirmAddUserStoryDialogueComponent,
-    UpdateUserStoryDialogComponent, 
-    ScrumBoardComponent, 
-    DecisionComponent, 
+    UpdateUserStoryDialogComponent,
+    ScrumBoardComponent,
+    DecisionComponent,
     InvitationComponent, PerformanceCourbeComponent
     ],
   providers: [],

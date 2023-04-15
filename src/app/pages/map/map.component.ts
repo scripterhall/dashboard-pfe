@@ -63,17 +63,17 @@ export class MapComponent implements OnInit {
   endDate: Date = new Date('2023-03-31T23:59:59');
   roles:Role[];
   ngOnInit() {
-   
-    const projet:Projet = JSON.parse(localStorage.getItem('projet'))  
+
+    const projet:Projet = JSON.parse(localStorage.getItem('projet'))
     this.roleService.afficherListRoleParProjet(projet.id).subscribe(
       data =>{
-        // console.log(data);
+        console.log(data);
         this.roles = data
         for(let role of data){
           this.listMembre.push(role.membre)
         }
       }
-    ) 
+    )
 
 
     const productBacklog  = JSON.parse(localStorage.getItem('productBacklogCourant'))
@@ -139,7 +139,7 @@ export class MapComponent implements OnInit {
 
 
   prendreTicket(idTicketTache:number){
-    const  ticket = this.ticketsTache.find(tache=>tache.id === idTicketTache)
+    const  ticket = this.ticketsTache.find(tache=>tache.id == idTicketTache)
     Swal.fire({
       title: "vous êtes sûr de prendre la tâche : "+ticket?.titre,
       icon: 'warning',
@@ -155,7 +155,7 @@ export class MapComponent implements OnInit {
       allowEnterKey: false,
       focusConfirm: false
     }).then((result) => {
-      if (result.isConfirmed) {  
+      if (result.isConfirmed) {
         const membre = JSON.parse(localStorage.getItem('membre'))
         this.ticketTacheService.affecterTicketAMembre(membre,idTicketTache).subscribe(
         dataTicket=>{
@@ -174,12 +174,12 @@ export class MapComponent implements OnInit {
             })
         }
       )
-      
+
       }
-     }      
+     }
     );
-  
-    
+
+
   }
 
   reverseIndex(index: number, length: number): number {
@@ -225,7 +225,7 @@ export class MapComponent implements OnInit {
               console.log(dataHistoire)
               key.status = "EN_COURS"
             }
-          ) 
+          )
         }
        }
      }

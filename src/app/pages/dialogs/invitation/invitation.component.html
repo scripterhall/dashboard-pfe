@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Inviter des membre</h1>
 <div mat-dialog-content>
-  <h3>projet : {{data.projet.nom}} </h3>
+  <h3>projet : {{data.projet?.nom}} </h3>
 
   <ng-container [formGroup]="rolePkForm">
   <mat-form-field class="w-100" appearance="fill">
@@ -9,7 +9,7 @@
       <mat-option *ngFor="let m of membreList" [value]="m.id">{{m.email}}</mat-option>
     </mat-select>
     <mat-error *ngIf="rolePkForm.get('membreId').hasError('required')">tu dois choisir un membre</mat-error>
-  </mat-form-field> 
+  </mat-form-field>
   </ng-container>
   <ng-container [formGroup]="roleForm">
   <h3>role :</h3>
@@ -32,10 +32,10 @@
       Un projet peut avoire un seule
       <span *ngIf="roleForm.get('type').value == 'po'">Product owner</span>
       <span *ngIf="roleForm.get('type').value == 'scrum master'">Scrum master</span>
-      est vous avez déjà envoyé une invitation contient ce role 
-      
+      est vous avez déjà envoyé une invitation contient ce role
+
       </mat-error>
-  </mat-form-field> 
+  </mat-form-field>
 </ng-container>
 </div>
 <div mat-dialog-actions>

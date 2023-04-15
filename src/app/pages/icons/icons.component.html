@@ -61,7 +61,7 @@
       <div class="example-list" cdkDropList #list1="cdkDropList"
         [cdkDropListData]="histoireTicketsByProductBacklogId"
         (cdkDropListDropped)="drop($event)">
-        <div id="element" cdkDrag class="example-box" *ngFor="let listHTByPB of histoireTicketsByProductBacklogId;index as i">
+        <div disabled id="element" cdkDrag class="example-box" *ngFor="let listHTByPB of histoireTicketsByProductBacklogId; index as i">
           <i class="fa-sharp fa-solid fa-clipboard-check"></i>
           <span class="numTicket" >
             <s *ngIf="listHTByPB.status=='TERMINE'">Ticket-{{i+1}}</s>
@@ -69,13 +69,52 @@
           </span>
           <span>{{listHTByPB.titre}}</span> &nbsp;
           <span id="priorite">({{listHTByPB.priorite}})</span>
-          <select (change)="assignUserStoryToSprint(listHTByPB.id, $event.target.value)"
-          [(ngModel)]="listHTByPB.sprintId">
+
+
+          <!-- <select (change)="assignUserStoryToSprint(listHTByPB.id, $event.target.value)"
+          [(ngModel)]="listHTByPB.sprintId" [disabled]="isSprintInProgress(listHTByPB.sprintId)">
             <option value="" [selected]="!listHTByPB.sprintId">-- Sélectionner un sprint --</option>
-            <option *ngFor="let sprint of sprints; index as i" [value]="sprint.id" [selected]="listHTByPB.sprintId == sprint.id">{{'Sprint '+(i+1)}} </option>
-          </select>
-          <i id="btnUpdate" (click)="openDialogUpdateUserStory(listHTByPB.id)" class="fa-solid fa-pen"></i>
-          <i id="btnDelete" (click)="removeUserStoryFromProductBacklog(listHTByPB.id)" class="fa-solid fa-trash"></i>
+            <option
+            *ngFor="let sprint of sprints; index as i"
+            [value]="sprint.id"
+            [selected]="listHTByPB.sprintId == sprint.id"
+            >{{'Sprint '+(i+1)}} </option>
+        </select> -->
+
+
+        <select (change)="assignUserStoryToSprint(listHTByPB.id, $event.target.value)"
+          [(ngModel)]="listHTByPB.sprintId" [disabled]="isSprintInProgress(listHTByPB.sprintId)">
+          <option value="" [selected]="!listHTByPB.sprintId">-- Sélectionner un sprint --</option>
+          <ng-container *ngFor="let sprint of sprints; index as i">
+              <ng-container *ngIf="sprint.etat !== 'en cours'">
+                  <option [value]="sprint.id" [selected]="listHTByPB.sprintId == sprint?.id">
+                      {{'Sprint '+(i+1)}}
+                  </option>
+              </ng-container>
+              <ng-container *ngIf="sprint.etat === 'en cours'">
+                  <option [value]="sprint?.id" [disabled]="true">
+                      {{'Sprint '+(i+1)}} (En cours)
+                  </option>
+              </ng-container>
+          </ng-container>
+        </select>
+
+
+
+          <i id="btnUpdate"
+          [disabled]="isSprintInProgress(listHTByPB.sprintId)"
+          (click)="openDialogUpdateUserStory(listHTByPB.id)"
+          class="fa-solid fa-pen"
+          [ngStyle]="{'pointer-events': isSprintInProgress(listHTByPB.sprintId) ? 'none' : 'auto'}">
+          </i>
+
+
+          <i id="btnDelete"
+          [disabled]="isSprintInProgress(listHTByPB.sprintId)"
+          (click)="removeUserStoryFromProductBacklog(listHTByPB.id)"
+          class="fa-solid fa-trash"
+          [ngStyle]="{'pointer-events': isSprintInProgress(listHTByPB.sprintId) ? 'none' : 'auto'}">
+        </i>
         </div>
       </div>
     </div>
@@ -97,12 +136,12 @@
       [cdkDropListData]="histoireTicketsByMembreId" [cdkDropListConnectedTo]="[list1]" (cdkDropListDropped)="drop($event)">
 
       <div class="example-box" style="background-color:rgb(223, 223, 223)" *ngFor="let listHTByMembre of histoireTicketsByMembreId; index as i" cdkDrag>
-        <span matTooltip="Titre : {{listHTByMembre.titre}}
-        Description : {{listHTByMembre.description}}
-        Priorité: {{listHTByMembre.priorite}}
-        Effort: {{listHTByMembre.effort}}"
+        <span matTooltip="Titre : {{listHTByMembre?.titre}}
+        Description : {{listHTByMembre?.description}}
+        Priorité: {{listHTByMembre?.priorite}}
+        Effort: {{listHTByMembre?.effort}}"
       [matTooltipPosition]="'above'">
-      {{i}} {{listHTByMembre.titre}}
+      {{i}} {{listHTByMembre?.titre}}
         </span>
         <i (click)="deleteUserStoryById(listHTByMembre.id)" id="deleteUSIcon" class="fa-solid fa-trash ml-auto"></i>
       </div>

@@ -4,7 +4,6 @@ import { ChartDialog } from '../../histoire-membre-chart/histoire-membre-chart.c
 import { TicketTacheService } from 'src/app/service/ticket-tache.service';
 import { TacheTicket } from 'src/app/model/tache-ticket';
 import {Chart} from 'chart.js';
-import * as mdb from 'mdb-ui-kit';
 @Component({
   selector: 'app-stat-courb',
   templateUrl: './stat-courb.component.html',
@@ -17,13 +16,13 @@ export class StatCourbComponent implements OnInit {
     private ticketTacheService: TicketTacheService){}
     barChart:Chart;
     ticketsTache:TacheTicket[]
-    
+
 
   ngOnInit(): void {
-   
     this.ticketTacheService.getTicketsTacheByMembreId(this.data.membre.id).subscribe(
       data => {
         data = data.filter(tt => tt.ht.id == this.data.histoire.id)
+
         this.ticketsTache = data;
         //tableau des titre
         const ticketTitres = this.ticketsTache.map(ticket => ticket.titre);
@@ -37,7 +36,7 @@ export class StatCourbComponent implements OnInit {
           return `rgba(${r},${g},${b},0.2)`;
         })
 
-        //Configuration de chart bar 
+        //Configuration de chart bar
         const barChartConfig = {
           type: 'bar',
           data: {
@@ -64,11 +63,11 @@ export class StatCourbComponent implements OnInit {
             events: [], // Désactiver les événements de click pour éviter des bugs d'animation
             responsiveAnimationDuration: 0, // Désactiver l'animation responsive
           },
-          
+
         };
         // Création du graphique à barres
        this.barChart = new Chart(document.getElementById("avencement"), barChartConfig);
-        
+
        this.initialiserChartZero()
 
        this.ticketsTache.forEach(
@@ -85,14 +84,14 @@ export class StatCourbComponent implements OnInit {
         });
         }
        )
-       
-    
+
+
   }
 
 
   initialiserChartZero(){
     this.barChart.data.datasets.forEach(dataset => {
-      
+
       dataset.data =  this.ticketsTache.map(tache => 0);
     })
   }

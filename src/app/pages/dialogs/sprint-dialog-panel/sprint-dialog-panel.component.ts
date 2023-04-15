@@ -44,8 +44,8 @@ export class SprintDialogPanelComponent implements OnInit{
   ngOnInit(): void {
     console.log(this.data.sprint);
     console.log(this.data.TicketHistoires);
-    
-    this.projet = JSON.parse(localStorage.getItem("projets"))
+
+    this.projet = JSON.parse(localStorage.getItem("projet"))
     this.TicketTacheModif = this.fb.group({
       id: ['', Validators.required],
       nbrHeurs: ['', Validators.required],
@@ -191,8 +191,8 @@ export class SprintDialogPanelComponent implements OnInit{
     console.log(ticketTache);
     this.ticketTacheService.ajouterTicketTache(ticketTache).subscribe(
       data =>{
-        
-        
+
+
         console.log(data);
         this.ticketTacheList.push(data);
         this.ajouterTick = false;
@@ -226,7 +226,8 @@ export class SprintDialogPanelComponent implements OnInit{
     console.log(this.data.canStart);
     
     if(
-    this.data.sprint.etat != "en cours"
+    new Date(Date.now())>=this.projet.dateDebut
+    &&this.data.sprint.etat != "en cours"
     && !this.data.canStart
     &&this.data.TicketHistoires.length>0
     ){
@@ -258,7 +259,11 @@ export class SprintDialogPanelComponent implements OnInit{
       }
     });
   }else{
-
+    Swal.fire(
+      'erreur de Lancement',
+      'Votre sprint ne peut pas être lancé .',
+      'error'
+    )
   }
 
   }

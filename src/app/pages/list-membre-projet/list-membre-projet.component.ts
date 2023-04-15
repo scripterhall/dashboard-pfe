@@ -60,9 +60,9 @@ export class ListMembreProjetComponent implements OnInit{
         this.listeRole = dataRoles.filter(role => role.status == "ACCEPTE")
         for(let role of dataRoles){
           if(role.status == "ACCEPTE" && role.type=="dev team")
-            this.listeMembreProjet.push(role.membre)    
+            this.listeMembreProjet.push(role.membre)
         }
-        console.log(this.listeMembreProjet); 
+        console.log(this.listeMembreProjet);
         /** recuperer la liste des tâche */
 
         for(let membre of this.listeMembreProjet){
@@ -91,9 +91,9 @@ export class ListMembreProjetComponent implements OnInit{
         console.log("==============================");
         console.log(this.tacheEncoursMembre);
         console.log("==============================");
-        console.log(this.tacheTerminerMembre); 
+        console.log(this.tacheTerminerMembre);
       }
-    )    
+    )
   }
 
   chart:Chart
