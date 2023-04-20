@@ -4,6 +4,7 @@ import { map } from 'rxjs';
 import { ChefProjet } from '../model/chef-projet';
 
 const url1 = "http://localhost:9999/gestion-chefProjet-service/chef-projets"
+const URL2 = "http://localhost:9999/inscription-service/auth"
 
 @Injectable({
   providedIn: 'root'
@@ -22,5 +23,19 @@ export class ChefProjetServiceService {
           return null;
         return chef;
       }));
+  }
+
+  inscription(chef:ChefProjet){
+    return this.http.post<ChefProjet>(`${URL2}/chef-projet`,chef,{observe:'response'})
+    .pipe(
+      map(
+        response =>{
+          const chefInscris: ChefProjet = response.body;
+          if(response.status == 400)
+            return null
+          return chefInscris;
+        }
+      )
+    )
   }
 }

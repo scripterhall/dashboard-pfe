@@ -7,6 +7,8 @@ import { AdminLayoutComponent } from "./layouts/admin-layout/admin-layout.compon
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { SelectProjetComponent } from "./pages/select-projet/select-projet.component";
 import { DecisionComponent } from "./pages/decision/decision.component";
+import { InscriptionComponent } from "./auth/inscription/inscription.component";
+import { AuthentificationComponent } from "./auth/authentification/authentification.component";
 
 const routes: Routes = [
   {
@@ -36,6 +38,14 @@ const routes: Routes = [
   {
     path:"liste-projet",
     component:SelectProjetComponent
+  },
+  {
+    path:"inscription",
+    component:InscriptionComponent
+  },
+  {
+    path:"auth",
+    component:AuthentificationComponent
   },
   {
     path:"decision/:idProjet/membres/:idMembre/:token",

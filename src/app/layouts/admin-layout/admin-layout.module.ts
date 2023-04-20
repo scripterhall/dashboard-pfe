@@ -40,7 +40,7 @@ import { ListMembreProjetComponent } from "src/app/pages/list-membre-projet/list
 
 import { InputChatComponent } from '../../pages/chatContenu/input-chat/input-chat.component';
 import { ContenaireMessageComponent } from '../../pages/chatContenu/contenaire-message/contenaire-message.component';
-
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -70,6 +70,7 @@ import { ContenaireMessageComponent } from '../../pages/chatContenu/contenaire-m
     MatInputModule,
     MatButtonModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
     MatTooltipModule
   ],
   declarations: [

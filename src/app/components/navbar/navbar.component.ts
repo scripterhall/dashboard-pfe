@@ -2,7 +2,6 @@ import { Component, OnInit, ElementRef, OnDestroy } from "@angular/core";
 import { ROUTES } from "../sidebar/sidebar.component";
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { MatDialog } from "@angular/material/dialog";
 import { InvitationComponent } from "src/app/pages/dialogs/invitation/invitation.component";
 import { Projet } from "src/app/model/projet";
@@ -12,6 +11,8 @@ import { Role } from "src/app/model/role";
 import { Membre } from "src/app/model/membre";
 import { ToastrService } from "ngx-toastr";
 import Swal from "sweetalert2";
+import { MembreService } from "src/app/service/membre.service";
+import { SearchPanelComponent } from "src/app/pages/dialogs/search-panel/search-panel.component";
 
 export interface InvitationPanel{
   projet:Projet
@@ -31,15 +32,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
   public isCollapsed = true;
   listeRole:Role[]
   closeResult: string;
+  membresApp:Membre[]
 
   constructor(
     location: Location,
     private toastr: ToastrService,
     private element: ElementRef,
     private roleService: RoleService,
+    private membreService:MembreService,
     private dialogInvitation: MatDialog,
+    private dialogRecherche: MatDialog,
     private router: Router,
-    private modalService: NgbModal
+    
   ) {
     this.location = location;
     this.sidebarVisible = false;
@@ -58,9 +62,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
    chef:ChefProjet
    membre:Membre
   ngOnInit() {
+    if(localStorage.getItem('projet')){
+      this.chef = JSON.parse(localStorage.getItem('projet')).chefProjet;
 
-    //this.chef = JSON.parse(localStorage.getItem('chef-projet'));
-    this.membre = JSON.parse(localStorage?.getItem('membre'));
+      /** pour chercher un membre */
+      this.membreService.afficherTousMembres().subscribe(
+        data =>{
+          this.membresApp = data
+        }
+      )
+    }
+    if(localStorage.getItem('membre'))
+      this.membre = JSON.parse(localStorage?.getItem('membre'));
+
     window.addEventListener("resize", this.updateColor);
     this.listTitles = ROUTES.filter(listTitle => listTitle);
     const navbar: HTMLElement = this.element.nativeElement;
@@ -201,28 +215,23 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return "Dashboard";
   }
 
-  open(content) {
-    this.modalService.open(content, {windowClass: 'modal-search'}).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+  openSearchPanel() {
+    this.dialogRecherche.open(SearchPanelComponent,{
+      width: '800px',
+      position:{ top: '40px', left: '350px'},
+      height:'70px',
+      data: {
+        membres:this.membresApp
+      }
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return  `with: ${reason}`;
-    }
-  }
+
   ngOnDestroy(){
      window.removeEventListener("resize", this.updateColor);
   }
   openDialogInvitation(){
-    const dialogRef = this.dialogInvitation.open(InvitationComponent,{
+     this.dialogInvitation.open(InvitationComponent,{
       width: '350px',
       height:'420px',
       data: {
@@ -274,6 +283,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
    
 
   }
+
+
+
+
+
 
 
 }

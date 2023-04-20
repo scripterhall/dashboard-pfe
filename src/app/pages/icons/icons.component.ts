@@ -355,7 +355,8 @@ removeUserStoryFromProductBacklog(id: number) {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      this.sprints.push(result)
+      if(result)
+        this.sprints.push(result)
     });
   }
 

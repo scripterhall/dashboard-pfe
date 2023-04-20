@@ -1,8 +1,8 @@
 <div class="d-flex">
   <h1 mat-dialog-title class="mr-auto p-2">Objectif de Sprint : {{data.sprint.objectif}} </h1>
   <div class="d-flex">
-    <ng-container *ngIf="data.sprint.dateLancement>=projet.dateDebut">
-    <button mat-stroked-button *ngIf="data.sprint.etat !='terminer'"  (click)="lancerSprintForcer()" class="p-2 m-1" [disabled]="data.sprint.etat=='en cours' || this.data.canStart || this.data.TicketHistoires.length==0" color="primary">Lancer
+    <ng-container *ngIf="verifDate()">
+    <button mat-stroked-button *ngIf="data.sprint.etat !='terminer'"  (click)="lancerSprintForcer()" class="p-2 m-1" [disabled]="data.sprint.etat=='en cours' || this.data.canStart || this.data.TicketHistoires.length==0 " color="primary">Lancer
       Sprint</button>
     </ng-container>
     <mat-icon class="text-warning m-2" *ngIf="data.sprint.etat=='en cours'">alarm</mat-icon>

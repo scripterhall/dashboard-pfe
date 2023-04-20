@@ -71,7 +71,7 @@ export class DecisionComponent implements OnInit {
               'success'
             ).then(
               result => {
-                this.router.navigateByUrl('/dashboard')
+                this.router.navigateByUrl('/inscription')
               }
             )
 

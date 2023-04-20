@@ -62,14 +62,13 @@ export class SprintDialogPanelComponent implements OnInit{
     });
     const conv_data = new Date(this.data.sprint.dateLancement);
     console.log(this.data.canStart);
-
     if(conv_data.getDay() == new Date().getDay()
       && this.data.sprint.etat != "en cours"
       && !this.data.canStart
       &&this.data.TicketHistoires.length>0
       ){
         Swal.fire({
-          title: "en appuyant sur le boutton <ok> votre sprint sera lancé avec la date "+this.data.sprint.dateLancement.toDateString(),
+          title: "en appuyant sur le boutton <ok> votre sprint sera lancé avec la date "+conv_data.toDateString(),
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
@@ -226,12 +225,10 @@ export class SprintDialogPanelComponent implements OnInit{
     console.log(this.data.canStart);
     
     if(
-    new Date(Date.now())>=this.projet.dateDebut
-    &&this.data.sprint.etat != "en cours"
+    this.data.sprint.etat != "en cours"
     && !this.data.canStart
     &&this.data.TicketHistoires.length>0
     ){
-    this.data.sprint.dateLancement = new Date(Date.now());
     Swal.fire({
       title: "en appuyant sur le boutton <ok> votre sprint sera lancé avec la date "+this.data.sprint.dateLancement.toDateString(),
       icon: 'warning',
@@ -361,6 +358,13 @@ export class SprintDialogPanelComponent implements OnInit{
 
   }
 
+  verifDate(){
+    const aujourdhui = new Date()
+    this.data.sprint.dateLancement= new Date( this.data.sprint.dateLancement)    
+    return  this.data.sprint.dateLancement.getFullYear() === aujourdhui.getFullYear() &&
+    this.data.sprint.dateLancement.getMonth() === aujourdhui.getMonth() &&
+    this.data.sprint.dateLancement.getDate() === aujourdhui.getDate()
+  }
 
 
 

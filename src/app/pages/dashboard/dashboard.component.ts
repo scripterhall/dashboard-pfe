@@ -7,6 +7,8 @@ import { HistoireTicketService } from "src/app/service/histoire-ticket.service";
 import { ProductBacklogService } from "src/app/service/product-backlog.service";
 import { ProjetServiceService } from "src/app/service/projet-service.service";
 import { SprintService } from "src/app/service/sprint.service";
+import { TicketTacheService } from "src/app/service/ticket-tache.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-dashboard",
@@ -30,6 +32,7 @@ export class DashboardComponent implements OnInit {
 
 
   constructor(private sprintService:SprintService,
+    private ticketTacheService:TicketTacheService,
     private productBacklogService:ProductBacklogService,
     private histoireTicketService:HistoireTicketService, private projetService:ProjetServiceService) {}
     sprints: Sprint[]=[];
@@ -137,7 +140,98 @@ export class DashboardComponent implements OnInit {
           });
         }
       }
-      }});
+      }
+      /** terminer sprint */
+      const role = JSON.parse(localStorage?.getItem("role"))
+       /**if(role.type=='dev team'){ */
+            const sprintEnCours = sprints.find(sprint => sprint.etat == "en cours")
+            if(sprintEnCours){
+              sprintEnCours.productBacklogId = sprintEnCours.productBacklog.id
+              if(this.verifDate(sprintEnCours.dateFin) && sprintEnCours.etat!="termine"){
+                this.histoireTicketService.getHistoireTicketBySprintId(sprintEnCours.id).subscribe(
+                  listeHistoireData =>{
+                    if(!this.verifListTicketDone(listeHistoireData)){
+                      const sprintSuivant = this.sprintSuivant(sprints,sprintEnCours)
+                      if(sprintSuivant){
+                        Swal.fire({
+                          title: "ce Sprint se termine aujourd'hui voulez voulez vous\n transferer les tikcets histoire restant dans \le sprint suivant ",
+                          icon: 'warning',
+                          showCancelButton: true,
+                          confirmButtonColor: '#3085d6',
+                          cancelButtonColor: '#d33',
+                          confirmButtonText: 'Oui',
+                          cancelButtonText: 'Annuler',
+                          background:'rgba(0,0,0,0.9)',
+                          backdrop: 'rgba(0,0,0,0.4)',
+                          allowOutsideClick: false,
+                          allowEscapeKey: false,
+                          allowEnterKey: false,
+                          focusConfirm: false
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            // Le code à exécuter si l'utilisateur a cliqué sur "Oui, supprimer!"
+                            this.transferDeTicket(sprintSuivant,listeHistoireData)
+                            sprintEnCours.etat = "termine"
+                            this.sprintService.modifierSprint(sprintEnCours).subscribe(
+                              data => {
+                                Swal.fire(
+                                  'Bravo !!',
+                                  'Sprint termné',
+                                  'success'
+                                )
+                              }
+                            )
+                          }else{
+                            sprintEnCours.etat = "termine"
+                            this.sprintService.modifierSprint(sprintEnCours).subscribe(
+                              data => {
+                                Swal.fire(
+                                  'Domage!!',
+                                  'Sprint termné mais non pas pour tous ses ticket histoire !',
+                                  'warning'
+                                )
+                              }
+                            )
+                          }
+                        });
+                        
+                      }else{
+                        sprintEnCours.etat = "termine"
+                        this.sprintService.modifierSprint(sprintEnCours).subscribe(
+                          data => {
+                            Swal.fire(
+                              'Domage!!',
+                              'Sprint termné mais non pas pour tous ses ticket histoire !',
+                              'warning'
+                            )
+                          }
+                        )
+                      }
+                    }else{
+                      sprintEnCours.etat = "termine"
+                            this.sprintService.modifierSprint(sprintEnCours).subscribe(
+                              data => {
+                                Swal.fire(
+                                  'Bravo !!',
+                                  'Sprint termné',
+                                  'success'
+                                )
+                              }
+                            )
+                    }
+                  }
+                )
+              }
+            }
+        
+       
+    //}
+
+      /** end */
+
+    }
+      
+  );
 
     this.histoireTicketService.getListHistoireTicketByProductBacklog(this.productBacklogService.getProductBacklogByIdFromLocalStorage()).subscribe(
       data => {
@@ -180,6 +274,11 @@ export class DashboardComponent implements OnInit {
         console.log(error);
       }
     );
+
+
+
+
+
   }
 
     onSprintSelected(index: number) {
@@ -316,5 +415,52 @@ export class DashboardComponent implements OnInit {
       }]
       }
       };
+  }
+
+  verifDate(dateRec:Date){
+    const aujourdhui = new Date()
+    dateRec= new Date(dateRec)    
+    return  dateRec.getFullYear() === aujourdhui.getFullYear() &&
+    dateRec.getMonth() === aujourdhui.getMonth() &&
+    dateRec.getDate() === aujourdhui.getDate()
+  }
+
+  verifListTicketDone(liste:TicketHistoire[]){
+    const doneList = liste.filter(histoire => histoire.status == "TERMINE")
+    return doneList.length == liste.length
+  }
+
+  sprintSuivant(liste:Sprint[],sprintActuelle:Sprint):Sprint{
+    if(liste.indexOf(sprintActuelle) == liste.length - 1)
+      return null 
+    else
+      return liste[liste.indexOf(sprintActuelle)+1]
+  }
+
+  transferDeTicket(sprint:Sprint,listeHistoire:TicketHistoire[]){
+     const listeHistoireEnAttente = listeHistoire.filter(histoire => histoire.status == "EN_COURS")
+     for(let histoire of listeHistoireEnAttente){
+      this.histoireTicketService.assignUserStoryToSprint(histoire.id,sprint.id).subscribe(
+        data => {
+          Swal.fire(
+            'Transfers aquis',
+            'les ticket en bien ete transmis',
+            'success'
+          )
+        }
+      )
+      /** reglage de tâche */
+      this.ticketTacheService.getListTicketTacheParHt(histoire.id).subscribe(
+        listeTacheData =>{
+            for(let tache of listeTacheData){
+              tache.sprintBacklogId = null
+              this.ticketTacheService.modifierTicketTache(tache).subscribe(
+                data => console.log(data)
+              )
+            }
+        }
+      )
+      /** end */
+     }
   }
 }

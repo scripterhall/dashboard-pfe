@@ -14,6 +14,7 @@ import { ProjetServiceService } from 'src/app/service/projet-service.service';
 import { RoleService } from 'src/app/service/role.service';
 import Swal from 'sweetalert2';
 import { emailValidator, emailExistsValidator,roleExists } from './email-exists.validator';
+import { ToastrService } from 'ngx-toastr';
 
 export interface ExampleTab {
   label: string;
@@ -62,8 +63,7 @@ export class SelectProjetComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.clearLocalStorage();
-
+  
     this.rolePkForm = this.formBuilder2.group({
       membreId:null,
       projetId:[null,Validators.required]
@@ -141,6 +141,7 @@ export class SelectProjetComponent implements OnInit {
  /*  end */
   constructor(private projetService: ProjetServiceService,
               private formBuilder: FormBuilder,
+              private toastr: ToastrService,
               private formBuilder2: FormBuilder,
               private roleService: RoleService,
               private invitationService: InvitationService,
@@ -198,7 +199,9 @@ onSubmit() {
     projet => {
       this.projet = projet;
       localStorage.setItem('projet', JSON.stringify(this.projet));
-
+      this.projets.push(projet) 
+      this.toastr.success(`Projet ${projet.nom} ajouter avec succés`);
+      this.step = 0
       const productBacklog: ProductBacklog = new ProductBacklog();
       this.productBacklogService.createProductBacklog(productBacklog, this.projet.id).subscribe(
         data => {
@@ -327,6 +330,12 @@ step = 0;
         )
       }
     )
+  }
+
+
+  resetInvitation(){
+    this.roleForm.reset()
+    this.invitationForm.reset()
   }
 
 }

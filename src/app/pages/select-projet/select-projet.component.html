@@ -152,7 +152,7 @@
 
                 <mat-form-field appearance="fill">
                   <mat-label>e-mail</mat-label>
-                  <input formControlName="emailInvitee"  matInput>
+                  <input formControlName="emailInvitee"  [disabled]="this.rolePkForm.get('membreId').value!=null"  matInput>
                   <mat-error *ngIf="invitationForm.get('emailInvitee').touched && invitationForm.get('emailInvitee').hasError('required')">le champ email est obligatoire</mat-error>
                   <mat-error *ngIf="invitationForm.get('emailInvitee').dirty && invitationForm.get('emailInvitee').errors?.emailExists">vous avez déjà envoyé une invitation a ce mail</mat-error>
                   <mat-hint class="text-warning" *ngIf="invitationForm.get('emailInvitee').dirty && invitationForm.get('emailInvitee').errors?.invalidEmail">vous devez respecter les regle de nommage d'un mail "@"  et "."</mat-hint>
@@ -241,6 +241,7 @@
                 <!-- end -->
                 <mat-action-row>
                   <button mat-button color="warn" (click)="prevStep()">Précedent</button>
+                  <button mat-button color="accent" (click)="resetInvitation()">Annuler</button>
                   <button mat-button color="primary" (click)="inviter()" [disabled]="!allValid()">Inviter</button>
                 </mat-action-row>
 

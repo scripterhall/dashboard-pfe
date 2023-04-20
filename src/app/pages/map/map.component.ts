@@ -272,16 +272,23 @@ export class MapComponent implements OnInit {
           const listeTacheTermine = listeTache.filter(tache => tache.etat == "terminé")
           if(listeTacheTermine.length == listeTache.length){
             ticketHistoire.status = "TERMINE"
-            
             console.log(ticketHistoire);
             this.ticketHistoireService.updateUserStory(ticketHistoire.id,ticketHistoire).subscribe(
               dataHistoire =>{
                 console.log(dataHistoire)
+                if(!this.verifSprintBacklogTerminer())
+                  Swal.fire(
+                    'Félicitation ',
+                    'vous avez terminer un histoire de sprint',
+                    'success'
+                  )
+                else
                 Swal.fire(
                   'Félicitation ',
-                  'vous avez terminer un histoire de sprint',
+                  'vous avez terminer le sprint ,\n avez vous respecter le time Box',
                   'success'
                 )
+                
               }
             )
           }
@@ -306,6 +313,15 @@ export class MapComponent implements OnInit {
       this.toastr.success(`${prendre} Vous 	😀`);
     else
       this.toastr.success(`${prendre} ${membre.email}`);
+  }
+
+
+  verifSprintBacklogTerminer(){
+    for(let key of this.taskMap.keys()){
+      if(key.status == "EN_COURS")
+        return false
+    }
+    return true
   }
 
 

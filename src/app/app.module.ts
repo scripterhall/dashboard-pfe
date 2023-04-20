@@ -52,6 +52,13 @@ import { InvitationComponent } from './pages/dialogs/invitation/invitation.compo
 import { StatCourbComponent } from './pages/dialogs/stat-courb/stat-courb.component';
 import { ListMembreProjetComponent } from './pages/list-membre-projet/list-membre-projet.component';
 import { PerformanceCourbeComponent } from './pages/dialogs/performance-courbe/performance-courbe.component';
+import { InscriptionComponent } from './auth/inscription/inscription.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { WebcamModule } from 'ngx-webcam';
+import { AuthentificationComponent } from './auth/authentification/authentification.component';
+import { SearchPanelComponent } from './pages/dialogs/search-panel/search-panel.component';
+import { ConsuletMembrePanelComponent } from './pages/dialogs/consulet-membre-panel/consulet-membre-panel.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -63,7 +70,9 @@ import { PerformanceCourbeComponent } from './pages/dialogs/performance-courbe/p
     MatTooltipModule,
     MatDialogModule,
     MatToolbarModule,
+    WebcamModule,
     MatExpansionModule,
+    MatProgressSpinnerModule,
     HttpClientModule,
     MatCardModule,
     ReactiveFormsModule,
@@ -81,6 +90,7 @@ import { PerformanceCourbeComponent } from './pages/dialogs/performance-courbe/p
     MatTableModule,
     AppRoutingModule,
     MatIconModule,
+    MatCheckboxModule,
     MatListModule,
     MatButtonModule,
     ToastrModule.forRoot(),
@@ -97,7 +107,7 @@ import { PerformanceCourbeComponent } from './pages/dialogs/performance-courbe/p
     UpdateUserStoryDialogComponent,
     ScrumBoardComponent,
     DecisionComponent,
-    InvitationComponent, PerformanceCourbeComponent
+    InvitationComponent, PerformanceCourbeComponent, InscriptionComponent, AuthentificationComponent, SearchPanelComponent, ConsuletMembrePanelComponent
     ],
   providers: [],
   bootstrap: [AppComponent]
